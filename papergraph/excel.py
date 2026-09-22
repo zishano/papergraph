@@ -114,8 +114,8 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
         ])
     sheet("论文列表", ["论文标题", "年份", "与种子关系（最小Hop）", "摘要", "辅助关键词命中", "作者",
                         "Gemini 摘要总结", "Gemini 评分", "Gemini 评分理由"],
-          rows, [72, 12, 32, 90, 28, 55, 65, 16, 65],
-          [28, 10, 22, 40, 18, 25, 30, 14, 30])
+          rows, [68, 12, 25, 120, 22, 38, 60, 16, 55],
+          [28, 10, 20, 55, 16, 22, 28, 14, 25])
     sheet("add", ["论文ID", "OpenAlex ID", "arXiv ID", "DOI", "论文链接", "期刊/会议",
                   "被引次数", "PDF链接", "摘要状态", "最小Hop", "来源种子", "父节点",
                   "Gemini 状态", "Gemini 模型"],

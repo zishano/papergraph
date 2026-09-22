@@ -2,6 +2,7 @@ import os
 import argparse
 import asyncio
 import sys
+import unicodedata
 
 import httpx
 
@@ -64,6 +65,12 @@ def parser() -> argparse.ArgumentParser:
     return root
 
 
+def clean_cli_args(arguments: list[str]) -> list[str]:
+    """Remove invisible Unicode format characters introduced by copy/paste."""
+    return ["".join(ch for ch in value if unicodedata.category(ch) != "Cf")
+            for value in arguments]
+
+
 async def run(args: argparse.Namespace) -> dict:
     if args.command == "verify":
         import csv
@@ -91,8 +98,11 @@ async def run(args: argparse.Namespace) -> dict:
         output = Path(args.output)
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
-        translator = GoogleAITranslator(http)
-        await write_excel_async(graph, args.excel, args.keywords, result['verification'], analysis, translator)
+        # The HTTP client must remain open while translation requests run.
+        async with httpx.AsyncClient(timeout=45) as translation_http:
+            translator = GoogleAITranslator(translation_http)
+            await write_excel_async(graph, args.excel, args.keywords,
+                                    result['verification'], analysis, translator)
         return result
     config = None
     if args.command == "search":
@@ -182,7 +192,7 @@ def main() -> None:
 
     try:
         load_project_env()
-        args = parser().parse_args()
+        args = parser().parse_args(clean_cli_args(sys.argv[1:]))
         result = asyncio.run(run(args))
     except (ValueError, RetrievalError, OSError) as exc:
         print(f"papergraph: {exc}", file=sys.stderr)

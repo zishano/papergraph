@@ -13,7 +13,11 @@ class GoogleAITranslator:
         self.api_key = api_key or os.getenv("GOOGLE_AI_API_KEY") or os.getenv("GEMINI_API_KEY")
         self.interval = interval
         self.last_request = 0.0
-        self.model = "gemini-2.0-flash-exp"  # Fast model for translation
+        configured_model = os.getenv("PAPERGRAPH_GEMINI_MODEL", "auto")
+        self.models = ([configured_model] if configured_model != "auto" else [
+            "gemini-3.6-flash", "gemini-3.7-flash", "gemini-3.8-flash",
+            "gemini-3.5-flash-lite", "gemini-flash-lite-latest",
+        ])
 
     async def translate_batch(self, texts: list[str]) -> list[str]:
         """Translate a batch of English texts to Chinese."""
@@ -50,19 +54,26 @@ class GoogleAITranslator:
 
 中文翻译："""
 
-        try:
-            response = await self.http.post(
-                f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent",
-                headers={"Content-Type": "application/json", "X-goog-api-key": self.api_key},
-                json={
-                    "contents": [{"parts": [{"text": prompt}]}],
-                    "generationConfig": {"temperature": 0.1, "maxOutputTokens": 2048},
-                },
-                timeout=60,
-            )
-            response.raise_for_status()
-            data = response.json()
-            translated = data["candidates"][0]["content"]["parts"][0]["text"].strip()
-            return translated
-        except (httpx.HTTPError, KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
-            raise ValueError(f"Translation failed: {type(exc).__name__}")
+        errors = []
+        for model in self.models:
+            try:
+                response = await self.http.post(
+                    f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+                    headers={"Content-Type": "application/json", "X-goog-api-key": self.api_key},
+                    json={
+                        "contents": [{"parts": [{"text": prompt}]}],
+                        "generationConfig": {"temperature": 0.1, "maxOutputTokens": 2048},
+                    }, timeout=60,
+                )
+                if response.status_code in {400, 404, 429, 502, 503}:
+                    errors.append(f"{model}:HTTP {response.status_code}")
+                    continue
+                response.raise_for_status()
+                data = response.json()
+                translated = data["candidates"][0]["content"]["parts"][0]["text"].strip()
+                if translated:
+                    return translated
+                errors.append(f"{model}:empty response")
+            except (httpx.HTTPError, KeyError, IndexError, TypeError, json.JSONDecodeError) as exc:
+                errors.append(f"{model}:{type(exc).__name__}")
+        raise ValueError("Translation failed: " + "; ".join(errors))
