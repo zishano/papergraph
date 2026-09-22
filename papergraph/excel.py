@@ -13,9 +13,9 @@ from papergraph.models import CitationGraph
 from papergraph.translator import GoogleAITranslator
 
 
-async def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "",
-                      verification: list | None = None, analysis: list | None = None,
-                      translator: GoogleAITranslator | None = None) -> Path:
+def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "",
+                verification: list | None = None, analysis: list | None = None,
+                _translated_abstracts: list[str] | None = None) -> Path:
     destination = Path(destination)
     if destination.suffix.lower() != ".xlsx":
         raise ValueError("Excel output path must end in .xlsx")
@@ -87,14 +87,7 @@ async def write_excel(graph: CitationGraph, destination: str | Path, keywords: s
             node_list.append(n)
             abstracts_to_translate.append(n.abstract or "")
 
-    translated_abstracts = []
-    if translator:
-        try:
-            translated_abstracts = await translator.translate_batch(abstracts_to_translate)
-        except Exception:
-            translated_abstracts = ["翻译服务不可用"] * len(abstracts_to_translate)
-    else:
-        translated_abstracts = [""] * len(abstracts_to_translate)
+    translated_abstracts = _translated_abstracts or [""] * len(abstracts_to_translate)
 
     rows = []
     add_rows = []
@@ -151,3 +144,18 @@ async def write_excel(graph: CitationGraph, destination: str | Path, keywords: s
     destination.parent.mkdir(parents=True, exist_ok=True)
     book.save(destination)
     return destination
+
+
+async def write_excel_async(graph: CitationGraph, destination: str | Path, keywords: str = "",
+                            verification: list | None = None, analysis: list | None = None,
+                            translator: GoogleAITranslator | None = None) -> Path:
+    """Translate abstracts when requested, then use the synchronous writer."""
+    translations = None
+    if translator:
+        abstracts = [n.abstract or "" for n in sorted(graph.nodes, key=lambda n: (n.hop, n.id))
+                     if n.id not in graph.seed_ids]
+        try:
+            translations = await translator.translate_batch(abstracts)
+        except Exception:
+            translations = ["翻译服务不可用"] * len(abstracts)
+    return write_excel(graph, destination, keywords, verification, analysis, translations)
