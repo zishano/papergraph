@@ -21,6 +21,7 @@ JSON 文件不能写注释，因此可直接复制 [`config.example.json`](confi
 | `arxiv_max_candidates` | 正整数 | `20` | 自动核验最多处理的 arXiv 候选数。 |
 | `gemini` | `true` / `false` | `true` | 是否生成中文摘要总结、评分和摘要翻译；需要 `GOOGLE_AI_API_KEY`。 |
 | `gemini_model` | `auto` 或模型名 | `auto` | `auto` 自动轮换免费 Flash 模型，也可填写 `.env` 中列出的明确模型名。 |
+| `gemini_batch_size` | 正整数，建议 `1`–`10` | `5` | 每次 Gemini 请求合并处理的论文数。数值越大，请求次数越少，但单次输入输出更长；长摘要较多时建议使用 `3`–`5`。 |
 
 `resolve` 只需要 `seed`；`verify` 使用 [`verify-example.json`](verify-example.json) 中的 `graph`、`candidate_arxiv`/`candidates_csv`、`output`、`excel`、`keywords`、`gemini` 和 `gemini_model` 字段。
 

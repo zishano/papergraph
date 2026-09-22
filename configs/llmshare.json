@@ -17,5 +17,6 @@
   "arxiv_auto_verify": true,
   "arxiv_max_candidates": 20,
   "gemini": true,
-  "gemini_model": "auto"
+  "gemini_model": "auto",
+  "gemini_batch_size": 5
 }

@@ -60,6 +60,8 @@ def parser() -> argparse.ArgumentParser:
                         help="Generate Gemini summaries and scores for Excel/JSON (default: enabled)")
     search.add_argument("--gemini-model", default=os.getenv("PAPERGRAPH_GEMINI_MODEL", "auto"),
                         help="Gemini model name, or auto for free-model fallback rotation")
+    search.add_argument("--gemini-batch-size", type=int, default=5,
+                        help="Papers combined in each Gemini request (default: 5)")
     verify = commands.add_parser("verify", help="Verify supplied arXiv candidates against seed bibliographies")
     verify.add_argument("--config", help="JSON 参数配置文件")
     verify.add_argument("--graph", help="Existing citing graph JSON")
@@ -70,6 +72,7 @@ def parser() -> argparse.ArgumentParser:
     verify.add_argument("--keywords", default="")
     verify.add_argument("--gemini", action=argparse.BooleanOptionalAction, default=True)
     verify.add_argument("--gemini-model", default=os.getenv("PAPERGRAPH_GEMINI_MODEL", "auto"))
+    verify.add_argument("--gemini-batch-size", type=int, default=5)
     return root
 
 
@@ -130,10 +133,13 @@ async def run(args: argparse.Namespace) -> dict:
             raise ValueError("Supply --candidate-arxiv or --candidates-csv")
         if not args.excel.lower().endswith(".xlsx"):
             raise ValueError("Excel output path must end in .xlsx")
+        if getattr(args, "gemini_batch_size", 5) < 1:
+            raise ValueError("gemini_batch_size must be at least 1")
         progress("开始解析验证图和 arXiv 候选")
         async with httpx.AsyncClient(timeout=45) as http:
             records = await ArxivVerifier(http).verify(graph, candidates, OpenAlexClient(http))
-            analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto")).analyze(
+            analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto"),
+                batch_size=getattr(args, "gemini_batch_size", 5)).analyze(
                 graph, args.keywords, progress=progress) if getattr(args, "gemini", True) else [])
         result = graph.model_dump() | {"verification": data.get("verification", []) + records,
                                        "analysis": analysis}
@@ -160,10 +166,12 @@ async def run(args: argparse.Namespace) -> dict:
         config = CrawlConfig(**{k: v for k, v in vars(args).items() if k not in {
             "command", "config", "seed", "excel", "keywords", "source", "scholar_list",
             "scholar_backend", "proxy", "arxiv_auto_verify", "arxiv_max_candidates",
-            "gemini", "gemini_model",
+            "gemini", "gemini_model", "gemini_batch_size",
         }})
         if getattr(args, "arxiv_max_candidates", 20) < 1:
             raise ValueError("arxiv_max_candidates must be at least 1")
+        if getattr(args, "gemini_batch_size", 5) < 1:
+            raise ValueError("gemini_batch_size must be at least 1")
         if getattr(args, "excel", None) and not args.excel.lower().endswith(".xlsx"):
             raise ValueError("Excel output path must end in .xlsx")
     proxy = getattr(args, 'proxy', None) or os.getenv('PAPERGRAPH_PROXY')
@@ -192,7 +200,8 @@ async def run(args: argparse.Namespace) -> dict:
             graph.openalex_requests = provider.requests
             graph.warnings.extend(scholar.warnings)
             graph.warnings.append('Membership authority: Google Scholar. Imported lists are user-supplied snapshots, not live retrieval.' if csv_path else f'Membership authority: Google Scholar via {scholar.backend}; provider coverage is not exhaustive.')
-            analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto")).analyze(
+            analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto"),
+                batch_size=getattr(args, "gemini_batch_size", 5)).analyze(
                 graph, args.keywords, progress=progress) if getattr(args, "gemini", True) else [])
             if getattr(args, 'excel', None):
                 progress("正在生成 Excel")
@@ -229,7 +238,8 @@ async def run(args: argparse.Namespace) -> dict:
                 graph.warnings.append(
                     f"Automatic arXiv candidate verification checked {len(candidates)} keyword matches."
                 )
-            analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto")).analyze(
+            analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto"),
+                batch_size=getattr(args, "gemini_batch_size", 5)).analyze(
                 graph, getattr(args, "keywords", ""), progress=progress) if getattr(args, "gemini", True) else [])
             if getattr(args, "excel", None):
                 progress("正在生成 Excel")

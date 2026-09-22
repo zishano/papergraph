@@ -24,11 +24,12 @@ DEFAULT_MODELS = [
 
 class GeminiScorer:
     def __init__(self, http: httpx.AsyncClient, api_key: str | None = None,
-                 model: str = "auto", interval: float = 4.1):
+                 model: str = "auto", interval: float = 4.1, batch_size: int = 5):
         self.http = http
         self.api_key = api_key or os.getenv("GOOGLE_AI_API_KEY") or os.getenv("GEMINI_API_KEY")
         self.models = ([model] if model != "auto" else DEFAULT_MODELS.copy())
         self.interval = interval
+        self.batch_size = max(1, batch_size)
         self.last_request = 0.0
         self.unavailable_models: set[str] = set()
 
@@ -43,16 +44,79 @@ class GeminiScorer:
         records = []
         if progress:
             progress(f"Gemini 摘要、翻译和评分开始：{len(papers)} 篇论文")
-        for index, paper in enumerate(papers, 1):
-            if progress:
-                progress(f"Gemini 处理 {index}/{len(papers)}：{paper.title[:60]}")
+        pending = []
+        for paper in papers:
             if not paper.abstract:
                 records.append({"paper_id": paper.id, "status": "skipped_missing_abstract",
                                 "model": None, "summary": "", "score": None,
                                 "reason": "缺少摘要，未调用 Gemini", "translation": ""})
                 continue
-            records.append(await self._score(paper.id, paper.title, paper.abstract, keywords))
-        return records
+            pending.append(paper)
+        total_batches = (len(pending) + self.batch_size - 1) // self.batch_size
+        for start in range(0, len(pending), self.batch_size):
+            batch = pending[start:start + self.batch_size]
+            if progress:
+                batch_number = start // self.batch_size + 1
+                progress(f"Gemini 批次 {batch_number}/{total_batches}（论文 {start + 1}-{start + len(batch)}/{len(pending)}）")
+                for offset, paper in enumerate(batch, start + 1):
+                    progress(f"  {offset}/{len(pending)}：{paper.title}")
+            if len(batch) == 1:
+                records.append(await self._score(batch[0].id, batch[0].title,
+                                                 batch[0].abstract, keywords))
+            else:
+                records.extend(await self._score_batch(batch, keywords))
+        order = {paper.id: index for index, paper in enumerate(papers)}
+        return sorted(records, key=lambda item: order[item["paper_id"]])
+
+    async def _score_batch(self, papers: list, keywords: str) -> list[dict]:
+        prompt = self._batch_prompt(papers, keywords)
+        errors = []
+        for model in list(self.models):
+            if model in self.unavailable_models:
+                continue
+            for attempt in range(2):
+                wait = self.interval - (time.monotonic() - self.last_request)
+                if wait > 0:
+                    await asyncio.sleep(wait)
+                self.last_request = time.monotonic()
+                try:
+                    response = await self.http.post(
+                        f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+                        headers={"Content-Type": "application/json", "X-goog-api-key": self.api_key},
+                        json={
+                            "contents": [{"parts": [{"text": prompt}]}],
+                            "generationConfig": {"temperature": 0.3, "maxOutputTokens": 16384,
+                                                 "responseMimeType": "application/json"},
+                        }, timeout=120,
+                    )
+                    if response.status_code in {400, 404, 429}:
+                        errors.append(f"{model}:HTTP {response.status_code}")
+                        self.unavailable_models.add(model)
+                        break
+                    if response.status_code in {502, 503}:
+                        errors.append(f"{model}:HTTP {response.status_code}")
+                        if attempt == 0:
+                            await asyncio.sleep(3)
+                            continue
+                        break
+                    response.raise_for_status()
+                    data = response.json()
+                    text = data["candidates"][0]["content"]["parts"][0]["text"]
+                    parsed = self._parse_batch(text, {paper.id for paper in papers})
+                    self.models.remove(model)
+                    self.models.insert(0, model)
+                    return [{"paper_id": item["paper_id"], "status": "completed", "model": model,
+                             "summary": item["summary"], "score": item["score"],
+                             "reason": item["reason"], "translation": item["translation"]}
+                            for item in parsed]
+                except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError,
+                        json.JSONDecodeError) as exc:
+                    errors.append(f"{model}:{type(exc).__name__}")
+                    break
+        reason = "; ".join(errors)
+        return [{"paper_id": paper.id, "status": "failed", "model": None,
+                 "summary": "", "score": None, "reason": reason, "translation": ""}
+                for paper in papers]
 
     async def _score(self, paper_id: str, title: str, abstract: str, keywords: str) -> dict:
         prompt = self._prompt(title, abstract, keywords)
@@ -119,6 +183,26 @@ class GeminiScorer:
         return {"score": score, "summary": summary, "reason": reason,
                 "translation": translation}
 
+    @classmethod
+    def _parse_batch(cls, value: str, expected_ids: set[str]) -> list[dict]:
+        value = value.strip()
+        match = re.search(r"\[.*\]", value, re.S)
+        if not match:
+            raise ValueError("Gemini batch response did not contain a JSON array")
+        data = json.loads(match.group())
+        if not isinstance(data, list):
+            raise ValueError("Gemini batch response must be a JSON array")
+        parsed = []
+        for item in data:
+            paper_id = str(item.get("paper_id", ""))
+            if paper_id not in expected_ids:
+                raise ValueError("Gemini batch response contained an unknown paper_id")
+            fields = cls._parse(json.dumps(item, ensure_ascii=False))
+            parsed.append({"paper_id": paper_id, **fields})
+        if {item["paper_id"] for item in parsed} != expected_ids or len(parsed) != len(expected_ids):
+            raise ValueError("Gemini batch response omitted or duplicated papers")
+        return parsed
+
     @staticmethod
     def _prompt(title: str, abstract: str, keywords: str) -> str:
         return f"""请评估并总结下面的学术论文。只返回一个 JSON 对象，不要 Markdown 或额外文字。
@@ -132,3 +216,18 @@ class GeminiScorer:
 
 必须返回：
 {{"score": 72, "summary": "中文一句话概括核心贡献，不超过60字", "reason": "中文简述评分理由，不超过80字", "translation": "摘要的完整中文翻译"}}"""
+
+    @staticmethod
+    def _batch_prompt(papers: list, keywords: str) -> str:
+        inputs = [{"paper_id": paper.id, "title": paper.title, "abstract": paper.abstract}
+                  for paper in papers]
+        return f"""请分别评估、总结并翻译下面的学术论文。只返回一个 JSON 数组，不要 Markdown 或额外文字。
+
+用户关注关键词：{keywords or '未指定'}
+论文：{json.dumps(inputs, ensure_ascii=False)}
+
+每篇论文的评分由创新性、实用性、严谨性和清晰度四项相加得到 0–100 分，每项 0–25 分。
+严格评分，多数普通论文应在 60–80 分，通常不超过 85 分。
+
+数组必须为每个输入 paper_id 返回且只返回一个对象，格式：
+[{{"paper_id": "原始ID", "score": 72, "summary": "中文一句话概括核心贡献，不超过60字", "reason": "中文简述评分理由，不超过80字", "translation": "摘要的完整中文翻译"}}]"""

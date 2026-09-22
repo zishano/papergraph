@@ -166,6 +166,7 @@ papergraph resolve \
 | `--gemini`                             |   否 | 启用         | 为结果论文生成中文总结、评分和评分理由，并写入 JSON/Excel                              |
 | `--no-gemini`                          |   否 | 无           | 本次运行关闭 Gemini 分析                                                               |
 | `--gemini-model NAME`                  |   否 | `auto`     | 指定 Google 模型；`auto` 按免费 Flash 模型优先级自动轮换                             |
+| `--gemini-batch-size N`                |   否 | `5`        | 每次 Gemini 请求合并处理的论文数；建议 3–10                                            |
 | `-h`, `--help`                       |   否 | 无           | 显示帮助并退出                                                                         |
 
 参数组合规则：
@@ -202,6 +203,7 @@ papergraph search --config configs/my-search.json > outputs/result.json
 | `--gemini`                  |       否 | 启用     | 重新为图中的论文生成 Gemini 中文总结和评分             |
 | `--no-gemini`               |       否 | 无       | 关闭 Gemini 分析                                       |
 | `--gemini-model NAME`       |       否 | `auto` | 指定模型或使用免费模型自动轮换                         |
+| `--gemini-batch-size N`     |       否 | `5`    | 每次 Gemini 请求合并处理的论文数                       |
 | `-h`, `--help`            |       否 | 无       | 显示帮助并退出                                         |
 
 `--candidate-arxiv` 和 `--candidates-csv` 至少提供一种，也可以同时使用；重复 arXiv ID 会自动去重。
@@ -269,7 +271,7 @@ arxiv_id,source
 GOOGLE_AI_API_KEY=你的_key
 ```
 
-`search` 和 `verify` 默认启用 Gemini。每篇论文用一次请求同时完成中文摘要总结、完整摘要翻译和评分，避免重复调用。`--gemini-model auto` 会优先使用实测可用模型；遇到短暂的 502/503 会重试一次，遇到不可用或限流模型会在本次运行中跳过并自动轮换。评分总分为 100：创新性、实用性、严谨性和清晰度各 25 分。终端会显示当前处理篇数，进度写入 stderr，不会污染重定向的 JSON。
+`search` 和 `verify` 默认启用 Gemini。默认把 5 篇论文合并为一次请求，并在同一响应中生成中文摘要总结、完整摘要翻译和评分；处理 50 篇时通常只需 10 次模型请求。可通过 JSON 中的 `gemini_batch_size` 调整批量大小。`--gemini-model auto` 会优先使用实测可用模型；遇到短暂的 502/503 会重试一次，遇到不可用或限流模型会在本次运行中跳过并自动轮换。评分总分为 100：创新性、实用性、严谨性和清晰度各 25 分。终端会显示批次及每篇完整标题，进度写入 stderr，不会污染重定向的 JSON。
 
 如本次不需要模型分析：
 
@@ -309,7 +311,7 @@ Scholar 网页返回 CAPTCHA/429 时，程序会明确报错，不绕过访问�
 
 - JSON 包含种子、论文节点、引用边、发现路径和运行参数。
 - JSON 的 `analysis` 数组保存 Gemini 状态、模型、摘要总结、评分和评分理由。
-- Excel 的“论文列表”只展示论文标题、年份、与种子关系（含最小 Hop）、英文摘要、中文翻译、辅助关键词命中、作者、Gemini 摘要总结、Gemini 评分和评分理由；英文摘要和中文翻译列宽均为 240。
+- Excel 的“论文列表”只展示论文标题、年份、与种子关系（含最小 Hop）、英文摘要、中文翻译、辅助关键词命中、作者、Gemini 摘要总结、Gemini 评分和评分理由；英文摘要和中文翻译列宽均为 480。
 - Excel 的 `add` 工作表保存论文 ID、OpenAlex/arXiv ID、DOI、链接、期刊会议、被引次数、PDF、来源种子、父节点以及 Gemini 调用状态和模型。
 - “种子论文”“发现路径”“引用边”“说明”继续保存可追溯信息；arXiv 核验结果另有“补充核验”。
 - `--keywords` 用于 arXiv 候选发现和 Excel 标记。例如 `DSE` 会扩展为完整短语；它不从 OpenAlex 图中删除未命中的论文。

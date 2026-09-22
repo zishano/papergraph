@@ -59,3 +59,25 @@ async def test_transient_503_retries_same_model():
         record = await scorer._score("W1", "Title", "Abstract", "DSE")
     assert calls == 2
     assert record["status"] == "completed"
+
+
+async def test_analyze_batches_multiple_papers_in_one_request():
+    calls = 0
+    def handler(request):
+        nonlocal calls
+        calls += 1
+        payload = json.loads(request.content)
+        prompt = payload["contents"][0]["parts"][0]["text"]
+        papers = json.loads(prompt.split("论文：", 1)[1].split("\n\n", 1)[0])
+        rows = [{"paper_id": paper["paper_id"], "score": 70,
+                 "summary": "总结", "reason": "理由", "translation": "翻译"}
+                for paper in papers]
+        return httpx.Response(200, json={"candidates": [{"content": {
+            "parts": [{"text": json.dumps(rows, ensure_ascii=False)}]}}]})
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
+        records = await GeminiScorer(http, api_key="test", model="batch-model",
+                                     interval=0, batch_size=10).analyze(graph(), "DSE")
+    assert calls == 1
+    assert len(records) == 4
+    assert sum(record["status"] == "completed" for record in records) == 3
+    assert sum(record["status"] == "skipped_missing_abstract" for record in records) == 1
