@@ -1,4 +1,24 @@
 {
+  "_help": {
+    "_说明": "下划线开头的字段仅用于说明，程序会忽略。所有 API Key 请放在 .env。",
+    "seed": "种子论文；可填写 DOI、arXiv ID、OpenAlex ID 或完整标题；数组可放多个种子。",
+    "source": "引用来源，可选 openalex（默认自动图）或 scholar（Google Scholar/SerpApi）。",
+    "proxy": "HTTP/HTTPS 代理地址；null 表示读取 .env 的 PAPERGRAPH_PROXY 或系统代理。",
+    "scholar_backend": "Scholar 后端，可选 web 或 serpapi；仅 source=scholar 时使用。",
+    "scholar_list": "Scholar 引用列表 CSV 路径；没有时填 null。",
+    "depth": "引用图深度，可选 0、1、2、3；0 只输出种子。",
+    "direction": "搜索方向，可选 citing（引用种子的论文）、references（种子引用的论文）、both（双向）。",
+    "max_papers": "整张图最多保留的论文节点数，正整数。",
+    "max_papers_per_hop": "每一层最多保留的论文数，正整数。",
+    "max_neighbors": "每个节点每个方向最多展开的邻居数，正整数。",
+    "max_paths_per_pair": "每个种子与论文组合最多保留的路径数，正整数。",
+    "excel": "Excel 输出路径，必须以 .xlsx 结尾。",
+    "keywords": "逗号分隔的辅助关键词；也用于 arXiv 候选发现，不会过滤 OpenAlex 结果。",
+    "arxiv_auto_verify": "是否自动搜索 arXiv 候选并核验参考文献，可选 true 或 false。",
+    "arxiv_max_candidates": "自动核验的 arXiv 候选上限，正整数。",
+    "gemini": "是否调用 Gemini 生成摘要总结和评分，可选 true 或 false。",
+    "gemini_model": "Gemini 模型名；auto 表示按 .env 支持列表自动轮换，也可填具体模型名。"
+  },
   "seed": [
     "LLMShare: Optimizing LLM Inference Serving with Hardware Architecture Exploration"
   ],

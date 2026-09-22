@@ -91,6 +91,8 @@ def apply_json_config(args: argparse.Namespace) -> argparse.Namespace:
         raise ValueError(f"JSON config command must be {args.command!r}")
     values.pop("command", None)
     values.pop("config", None)
+    # JSON configs may contain human-readable `_help`/`_comment` sections.
+    values = {key: value for key, value in values.items() if not key.startswith("_")}
     known = {action.dest for action in parser()._subparsers._group_actions[0].choices[args.command]._actions}
     unknown = sorted(set(values) - known)
     if unknown:

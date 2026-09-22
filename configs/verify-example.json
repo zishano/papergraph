@@ -1,4 +1,15 @@
 {
+  "_help": {
+    "_说明": "下划线开头的字段仅用于说明，程序会忽略。",
+    "graph": "已有 citing 图 JSON 路径。",
+    "candidate_arxiv": "待核验的 arXiv ID 数组；可与 candidates_csv 同时使用。",
+    "candidates_csv": "候选 CSV 路径，必须包含 arxiv_id 列；没有时填 null。",
+    "output": "补充核验后的 JSON 输出路径。",
+    "excel": "补充核验后的 Excel 输出路径，必须以 .xlsx 结尾。",
+    "keywords": "Excel 辅助关键词标记。",
+    "gemini": "是否调用 Gemini 生成摘要总结和评分，可选 true 或 false。",
+    "gemini_model": "Gemini 模型名；auto 表示自动轮换。"
+  },
   "graph": "outputs/LLMShare.json",
   "candidate_arxiv": ["2607.07096"],
   "candidates_csv": null,

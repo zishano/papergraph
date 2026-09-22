@@ -40,6 +40,8 @@ papergraph search --config configs/llmshare.json > outputs/LLMShare.json
 
 示例配置见 [configs/llmshare.json](configs/llmshare.json) 和 [configs/verify-example.json](configs/verify-example.json)。JSON 中的 `proxy: null` 表示使用 `.env` 或系统代理；API Key 仍只放在 `.env`，不放进 JSON。
 
+配置文件中的 `_help` 区域是内嵌说明，列出了每个参数的用途、默认值和可选值。所有下划线开头的字段都会被程序忽略，因此可以直接保留在 JSON 中作为配置说明。JSON 本身不支持 `//` 注释，所以统一使用 `_help` 记录说明。
+
 `citing` 的含义是：
 
 | 层级  | 内容                     |
