@@ -117,6 +117,7 @@ nano .env                 # 也可以直接用 VS Code 编辑
 | Google Scholar 网页源 |   可选 | 可能遇到 CAPTCHA/429，不作为默认数据源                                 |
 | SerpApi 接口          |   可选 | 保留接口，需要用户自己的`SERPAPI_API_KEY`                            |
 | Scholar CSV 导入      |   可选 | 导入人工引用列表，适用于单种子、深度 1                                 |
+| Scholar 摘要补全      | 已支持 | 识别缺失或省略号截断的片段，优先用 arXiv 精确标题，其次用 DOI 元数据补全 |
 | HTTP/HTTPS 代理       | 已支持 | 命令参数、项目变量或系统代理变量                                       |
 
 ## 完整命令参数

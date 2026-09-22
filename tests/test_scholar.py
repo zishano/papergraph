@@ -4,6 +4,7 @@ from papergraph.retrieval.scholar import ScholarProvider
 from papergraph.retrieval.openalex import OpenAlexClient, RetrievalError
 from papergraph.graph.crawler import CitationCrawler
 from papergraph.models import CrawlConfig
+from papergraph.models import Paper
 
 
 def entry(title, cid):
@@ -16,6 +17,8 @@ async def test_scholar_bfs_ignores_openalex_edges_and_metadata_failure(monkeypat
     def handler(r):
         if r.url.host == 'api.openalex.org':
             return httpx.Response(503)
+        if r.url.host == 'arxiv.org':
+            return httpx.Response(200, text='<html><form></form></html>')
         calls.append(dict(r.url.params))
         if r.url.params.get('q'):
             return httpx.Response(200,json={'organic_results':[entry('Seed','1')]})
@@ -62,6 +65,8 @@ async def test_pagination_and_request_cache(monkeypatch):
     def handler(r):
         if r.url.host=='api.openalex.org':
             return httpx.Response(200,json={'results':[]})
+        if r.url.host=='arxiv.org':
+            return httpx.Response(200,text='<html><form></form></html>')
         start=int(r.url.params.get('start',0));starts.append(start)
         return httpx.Response(200,json={'organic_results':[entry('A','2')] if start==0 else [entry('A','2'),entry('B','3')],
             'pagination':{'next':'unused-url'} if start==0 else {}})
@@ -72,3 +77,38 @@ async def test_pagination_and_request_cache(monkeypatch):
         assert len(rows)==2 and not limited
         await p.neighbors(seed,'citing',10)
         assert starts==[0,20]
+
+
+async def test_truncated_scholar_abstract_is_enriched_from_arxiv(monkeypatch):
+    monkeypatch.setenv('SERPAPI_API_KEY', 'test-key')
+    title = 'ThermoDSE: A Thermal-Aware Design Space Exploration'
+    html = f'''<li class="arxiv-result"><p class="title">{title}</p>
+        <span class="abstract-full">This is the complete abstract with all conclusions. △ Less</span></li>'''
+    class EmptyOpenAlex:
+        async def search_title(self, value):
+            return []
+    async with httpx.AsyncClient(transport=httpx.MockTransport(
+            lambda request: httpx.Response(200, text=html))) as http:
+        provider = ScholarProvider(http, EmptyOpenAlex(), backend='serpapi')
+        paper = await provider.paper({'title': title, 'result_id': '1',
+                                      'snippet': 'This is truncated …'})
+    assert paper.abstract == 'This is the complete abstract with all conclusions.'
+    assert any('Abstract enriched via arxiv' in warning for warning in provider.warnings)
+
+
+async def test_truncated_scholar_abstract_is_enriched_by_doi_fallback(monkeypatch):
+    monkeypatch.setenv('SERPAPI_API_KEY', 'test-key')
+    title = 'A DOI Paper'
+    class DoiOpenAlex:
+        async def search_title(self, value):
+            return [Paper(id='W1', openalex_id='W1', doi='10.1000/example', title=title,
+                          abstract='Truncated …')]
+    def handler(request):
+        if request.url.host == 'arxiv.org':
+            return httpx.Response(200, text='<html><form></form></html>')
+        return httpx.Response(200, json={'title': title, 'abstract': 'Complete DOI abstract.'})
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
+        provider = ScholarProvider(http, DoiOpenAlex(), backend='serpapi')
+        paper = await provider.paper({'title': title, 'result_id': '1', 'snippet': 'Snippet …'})
+    assert paper.abstract == 'Complete DOI abstract.'
+    assert any('semantic_scholar_doi' in warning for warning in provider.warnings)

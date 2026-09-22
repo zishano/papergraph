@@ -206,6 +206,7 @@ async def run(args: argparse.Namespace) -> dict:
             if getattr(args, 'excel', None):
                 progress("正在生成 Excel")
                 await write_excel_async(graph, args.excel, args.keywords, analysis=analysis)
+                progress(f"Excel 已写入：{args.excel}")
             return graph.model_dump() | {'source': scholar.source, 'analysis': analysis,
                 'requests': {'scholar': scholar.requests, 'openalex': provider.requests}}
         if getattr(args, 'scholar_list', None):

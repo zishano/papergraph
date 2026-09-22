@@ -7,9 +7,11 @@ import time
 import csv
 import hashlib
 import os
+import re
 from pathlib import Path
 
 import httpx
+from bs4 import BeautifulSoup
 
 from papergraph.models import Paper
 from papergraph.retrieval.scholar_web import parse_scholar_html
@@ -148,10 +150,69 @@ class ScholarProvider:
         except (ValueError, RetrievalError) as e:
             self.warnings.append(f'OpenAlex enrichment failed: {identifier} ({str(e)}); Scholar member retained with basic metadata')
 
+        if self._abstract_incomplete(paper.abstract):
+            try:
+                complete_abstract, abstract_source = await self._complete_abstract(paper)
+                if complete_abstract and len(complete_abstract) > len(paper.abstract or ''):
+                    paper = paper.model_copy(update={'abstract': complete_abstract})
+                    self.warnings.append(
+                        f'Abstract enriched via {abstract_source}: {identifier}')
+            except (httpx.HTTPError, ValueError):
+                self.warnings.append(
+                    f'Full abstract unavailable: {identifier}; truncated Scholar snippet retained')
+
         self.aliases[identifier] = identifier
         # Cache the paper for deduplication
         self.cache[identifier] = paper
         return paper
+
+    @staticmethod
+    def _abstract_incomplete(abstract):
+        if not abstract or not abstract.strip():
+            return True
+        return abstract.rstrip().endswith(('...', '…'))
+
+    async def _complete_abstract(self, paper):
+        """Enrich metadata only; Scholar remains authoritative for graph membership."""
+        try:
+            response = await self.http.get('https://arxiv.org/search/', params={
+                'query': paper.title,
+                'searchtype': 'title',
+                'abstracts': 'show',
+                'order': '-announced_date_first',
+                'size': 25,
+            }, follow_redirects=True, headers={
+                'User-Agent': 'Mozilla/5.0 (compatible; PaperGraph/0.1; metadata-enrichment)',
+                'Accept': 'text/html,application/xhtml+xml',
+            })
+            response.raise_for_status()
+            html = BeautifulSoup(response.text, 'html.parser')
+            target = normalize_title(paper.title).replace(' ', '')
+            for item in html.select('li.arxiv-result'):
+                title_node = item.select_one('p.title')
+                abstract_node = item.select_one('span.abstract-full')
+                if not title_node or not abstract_node:
+                    continue
+                candidate = normalize_title(title_node.get_text(' ', strip=True)).replace(' ', '')
+                if candidate == target:
+                    abstract = abstract_node.get_text(' ', strip=True)
+                    abstract = re.sub(r'\s*(?:△\s*Less|▽\s*More)\s*$', '', abstract).strip()
+                    if abstract:
+                        return abstract, 'arxiv'
+        except httpx.HTTPError:
+            pass
+
+        if paper.doi:
+            response = await self.http.get(
+                f'https://api.semanticscholar.org/graph/v1/paper/DOI:{paper.doi}',
+                params={'fields': 'title,abstract'},
+            )
+            response.raise_for_status()
+            data = response.json()
+            abstract = str(data.get('abstract') or '').strip()
+            if abstract:
+                return abstract, 'semantic_scholar_doi'
+        return None, None
 
     async def _get_cached_paper(self, identifier):
         """Retrieve cached paper by identifier."""
