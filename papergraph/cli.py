@@ -1,8 +1,10 @@
 import os
 import argparse
 import asyncio
+import json
 import sys
 import unicodedata
+from pathlib import Path
 
 import httpx
 
@@ -23,9 +25,11 @@ def parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(description="PaperGraph M1/M2 metadata discovery")
     commands = root.add_subparsers(dest="command", required=True)
     resolve = commands.add_parser("resolve", help="Resolve DOI/arXiv/OpenAlex IDs or exact titles")
-    resolve.add_argument("--seed", action="append", required=True)
+    resolve.add_argument("--config", help="JSON 参数配置文件")
+    resolve.add_argument("--seed", action="append")
     search = commands.add_parser("search", help="Build a bounded citation graph (M2)")
-    search.add_argument("--seed", action="append", required=True)
+    search.add_argument("--config", help="JSON 参数配置文件")
+    search.add_argument("--seed", action="append")
     search.add_argument(
         "--source",
         choices=["openalex", "scholar"],
@@ -54,11 +58,12 @@ def parser() -> argparse.ArgumentParser:
     search.add_argument("--gemini-model", default=os.getenv("PAPERGRAPH_GEMINI_MODEL", "auto"),
                         help="Gemini model name, or auto for free-model fallback rotation")
     verify = commands.add_parser("verify", help="Verify supplied arXiv candidates against seed bibliographies")
-    verify.add_argument("--graph", required=True, help="Existing citing graph JSON")
+    verify.add_argument("--config", help="JSON 参数配置文件")
+    verify.add_argument("--graph", help="Existing citing graph JSON")
     verify.add_argument("--candidate-arxiv", action="append", default=[])
     verify.add_argument("--candidates-csv", help="UTF-8 CSV with arxiv_id,source columns; e.g. Scholar candidates")
-    verify.add_argument("--output", required=True, help="Supplemented graph JSON, including verification audit")
-    verify.add_argument("--excel", required=True)
+    verify.add_argument("--output", help="Supplemented graph JSON, including verification audit")
+    verify.add_argument("--excel")
     verify.add_argument("--keywords", default="")
     verify.add_argument("--gemini", action=argparse.BooleanOptionalAction, default=True)
     verify.add_argument("--gemini-model", default=os.getenv("PAPERGRAPH_GEMINI_MODEL", "auto"))
@@ -71,11 +76,42 @@ def clean_cli_args(arguments: list[str]) -> list[str]:
             for value in arguments]
 
 
+def apply_json_config(args: argparse.Namespace) -> argparse.Namespace:
+    config_path = getattr(args, "config", None)
+    if not config_path:
+        return args
+    path = Path(config_path)
+    try:
+        values = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Cannot read JSON config {path}: {exc}") from None
+    if not isinstance(values, dict):
+        raise ValueError("JSON config must contain an object")
+    if values.get("command") and values["command"] != args.command:
+        raise ValueError(f"JSON config command must be {args.command!r}")
+    values.pop("command", None)
+    values.pop("config", None)
+    known = {action.dest for action in parser()._subparsers._group_actions[0].choices[args.command]._actions}
+    unknown = sorted(set(values) - known)
+    if unknown:
+        raise ValueError(f"Unknown {args.command} config fields: {', '.join(unknown)}")
+    for key, value in values.items():
+        setattr(args, key, value)
+    if isinstance(getattr(args, "seed", None), str):
+        args.seed = [args.seed]
+    return args
+
+
 async def run(args: argparse.Namespace) -> dict:
+    args = apply_json_config(args)
     if args.command == "verify":
         import csv
         import json
         from pathlib import Path
+        if not args.graph or not args.output or not args.excel:
+            raise ValueError("verify requires graph, output and excel in --config or command line")
+        if isinstance(getattr(args, "candidate_arxiv", None), str):
+            args.candidate_arxiv = [args.candidate_arxiv]
         data = json.loads(Path(args.graph).read_text())
         graph = CitationGraph.model_validate(data)
         candidates = [{"arxiv_id": aid, "source": "explicit_candidate"} for aid in args.candidate_arxiv]
@@ -104,10 +140,20 @@ async def run(args: argparse.Namespace) -> dict:
             await write_excel_async(graph, args.excel, args.keywords,
                                     result['verification'], analysis, translator)
         return result
+    if args.command == "resolve" and not args.seed:
+        raise ValueError("resolve requires seed in --config or command line")
+    if args.command == "resolve":
+        async with httpx.AsyncClient(timeout=30) as http:
+            provider = OpenAlexClient(http)
+            papers = await SeedResolver(provider).resolve_many(args.seed)
+        return {"papers": [p.model_dump() for p in papers],
+                "requests": {"openalex": provider.requests}}
     config = None
     if args.command == "search":
+        if not args.seed:
+            raise ValueError("search requires seed in --config or command line")
         config = CrawlConfig(**{k: v for k, v in vars(args).items() if k not in {
-            "command", "seed", "excel", "keywords", "source", "scholar_list",
+            "command", "config", "seed", "excel", "keywords", "source", "scholar_list",
             "scholar_backend", "proxy", "arxiv_auto_verify", "arxiv_max_candidates",
             "gemini", "gemini_model",
         }})

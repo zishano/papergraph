@@ -4,7 +4,7 @@ import sys
 
 import pytest
 
-from papergraph.cli import clean_cli_args, run
+from papergraph.cli import apply_json_config, clean_cli_args, parser, run
 
 
 def test_cli_help_and_invalid_bounds():
@@ -22,6 +22,16 @@ def test_cli_removes_zero_width_copy_paste_characters():
     hidden = "\u200b--source"
     assert clean_cli_args([hidden, "scholar", "\u2060--keywords"])[0] == "--source"
     assert clean_cli_args([hidden, "scholar", "\u2060--keywords"])[2] == "--keywords"
+
+
+def test_json_config_supplies_search_arguments(tmp_path):
+    path = tmp_path / "search.json"
+    path.write_text('{"seed": ["W1"], "depth": 1, "keywords": "DSE"}', encoding="utf-8")
+    args = parser().parse_args(["search", "--config", str(path)])
+    args = apply_json_config(args)
+    assert args.seed == ["W1"]
+    assert args.depth == 1
+    assert args.keywords == "DSE"
 
 
 async def test_cli_invalid_config_precedes_network(monkeypatch):

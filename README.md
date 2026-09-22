@@ -1,6 +1,6 @@
 # PaperGraph
 
-PaperGraph 是一个终端工具，用于解析论文身份并构建有限深度的引用图。当前默认用 **OpenAlex 自动查找引用目标论文的后续论文**；指定关键词后，还会 **自动搜索 arXiv 候选并核验原文参考文献**。关键词同时用于 Excel 辅助标注，但不会筛掉 OpenAlex 结果。
+PaperGraph 是一个终端工具，用于解析论文身份并构建有限深度的引用图。当前默认用 **OpenAlex 自动查找引用目标论文的后续论文**；指定关键词后，还会 **自动搜索 arXiv 候选并核验原文参考文献**。关键词同时用于 Excel 辅助标注，但不会筛掉 OpenAlex 结果。命令参数可以集中写入 JSON，终端只需指定配置文件路径。
 
 Excel 输出还可使用 Google AI Studio 免费额度中的 Gemini Flash 模型生成中文摘要总结和 0–100 分评分。调用方式和四维评分规则参考本地 `daily-papers` 项目。论文摘要会自动翻译为中英文双语显示。
 
@@ -31,6 +31,14 @@ papergraph search \
   --excel outputs/LLMShare.xlsx \
   > outputs/LLMShare.json
 ```
+
+推荐使用 JSON 配置运行，命令只保留配置文件路径：
+
+```bash
+papergraph search --config configs/llmshare.json > outputs/LLMShare.json
+```
+
+示例配置见 [configs/llmshare.json](configs/llmshare.json) 和 [configs/verify-example.json](configs/verify-example.json)。JSON 中的 `proxy: null` 表示使用 `.env` 或系统代理；API Key 仍只放在 `.env`，不放进 JSON。
 
 `citing` 的含义是：
 
@@ -94,6 +102,8 @@ nano .env                 # 也可以直接用 VS Code 编辑
 | `PAPERGRAPH_PROXY`        |               否 | 本地 VPN 的 HTTP/mixed 代理，例如`http://127.0.0.1:7890`                  |
 | `PAPERGRAPH_GEMINI_MODEL` |               否 | 默认`auto`；也可填写明确的 Gemini 模型名                                  |
 
+`auto` 当前按以下顺序尝试模型：`gemini-3.6-flash`、`gemini-3.7-flash`、`gemini-3.8-flash`、`gemini-3.5-flash-lite`、`gemini-flash-lite-latest`。也可以填写 Google AI Studio 返回的其他 `generateContent` 模型名。
+
 安全与优先级：
 
 - `.env` 已被 `.gitignore` 排除；`.env.example` 只保存空模板，可以提交。
@@ -132,7 +142,8 @@ nano .env                 # 也可以直接用 VS Code 编辑
 
 | 参数               | 必填 | 默认值 | 说明                                                                |
 | ------------------ | ---: | ------ | ------------------------------------------------------------------- |
-| `--seed VALUE`   |   是 | 无     | DOI、arXiv ID、OpenAlex ID 或完整标题；可重复，用于一次解析多篇论文 |
+| `--config FILE.json` | 否 | 无 | 从 JSON 读取本命令的全部参数；使用配置文件时可省略其他命令行参数 |
+| `--seed VALUE`   | 条件必填 | 无     | DOI、arXiv ID、OpenAlex ID 或完整标题；可重复，用于一次解析多篇论文 |
 | `-h`, `--help` |   否 | 无     | 显示帮助并退出                                                      |
 
 示例：
@@ -149,7 +160,8 @@ papergraph resolve \
 
 | 参数                                     | 必填 | 默认值       | 说明                                                                                   |
 | ---------------------------------------- | ---: | ------------ | -------------------------------------------------------------------------------------- |
-| `--seed VALUE`                         |   是 | 无           | 种子论文；支持 DOI、arXiv ID、OpenAlex ID 或完整标题；可重复                           |
+| `--config FILE.json`                  | 否 | 无 | 从 JSON 读取本命令的全部参数；使用配置文件时可省略其他命令行参数 |
+| `--seed VALUE`                         | 条件必填 | 无           | 种子论文；支持 DOI、arXiv ID、OpenAlex ID 或完整标题；可重复                           |
 | `--source {openalex,scholar}`          |   否 | `openalex` | 引用成员的数据来源；Scholar 为可选来源                                                 |
 | `--proxy URL`                          |   否 | 环境变量     | 本次运行使用的 HTTP/HTTPS 代理，如`http://127.0.0.1:7890`                            |
 | `--scholar-backend {web,serpapi}`      |   否 | `web`      | Scholar 使用直接网页或 SerpApi；仅在`--source scholar` 时生效                        |
@@ -208,11 +220,12 @@ papergraph search \
 
 | 参数                          |     必填 | 默认值   | 说明                                                   |
 | ----------------------------- | -------: | -------- | ------------------------------------------------------ |
-| `--graph FILE.json`         |       是 | 无       | 已存在的`citing` 图 JSON                             |
+| `--config FILE.json`        |       否 | 无       | 从 JSON 读取本命令的全部参数                           |
+| `--graph FILE.json`         | 条件必填 | 无       | 已存在的`citing` 图 JSON                             |
 | `--candidate-arxiv ID`      | 条件必填 | 无       | 单个候选 arXiv ID；可重复                              |
 | `--candidates-csv FILE.csv` | 条件必填 | 无       | UTF-8 CSV，必须包含`arxiv_id` 列，可选 `source` 列 |
-| `--output FILE.json`        |       是 | 无       | 写入补充后的图和核验审计记录                           |
-| `--excel FILE.xlsx`         |       是 | 无       | 写入补充后的 Excel；必须以`.xlsx` 结尾               |
+| `--output FILE.json`        | 条件必填 | 无       | 写入补充后的图和核验审计记录                           |
+| `--excel FILE.xlsx`         | 条件必填 | 无       | 写入补充后的 Excel；必须以`.xlsx` 结尾               |
 | `--keywords TEXT`           |       否 | 空       | Excel 中使用的辅助关键词标记                           |
 | `--gemini`                  |       否 | 启用     | 重新为图中的论文生成 Gemini 中文总结和评分             |
 | `--no-gemini`               |       否 | 无       | 关闭 Gemini 分析                                       |
@@ -220,6 +233,13 @@ papergraph search \
 | `-h`, `--help`            |       否 | 无       | 显示帮助并退出                                         |
 
 `--candidate-arxiv` 和 `--candidates-csv` 至少提供一种，也可以同时使用；重复 arXiv ID 会自动去重。
+
+配置文件字段使用 argparse 参数名去掉连字符后的形式，例如 `--arxiv-max-candidates` 对应 `arxiv_max_candidates`。配置中的值会覆盖命令行默认值，推荐使用：
+
+```bash
+papergraph search --config configs/llmshare.json > outputs/LLMShare.json
+papergraph verify --config configs/verify-example.json
+```
 
 ### 解析论文与选择搜索方向
 
@@ -352,7 +372,7 @@ Scholar 网页返回 CAPTCHA/429 时，程序会明确报错，不绕过访问�
 
 - JSON 包含种子、论文节点、引用边、发现路径和运行参数。
 - JSON 的 `analysis` 数组保存 Gemini 状态、模型、摘要总结、评分和评分理由。
-- Excel 的“论文列表”只展示论文标题、年份、与种子关系（含最小 Hop）、原始摘要、辅助关键词命中、作者、Gemini 摘要总结、Gemini 评分和评分理由。
+- Excel 的“论文列表”只展示论文标题、年份、与种子关系（含最小 Hop）、英文摘要、中文翻译、辅助关键词命中、作者、Gemini 摘要总结、Gemini 评分和评分理由；英文摘要和中文翻译列宽均为 240。
 - Excel 的 `add` 工作表保存论文 ID、OpenAlex/arXiv ID、DOI、链接、期刊会议、被引次数、PDF、来源种子、父节点以及 Gemini 调用状态和模型。
 - “种子论文”“发现路径”“引用边”“说明”继续保存可追溯信息；arXiv 核验结果另有“补充核验”。
 - `--keywords` 用于 arXiv 候选发现和 Excel 标记。例如 `DSE` 会扩展为完整短语；它不从 OpenAlex 图中删除未命中的论文。

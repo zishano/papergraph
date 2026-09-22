@@ -97,13 +97,11 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
         hit_text = ", ".join(hits) if hits else ("未命中（不排除）" if terms else "未指定关键词")
         ai = analysis_by_id.get(n.id, {})
 
-        # Combine English and Chinese abstracts
         abstract_en = n.abstract or ""
         abstract_zh = translated_abstracts[idx] if idx < len(translated_abstracts) else ""
-        combined_abstract = f"{abstract_en}\n\n【中文翻译】\n{abstract_zh}" if abstract_zh else abstract_en
 
-        rows.append([n.title, n.year, f"{relation}（Hop {n.hop}）", combined_abstract,
-                     hit_text, "; ".join(n.authors), ai.get("summary", ""),
+        rows.append([n.title, n.year, f"{relation}（Hop {n.hop}）", abstract_en,
+                     abstract_zh, hit_text, "; ".join(n.authors), ai.get("summary", ""),
                      ai.get("score"), ai.get("reason", "")])
         add_rows.append([
             n.id, n.openalex_id, n.arxiv_id, n.doi,
@@ -112,10 +110,10 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
             n.hop, "; ".join(n.seed_ids), "; ".join(n.parent_ids),
             ai.get("status", "未启用"), ai.get("model"),
         ])
-    sheet("论文列表", ["论文标题", "年份", "与种子关系（最小Hop）", "摘要", "辅助关键词命中", "作者",
-                        "Gemini 摘要总结", "Gemini 评分", "Gemini 评分理由"],
-          rows, [68, 12, 25, 120, 22, 38, 60, 16, 55],
-          [28, 10, 20, 55, 16, 22, 28, 14, 25])
+    sheet("论文列表", ["论文标题", "年份", "与种子关系（最小Hop）", "摘要", "摘要中文翻译",
+                        "辅助关键词命中", "作者", "Gemini 摘要总结", "Gemini 评分", "Gemini 评分理由"],
+          rows, [68, 12, 25, 240, 240, 22, 38, 60, 16, 55],
+          [28, 10, 20, 80, 80, 16, 22, 28, 14, 25])
     sheet("add", ["论文ID", "OpenAlex ID", "arXiv ID", "DOI", "论文链接", "期刊/会议",
                   "被引次数", "PDF链接", "摘要状态", "最小Hop", "来源种子", "父节点",
                   "Gemini 状态", "Gemini 模型"],

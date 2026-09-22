@@ -1,0 +1,10 @@
+{
+  "graph": "outputs/LLMShare.json",
+  "candidate_arxiv": ["2607.07096"],
+  "candidates_csv": null,
+  "output": "outputs/LLMShare-verified.json",
+  "excel": "outputs/LLMShare-verified.xlsx",
+  "keywords": "DSE",
+  "gemini": true,
+  "gemini_model": "auto"
+}
