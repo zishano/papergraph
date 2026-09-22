@@ -1,0 +1,222 @@
+{
+  "config": {
+    "depth": 1,
+    "direction": "citing",
+    "max_papers": 1000,
+    "max_papers_per_hop": 1000,
+    "max_neighbors": 1000,
+    "max_paths_per_pair": 100
+  },
+  "seed_ids": [
+    "scholar:seed-ae85de3f4ea84e2b"
+  ],
+  "nodes": [
+    {
+      "id": "scholar:W4416429485",
+      "openalex_id": "W4416429485",
+      "doi": "10.1109/iccad66269.2025.11240867",
+      "arxiv_id": null,
+      "title": "AccelStack: A Cost-Driven Analysis of 3D-Stacked LLM Accelerators",
+      "authors": [
+        "Chen Bai",
+        "Xin Fan",
+        "Zhenhua Zhu",
+        "Wei Zhang",
+        "Yuan Xie"
+      ],
+      "year": 2025,
+      "venue": null,
+      "abstract": "Large language models (LLMs) show viability for artificial general intelligence (AGI) with high computing power and memory bandwidth demands. While existing LLM accelerators leverage high-bandwidth memory (HBM) and 2.5D packaging to address the challenge, emerging hybrid bonding techniques unlock new opportunities for 3D-stacked LLM accelerators. This paper proposes AccelStack, a cost-driven analysis for the new architecture via two innovations. First, a performance model capturing memory-on-logic is presented. Second, a cost model for die-on-die (DoD), die-on-wafer (DoW), and wafer-on-wafer (WoW) is proposed. Evaluations show 3D-stacked accelerators achieve up to 7.17× and 2.09× faster inference than NVIDIA A100 (FP16) and H100 (FP8) simulation results across various LLM workloads, with chiplet-based designs reducing recurring engineering costs by 38.09% versus monolithic implementations.",
+      "cited_by_count": 3,
+      "pdf_url": null,
+      "referenced_works": [],
+      "hop": 1,
+      "seed_ids": [
+        "scholar:seed-ae85de3f4ea84e2b"
+      ],
+      "parent_ids": [
+        "scholar:seed-ae85de3f4ea84e2b"
+      ]
+    },
+    {
+      "id": "scholar:W7163575291",
+      "openalex_id": "W7163575291",
+      "doi": "10.23919/date69613.2026.11539481",
+      "arxiv_id": null,
+      "title": "FlashGEMM: Mesh-Aware Efficient GEMM for 3D-Stacked LLM Accelerators",
+      "authors": [
+        "Xin Fan",
+        "Chen Bai",
+        "Xin Yang",
+        "Zhenhua Zhu",
+        "Yue Wang",
+        "Zhaode Zhang",
+        "Yuan Xie"
+      ],
+      "year": 2026,
+      "venue": null,
+      "abstract": "Large language models (LLMs) are foundational to artificial general intelligence (AGI), while imposing stringent hardware demands in computational power and memory bandwidth. To meet these demands, recent advances in hybrid bonding offer new opportunities through high-bandwidth, low-latency logic-memory 3D integration. Due to the spatial distribution of bandwidth in 3D-stacked DRAM, accesses to remote DRAM banks need to traverse the network-on-chip (NoC). Since GEMM is the dominant operator in LLM workloads, we analyze existing distributed GEMM algorithms and show that they suffer from communication inefficiency on mesh topologies. To address these challenges, we present FlashGEMM, a mesh-aware distributed GEMM algorithm that achieves efficient communication-computation overlap and optimized execution flow for 3D-stacked LLM accelerators. Evaluations show that FlashGEMM delivers up to 1.50× improvement in time-to-first-token (TTFT) and 7.11× improvement in throughput over prior methods.",
+      "cited_by_count": 0,
+      "pdf_url": null,
+      "referenced_works": [],
+      "hop": 1,
+      "seed_ids": [
+        "scholar:seed-ae85de3f4ea84e2b"
+      ],
+      "parent_ids": [
+        "scholar:seed-ae85de3f4ea84e2b"
+      ]
+    },
+    {
+      "id": "scholar:W7167828524",
+      "openalex_id": "W7167828524",
+      "doi": "10.48550/arxiv.2607.07096",
+      "arxiv_id": "2607.07096",
+      "title": "ThermoDSE: A Thermal-Aware and Comprehensive Design Space Exploration for Chiplet-Based DNN Accelerators",
+      "authors": [
+        "Jie Peng",
+        "Hanwei Fan",
+        "J Jiang",
+        "Lu Jiang",
+        "Wei Zhang"
+      ],
+      "year": 2026,
+      "venue": "arXiv (Cornell University)",
+      "abstract": "Chiplet-based DNN accelerators provide a scalable path to balance performance and yield for modern AI workloads. However, such systems face critical challenges in area and thermal constraints. Design space optimization should jointly consider fine-grained task modeling, chiplet granularity, core granularity, and critical physical constraints. To the best of our knowledge, this is the first framework that involves all these factors. In this work, we propose ThermoDSE, a thermal-aware and comprehensive design space exploration framework for chiplet-based DNN accelerators. ThermoDSE integrates existing fine-grained modeling techniques into a unified simulation and optimization framework that jointly considers architecture design, task orchestration, and inter-chiplet communication under strict thermal and area constraints. Experimental results show that ThermoDSE achieves up to 3.5x improvement in Energy-Delay-Inverse-Yield, defined as E times D times inverse Y, compared with state-of-the-art Simba and other baselines. Furthermore, relative to simulated annealing and reinforcement learning-based methods, ThermoDSE converges to better design points with 3.7x and 29.4x runtime speedups, respectively.",
+      "cited_by_count": 0,
+      "pdf_url": null,
+      "referenced_works": [],
+      "hop": 1,
+      "seed_ids": [
+        "scholar:seed-ae85de3f4ea84e2b"
+      ],
+      "parent_ids": [
+        "scholar:seed-ae85de3f4ea84e2b"
+      ]
+    },
+    {
+      "id": "scholar:seed-ae85de3f4ea84e2b",
+      "openalex_id": null,
+      "doi": null,
+      "arxiv_id": null,
+      "title": "LLMShare: Optimizing LLM Inference Serving with Hardware Architecture Exploration",
+      "authors": [],
+      "year": null,
+      "venue": null,
+      "abstract": null,
+      "cited_by_count": 0,
+      "pdf_url": null,
+      "referenced_works": [],
+      "hop": 0,
+      "seed_ids": [
+        "scholar:seed-ae85de3f4ea84e2b"
+      ],
+      "parent_ids": []
+    }
+  ],
+  "edges": [
+    {
+      "source_id": "scholar:W4416429485",
+      "target_id": "scholar:seed-ae85de3f4ea84e2b",
+      "relation": "cites",
+      "provider": "google_scholar_user_list"
+    },
+    {
+      "source_id": "scholar:W7163575291",
+      "target_id": "scholar:seed-ae85de3f4ea84e2b",
+      "relation": "cites",
+      "provider": "google_scholar_user_list"
+    },
+    {
+      "source_id": "scholar:W7167828524",
+      "target_id": "scholar:seed-ae85de3f4ea84e2b",
+      "relation": "cites",
+      "provider": "google_scholar_user_list"
+    }
+  ],
+  "paths": [
+    {
+      "seed_id": "scholar:seed-ae85de3f4ea84e2b",
+      "paper_id": "scholar:seed-ae85de3f4ea84e2b",
+      "path": [
+        "scholar:seed-ae85de3f4ea84e2b"
+      ],
+      "hop": 0
+    },
+    {
+      "seed_id": "scholar:seed-ae85de3f4ea84e2b",
+      "paper_id": "scholar:W4416429485",
+      "path": [
+        "scholar:seed-ae85de3f4ea84e2b",
+        "scholar:W4416429485"
+      ],
+      "hop": 1
+    },
+    {
+      "seed_id": "scholar:seed-ae85de3f4ea84e2b",
+      "paper_id": "scholar:W7163575291",
+      "path": [
+        "scholar:seed-ae85de3f4ea84e2b",
+        "scholar:W7163575291"
+      ],
+      "hop": 1
+    },
+    {
+      "seed_id": "scholar:seed-ae85de3f4ea84e2b",
+      "paper_id": "scholar:W7167828524",
+      "path": [
+        "scholar:seed-ae85de3f4ea84e2b",
+        "scholar:W7167828524"
+      ],
+      "hop": 1
+    }
+  ],
+  "seed_relations": [
+    {
+      "seed_id": "scholar:seed-ae85de3f4ea84e2b",
+      "paper_id": "scholar:seed-ae85de3f4ea84e2b",
+      "min_hop": 0,
+      "parent_ids": [],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "scholar:seed-ae85de3f4ea84e2b",
+      "paper_id": "scholar:W4416429485",
+      "min_hop": 1,
+      "parent_ids": [
+        "scholar:seed-ae85de3f4ea84e2b"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "scholar:seed-ae85de3f4ea84e2b",
+      "paper_id": "scholar:W7163575291",
+      "min_hop": 1,
+      "parent_ids": [
+        "scholar:seed-ae85de3f4ea84e2b"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "scholar:seed-ae85de3f4ea84e2b",
+      "paper_id": "scholar:W7167828524",
+      "min_hop": 1,
+      "parent_ids": [
+        "scholar:seed-ae85de3f4ea84e2b"
+      ],
+      "paths_truncated": false
+    }
+  ],
+  "truncated": false,
+  "truncation_reasons": [],
+  "warnings": [
+    "OpenAlex enrichment failed: scholar:seed-ae85de3f4ea84e2b; Scholar member retained",
+    "Membership authority: Google Scholar. Imported lists are user-supplied snapshots, not live retrieval."
+  ],
+  "openalex_requests": 4,
+  "source": "google_scholar_user_list",
+  "requests": {
+    "scholar": 0,
+    "openalex": 4
+  }
+}

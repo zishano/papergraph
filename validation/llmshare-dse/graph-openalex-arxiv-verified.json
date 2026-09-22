@@ -1,0 +1,460 @@
+{
+  "config": {
+    "depth": 2,
+    "direction": "citing",
+    "max_papers": 200,
+    "max_papers_per_hop": 150,
+    "max_neighbors": 25,
+    "max_paths_per_pair": 100
+  },
+  "seed_ids": [
+    "W4414197293"
+  ],
+  "nodes": [
+    {
+      "id": "W4414197293",
+      "openalex_id": "W4414197293",
+      "doi": "10.1109/dac63849.2025.11132534",
+      "arxiv_id": null,
+      "title": "LLMShare: Optimizing LLM Inference Serving with Hardware Architecture Exploration",
+      "authors": [
+        "Hongduo Liu",
+        "Chen Bai",
+        "Peng Xu",
+        "Lihao Yin",
+        "X. D. Yu",
+        "Hui‐Ling Zhen",
+        "Mingxuan Yuan",
+        "Tsung-Yi Ho",
+        "Yu Bei"
+      ],
+      "year": 2025,
+      "venue": null,
+      "abstract": "Large Language Models (LLMs) have revolutionized language tasks but pose significant deployment challenges due to their substantial computational demands during inference. The hardware configurations of existing LLM serving systems do not optimize for the different computational and bandwidth needs of the prefill and decoding phases in LLM inference, leading to inefficient resource use and increased costs. In this paper, we systematically investigate promising hardware configurations for LLM inference serving. We develop a simulator that models the performance and cost across different hardware solutions and introduce a customized design space exploration framework to identify optimal setups efficiently. By aligning hardware capabilities with the specific demands of the prefill and decoding phases, we achieve $13 \\%$ cost savings and over $4 \\times$ throughput improvements compared to conventional serving system setups.",
+      "cited_by_count": 2,
+      "pdf_url": null,
+      "referenced_works": [
+        "W2098907614",
+        "W2114188922",
+        "W2138209363",
+        "W2154327203",
+        "W2270330859",
+        "W2403021642",
+        "W3013899498",
+        "W3127736057",
+        "W4200520905",
+        "W4221000689",
+        "W4226441354",
+        "W4385245566",
+        "W4387321091",
+        "W4401211642",
+        "W4401211704",
+        "W4407217670",
+        "W4409306177"
+      ],
+      "hop": 0,
+      "seed_ids": [
+        "W4414197293"
+      ],
+      "parent_ids": []
+    },
+    {
+      "id": "W4416429485",
+      "openalex_id": "W4416429485",
+      "doi": "10.1109/iccad66269.2025.11240867",
+      "arxiv_id": null,
+      "title": "AccelStack: A Cost-Driven Analysis of 3D-Stacked LLM Accelerators",
+      "authors": [
+        "Chen Bai",
+        "Xin Fan",
+        "Zhenhua Zhu",
+        "Wei Zhang",
+        "Yuan Xie"
+      ],
+      "year": 2025,
+      "venue": null,
+      "abstract": "Large language models (LLMs) show viability for artificial general intelligence (AGI) with high computing power and memory bandwidth demands. While existing LLM accelerators leverage high-bandwidth memory (HBM) and 2.5D packaging to address the challenge, emerging hybrid bonding techniques unlock new opportunities for 3D-stacked LLM accelerators. This paper proposes AccelStack, a cost-driven analysis for the new architecture via two innovations. First, a performance model capturing memory-on-logic is presented. Second, a cost model for die-on-die (DoD), die-on-wafer (DoW), and wafer-on-wafer (WoW) is proposed. Evaluations show 3D-stacked accelerators achieve up to 7.17× and 2.09× faster inference than NVIDIA A100 (FP16) and H100 (FP8) simulation results across various LLM workloads, with chiplet-based designs reducing recurring engineering costs by 38.09% versus monolithic implementations.",
+      "cited_by_count": 3,
+      "pdf_url": null,
+      "referenced_works": [
+        "W2042120213",
+        "W2162009815",
+        "W2518432791",
+        "W2532719504",
+        "W2970073801",
+        "W3130554079",
+        "W3157657667",
+        "W3166510811",
+        "W3188178661",
+        "W3192636176",
+        "W4206364646",
+        "W4220769636",
+        "W4220972538",
+        "W4283076324",
+        "W4285047926",
+        "W4293023438",
+        "W4324292875",
+        "W4376130831",
+        "W4380874786",
+        "W4385192563",
+        "W4388031315",
+        "W4388979610",
+        "W4394693961",
+        "W4401211711",
+        "W4407692602",
+        "W4407695247",
+        "W4411689103",
+        "W4414197293",
+        "W4414281281"
+      ],
+      "hop": 1,
+      "seed_ids": [
+        "W4414197293"
+      ],
+      "parent_ids": [
+        "W4414197293"
+      ]
+    },
+    {
+      "id": "W7163575291",
+      "openalex_id": "W7163575291",
+      "doi": "10.23919/date69613.2026.11539481",
+      "arxiv_id": null,
+      "title": "FlashGEMM: Mesh-Aware Efficient GEMM for 3D-Stacked LLM Accelerators",
+      "authors": [
+        "Xin Fan",
+        "Chen Bai",
+        "Xin Yang",
+        "Zhenhua Zhu",
+        "Yue Wang",
+        "Zhaode Zhang",
+        "Yuan Xie"
+      ],
+      "year": 2026,
+      "venue": null,
+      "abstract": "Large language models (LLMs) are foundational to artificial general intelligence (AGI), while imposing stringent hardware demands in computational power and memory bandwidth. To meet these demands, recent advances in hybrid bonding offer new opportunities through high-bandwidth, low-latency logic-memory 3D integration. Due to the spatial distribution of bandwidth in 3D-stacked DRAM, accesses to remote DRAM banks need to traverse the network-on-chip (NoC). Since GEMM is the dominant operator in LLM workloads, we analyze existing distributed GEMM algorithms and show that they suffer from communication inefficiency on mesh topologies. To address these challenges, we present FlashGEMM, a mesh-aware distributed GEMM algorithm that achieves efficient communication-computation overlap and optimized execution flow for 3D-stacked LLM accelerators. Evaluations show that FlashGEMM delivers up to 1.50× improvement in time-to-first-token (TTFT) and 7.11× improvement in throughput over prior methods.",
+      "cited_by_count": 0,
+      "pdf_url": null,
+      "referenced_works": [
+        "W2056999868",
+        "W2118231264",
+        "W2565436413",
+        "W2970073801",
+        "W3005962614",
+        "W3130554079",
+        "W3136346557",
+        "W3157657667",
+        "W3192636176",
+        "W4324292875",
+        "W4352977393",
+        "W4362566357",
+        "W4362714630",
+        "W4376130831",
+        "W4380874786",
+        "W4388031315",
+        "W4389518760",
+        "W4392746501",
+        "W4396712969",
+        "W4401211711",
+        "W4407692602",
+        "W4410583555",
+        "W4411471720",
+        "W4414197293",
+        "W4416429485"
+      ],
+      "hop": 1,
+      "seed_ids": [
+        "W4414197293"
+      ],
+      "parent_ids": [
+        "W4414197293"
+      ]
+    },
+    {
+      "id": "W7167828524",
+      "openalex_id": "W7167828524",
+      "doi": "10.48550/arxiv.2607.07096",
+      "arxiv_id": "2607.07096",
+      "title": "ThermoDSE: A Thermal-Aware and Comprehensive Design Space Exploration for Chiplet-Based DNN Accelerators",
+      "authors": [
+        "Jie Peng",
+        "Hanwei Fan",
+        "J Jiang",
+        "Lu Jiang",
+        "Wei Zhang"
+      ],
+      "year": 2026,
+      "venue": "arXiv (Cornell University)",
+      "abstract": "Chiplet-based DNN accelerators provide a scalable path to balance performance and yield for modern AI workloads. However, such systems face critical challenges in area and thermal constraints. Design space optimization should jointly consider fine-grained task modeling, chiplet granularity, core granularity, and critical physical constraints. To the best of our knowledge, this is the first framework that involves all these factors. In this work, we propose ThermoDSE, a thermal-aware and comprehensive design space exploration framework for chiplet-based DNN accelerators. ThermoDSE integrates existing fine-grained modeling techniques into a unified simulation and optimization framework that jointly considers architecture design, task orchestration, and inter-chiplet communication under strict thermal and area constraints. Experimental results show that ThermoDSE achieves up to 3.5x improvement in Energy-Delay-Inverse-Yield, defined as E times D times inverse Y, compared with state-of-the-art Simba and other baselines. Furthermore, relative to simulated annealing and reinforcement learning-based methods, ThermoDSE converges to better design points with 3.7x and 29.4x runtime speedups, respectively.",
+      "cited_by_count": 0,
+      "pdf_url": null,
+      "referenced_works": [],
+      "hop": 1,
+      "seed_ids": [
+        "W4414197293"
+      ],
+      "parent_ids": [
+        "W4414197293"
+      ]
+    },
+    {
+      "id": "W7165110164",
+      "openalex_id": "W7165110164",
+      "doi": "10.1145/3787109.3815290",
+      "arxiv_id": null,
+      "title": "MRAM-MoE: Efficient Inference of Mixture-of-Experts LLMs with MRAM Chiplet-based Accelerators",
+      "authors": [
+        "M Ashiqur Rahman",
+        "Md Asef",
+        "Mehdi Sadi"
+      ],
+      "year": 2026,
+      "venue": null,
+      "abstract": "Large language models (LLMs) require substantial compute and memory resources during inference, making memory bandwidth and capacity key bottlenecks. Mixture-of-Experts (MoE) architectures reduce computational cost through sparse expert activation but introduce challenges in storing and accessing large expert weights and Key–Value (KV) caches, demanding custom hardware accelerators for efficient inference. This work proposes MRAM-MOE, a MRAM chiplet-based architecture for accelerating MoE inference. The MRAM-MOE architecture uses variable retention banks of MRAM cells as stacked chiplets, as well as on-chip memory on SIMD compute dies. A comprehensive performance modeling framework analyzes the FLOPs, throughput, and latency of MoE operations across both prefill and decode phases for five representative models. Based on the analyzed latencies, the STT-MRAM thermal stability factor (Δ) is tuned to implement a multi-retention memory model optimized for MoE access patterns. Reliability, area, capacity, and read/write latency and energy are evaluated for the customized MRAM under process and temperature variations. Results illustrate a 66.7% reduction in dynamic power and 95.3% reduction in die area at 14 nm technology for the optimized STT-MRAM model (Δ = 27.3) compared to the conventional SRAM, while supporting two 1 GB stacked MRAM chiplets and two 70 MB on-chip MRAMs.",
+      "cited_by_count": 0,
+      "pdf_url": null,
+      "referenced_works": [
+        "W1975904824",
+        "W2042076387",
+        "W2112388836",
+        "W3005785620",
+        "W3196387322",
+        "W4249654426",
+        "W4280564961",
+        "W4388739149",
+        "W4393592481",
+        "W4399485941",
+        "W4402436905",
+        "W4406178148",
+        "W4408894550",
+        "W4414198165",
+        "W4414198920",
+        "W4414974080",
+        "W4416004263",
+        "W4416429485",
+        "W4416429515"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W4414197293"
+      ],
+      "parent_ids": [
+        "W4416429485"
+      ]
+    },
+    {
+      "id": "W7202128244",
+      "openalex_id": "W7202128244",
+      "doi": "10.1145/3816440.3818602",
+      "arxiv_id": null,
+      "title": "H3-Attn: Att entio n -Efficient 3D DRAM PNM Processor with H ybrid H ead Parallelism and H ierarchical SFU",
+      "authors": [
+        "Yaolei Li",
+        "Wenbin Jia",
+        "Zhanchen Zhao",
+        "Yongpan Liu"
+      ],
+      "year": 2026,
+      "venue": null,
+      "abstract": null,
+      "cited_by_count": 0,
+      "pdf_url": null,
+      "referenced_works": [
+        "W2588191434",
+        "W4220972538",
+        "W4236302577",
+        "W4386764151",
+        "W4392427708",
+        "W4410427551",
+        "W4411485931",
+        "W4414197279",
+        "W4415285670",
+        "W4416429485",
+        "W4416429515",
+        "W4416429769"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W4414197293"
+      ],
+      "parent_ids": [
+        "W4416429485"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source_id": "W4416429485",
+      "target_id": "W4414197293",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W7163575291",
+      "target_id": "W4414197293",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W7163575291",
+      "target_id": "W4416429485",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W7165110164",
+      "target_id": "W4416429485",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W7202128244",
+      "target_id": "W4416429485",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W7167828524",
+      "target_id": "W4414197293",
+      "relation": "cites",
+      "provider": "arxiv_html"
+    }
+  ],
+  "paths": [
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W4414197293",
+      "path": [
+        "W4414197293"
+      ],
+      "hop": 0
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W4416429485",
+      "path": [
+        "W4414197293",
+        "W4416429485"
+      ],
+      "hop": 1
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W7163575291",
+      "path": [
+        "W4414197293",
+        "W7163575291"
+      ],
+      "hop": 1
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W7167828524",
+      "path": [
+        "W4414197293",
+        "W7167828524"
+      ],
+      "hop": 1
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W7165110164",
+      "path": [
+        "W4414197293",
+        "W4416429485",
+        "W7165110164"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W7202128244",
+      "path": [
+        "W4414197293",
+        "W4416429485",
+        "W7202128244"
+      ],
+      "hop": 2
+    }
+  ],
+  "seed_relations": [
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W4414197293",
+      "min_hop": 0,
+      "parent_ids": [],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W4416429485",
+      "min_hop": 1,
+      "parent_ids": [
+        "W4414197293"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W7163575291",
+      "min_hop": 1,
+      "parent_ids": [
+        "W4414197293"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W7167828524",
+      "min_hop": 1,
+      "parent_ids": [
+        "W4414197293"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W7165110164",
+      "min_hop": 2,
+      "parent_ids": [
+        "W4416429485"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W7202128244",
+      "min_hop": 2,
+      "parent_ids": [
+        "W4416429485"
+      ],
+      "paths_truncated": false
+    }
+  ],
+  "truncated": false,
+  "truncation_reasons": [],
+  "warnings": [
+    "Citation graph source: OpenAlex. In citing mode, nodes are papers that cite the seed or the preceding hop. Missing OpenAlex citation edges may be supplemented with the arXiv verify command.",
+    "arXiv verification covers supplied candidates only; new nodes were not expanded further."
+  ],
+  "openalex_requests": 4,
+  "verification": [
+    {
+      "arxiv_id": "2607.07096",
+      "discovery_source": "explicit_candidate",
+      "checked_at": "2026-09-21T17:28:00.769376+00:00",
+      "status": "verified",
+      "evidence": [
+        {
+          "target_id": "W4414197293",
+          "provider": "arxiv_html",
+          "url": "https://arxiv.org/html/2607.07096#bib.bib41",
+          "reference_text": "[41] H. Liu, C. Bai, P. Xu, L. Yin, X. Yu, H.-L. Zhen, M. Yuan, T.-Y. Ho, and B. Yu, “LLMShare: Optimizing LLM inference serving with hardware architecture exploration,” in 2025 62nd ACM/IEEE Design Automation Conference (DAC) . IEEE, 2025, pp. 1–7.",
+          "match": "normalized_full_title"
+        }
+      ],
+      "title": "ThermoDSE: A Thermal-Aware and Comprehensive Design Space Exploration for Chiplet-Based DNN Accelerators",
+      "paper_id": "W7167828524"
+    }
+  ]
+}

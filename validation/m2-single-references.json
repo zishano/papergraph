@@ -1,0 +1,1745 @@
+{
+  "config": {
+    "depth": 2,
+    "direction": "references",
+    "max_papers": 40,
+    "max_papers_per_hop": 25,
+    "max_neighbors": 5,
+    "max_paths_per_pair": 10
+  },
+  "seed_ids": [
+    "W2741809807"
+  ],
+  "nodes": [
+    {
+      "id": "W1207649277",
+      "openalex_id": "W1207649277",
+      "doi": null,
+      "arxiv_id": null,
+      "title": "Les dérives de l'évaluation de la recherche : du bon usage de la bibliométrie",
+      "authors": [
+        "Yves Gingras"
+      ],
+      "year": 2014,
+      "venue": "Bibliothèque et Archives nationales du Québec (Québec government)",
+      "abstract": "Bibliographie : pages 109-122.",
+      "cited_by_count": 12,
+      "pdf_url": null,
+      "referenced_works": [
+        "W2153441878"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1767272795"
+      ]
+    },
+    {
+      "id": "W1503178185",
+      "openalex_id": "W1503178185",
+      "doi": "10.48550/arxiv.1210.8174",
+      "arxiv_id": "1210.8174",
+      "title": "Testing the Finch Hypothesis on Green OA Mandate Ineffectiveness",
+      "authors": [
+        "Yassine Gargouri",
+        "Vincent Larivière",
+        "Yves Gingras",
+        "Tim Brody",
+        "Leslie Carr",
+        "Stevan Harnad"
+      ],
+      "year": 2012,
+      "venue": "arXiv (Cornell University)",
+      "abstract": "We have now tested the Finch Committee's Hypothesis that Green Open Access Mandates are ineffective in generating deposits in institutional repositories. With data from ROARMAP on institutional Green OA mandates and data from ROAR on institutional repositories, we show that deposit number and rate is significantly correlated with mandate strength (classified as 1-12): The stronger the mandate, the more the deposits. The strongest mandates generate deposit rates of 70%+ within 2 years of adoption, compared to the un-mandated deposit rate of 20%. The effect is already detectable at the national level, where the UK, which has the largest proportion of Green OA mandates, has a national OA rate of 35%, compared to the global baseline of 25%. The conclusion is that, contrary to the Finch Hypothesis, Green Open Access Mandates do have a major effect, and the stronger the mandate, the stronger the effect (the Liege ID/OA mandate, linked to research performance evaluation, being the strongest mandate model). RCUK (as well as all universities, research institutions and research funders worldwide) would be well advised to adopt the strongest Green OA mandates and to integrate institutional and funder mandates.",
+      "cited_by_count": 26,
+      "pdf_url": "https://arxiv.org/pdf/1210.8174",
+      "referenced_works": [
+        "W1507007814",
+        "W1944943415",
+        "W2009394811",
+        "W2048185449",
+        "W2101170015",
+        "W2164948267"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1560783210"
+      ]
+    },
+    {
+      "id": "W1507416986",
+      "openalex_id": "W1507416986",
+      "doi": null,
+      "arxiv_id": null,
+      "title": "A Subversive Proposal",
+      "authors": [
+        "Stevan Harnad"
+      ],
+      "year": 1995,
+      "venue": "ePrints Soton (University of Southampton)",
+      "abstract": "As soon as all research authors publicly self-archive their refereed and unrefereed papers publicly online, the research literature will be free for all.",
+      "cited_by_count": 37,
+      "pdf_url": "https://eprints.soton.ac.uk/253351/1/subversive.pdf",
+      "referenced_works": [],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1931854307"
+      ]
+    },
+    {
+      "id": "W1519946736",
+      "openalex_id": "W1519946736",
+      "doi": null,
+      "arxiv_id": null,
+      "title": "The Case for Institutional Repositories: A SPARC Position Paper",
+      "authors": [
+        "Raym Crow"
+      ],
+      "year": 2002,
+      "venue": "Institutional Repositories DataBase (IRDB)",
+      "abstract": "Editor's Note:  In July, the Scholarly Publishing and Academic Resources Coalition (SPARC) released a major position paper that examines the strategic roles institutional repositories serve for colleges and universities.  What follows are excerpts from the paper (footnotes omitted) that introduce the concept and describe the essential elements of an institutional repository.  The full paper is available on the SPARC Web site .",
+      "cited_by_count": 627,
+      "pdf_url": null,
+      "referenced_works": [
+        "W43327620",
+        "W44449582",
+        "W1507416986",
+        "W1526031154",
+        "W1573505734",
+        "W1993621167",
+        "W2022225585",
+        "W2033352268",
+        "W2036157951",
+        "W2036922777",
+        "W2039324760",
+        "W2054381589",
+        "W2076644997",
+        "W2084159601",
+        "W2102461328",
+        "W2110597937",
+        "W2126998039",
+        "W2128725784",
+        "W2138389223",
+        "W2154498027",
+        "W2173701363",
+        "W2179517840",
+        "W2395383419",
+        "W2597175710",
+        "W3135490876"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1724212071"
+      ]
+    },
+    {
+      "id": "W1522052181",
+      "openalex_id": "W1522052181",
+      "doi": null,
+      "arxiv_id": null,
+      "title": "The Open Access citation advantage: Studies and results to date",
+      "authors": [
+        "Alma Swan"
+      ],
+      "year": 2010,
+      "venue": "ePrints Soton (University of Southampton)",
+      "abstract": "This paper presents a summary of reported studies on the Open Access citation advantage. There is a brief introduction to the main issues involved in carrying out such studies, both methodological and interpretive. The study listing provides some details of the coverage, methodological approach and main conclusions of each study.",
+      "cited_by_count": 203,
+      "pdf_url": "https://eprints.soton.ac.uk/268516/2/Citation_advantage_paper.pdf",
+      "referenced_works": [],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1560783210"
+      ]
+    },
+    {
+      "id": "W1536424108",
+      "openalex_id": "W1536424108",
+      "doi": null,
+      "arxiv_id": null,
+      "title": "The German Academic Publishers Project – Gap",
+      "authors": [
+        "Kim V.E. Braun"
+      ],
+      "year": 2003,
+      "venue": "Elpub digital library",
+      "abstract": "German Academic Publishers (GAP, www.gap-c.de) is a project funded by the Deutsche Forschungsgemeinschaft (DFG, German Science Foundation, www.dfg.de) for the purpose of creating a new model for academic publishing. Activities commenced in December 2001 and funding is secure for two years; a follow-up proposal requesting an extension of fundingfor additional developments and integration will be submitted to the DFG. The project is not centered around research and development activities but is rather an infrastructure project. Goals of the project include creation of an organizational network of academic presses and other (in the sense of GAP) eligible publishing institutions, creation of a business plan toguarantee a sustainable “life” for GAP after funding expires and establishing the necessary infrastructure for onlinepublishing(including a peer-reviewing process) and on-line management of persons, roles and other elements of the publishing-process. Core-partners in the project are Hamburg University Computing Center, State and University Library Hamburg, University Library Karlsruhe and the Library and Information System of the Oldenburg University. In the courseof the project other partners have joined GAP to evaluate it as well as to contribute expertise in areas not covered by the original partners. Thus far the network has been set up and organized with a so-called Back Office at the center of the cooperation. The Back Office provides technical services such as running the publication system and offering OAI-compatibleexport of metadata and document storage, but at the same time it is to serve as a Center of Competence to universities planning to found their own academic university presses. The members and partners of GAP are the so-called Front Offices, using the infrastructure of GAP. Front Offices can be academic presses, learned societies, universities as a whole or faculties and departments, even individual scientists. The Front Offices customers – the authors – process their publications throughGAPware, GAP’s on-line publication system. This will ensure speedy processing and return scientific publication to one of its original goals: scientific communication. All the more so, as one of GAP’s aims is to make what is published through its channels freely available on the internet. GAPware is the on-line publication system developed in Oldenburg andprogrammed for GAP by the Institute for Science Networking. Features include – naturally – the entire publication process, publication-container management, author and peer-reviewer management, an elaborate peer-reviewing element, as well as in the future a pre-publication and a print-on-demand option. GAPware is in a beta-stage, but will be refined further in theupcoming months. The most imminent work within the project is the development of a business plan to ensure sustainability for GAP beyond the original financing by the German Science Foundation (DFG)",
+      "cited_by_count": 7,
+      "pdf_url": null,
+      "referenced_works": [],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1724212071"
+      ]
+    },
+    {
+      "id": "W1536719366",
+      "openalex_id": "W1536719366",
+      "doi": null,
+      "arxiv_id": null,
+      "title": "Signal detection theory and ROC analysis",
+      "authors": [
+        "James P. Egan"
+      ],
+      "year": 1975,
+      "venue": "Academic Press eBooks",
+      "abstract": null,
+      "cited_by_count": 1657,
+      "pdf_url": null,
+      "referenced_works": [],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1931854307"
+      ]
+    },
+    {
+      "id": "W153854902",
+      "openalex_id": "W153854902",
+      "doi": null,
+      "arxiv_id": null,
+      "title": "Institutional Repositories: Evaluating the Reasons for Non-use of Cornell University's Installation of DSpace",
+      "authors": [
+        "Philip M. Davis",
+        "Matthew Connolly"
+      ],
+      "year": 2007,
+      "venue": "eCommons (Cornell University)",
+      "abstract": "This article reports on a three-part evaluative study of institutional repositories. We describe the contents and participation in Cornell's DSpace and compare these results with seven university DSpace installations. Through in-depth interviews with eleven faculty members in the sciences, social sciences and humanities, we explore their attitudes, motivations, and behaviors for non-participation in institutional repositories.",
+      "cited_by_count": 210,
+      "pdf_url": "https://hdl.handle.net/1813/5195",
+      "referenced_works": [
+        "W40910633",
+        "W192103282",
+        "W1519946736",
+        "W1577466193",
+        "W1598025817",
+        "W1646451206",
+        "W1969990551",
+        "W2002881919",
+        "W2009958682",
+        "W2040220320",
+        "W2044000462",
+        "W2048715559",
+        "W2075229674",
+        "W2080450835",
+        "W2124262108",
+        "W2130402311",
+        "W2137725064",
+        "W2150454120",
+        "W2597849248",
+        "W2792746625",
+        "W3122386429"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1560783210"
+      ]
+    },
+    {
+      "id": "W1538876820",
+      "openalex_id": "W1538876820",
+      "doi": null,
+      "arxiv_id": null,
+      "title": "Journal copyright transfer agreements: their effect on author self archiving",
+      "authors": [
+        "Elizabeth Gadd",
+        "Charles Oppenheim",
+        "Steve Probets"
+      ],
+      "year": 2003,
+      "venue": "Loughborough University Research Repository (Loughborough University)",
+      "abstract": "This paper reports on the results of an analysis of 80 copyright transfer agreements (CTAs) with\\nparticular regard to their effect on author self-archiving. It shows the number of CTAs asking for\\ncopyright assignment, the time of assignment and what happens when copyright cannot be assigned.\\nIt outlines the warranties required of the author, and the exceptions granted back to the author by\\nwhich they may use their own work. In particular it focuses on the number of CTAs allowing selfarchiving\\nand the conditions under which they may do so. It concludes that whether an author can\\nsafely self-archive or not depends on a complex matrix of the following factors: i) whether copyright\\nassignment or a non-exclusive licence is required; ii) the time of copyright assignment; iii) if (and\\nwhen) CTA’s actually allow self-archiving; iv) if publishers do not allow self-archiving, but do not see\\nit as ‘prior publication’; v) whether the preprint is legally a separate copyright work to the refereed\\npostprint; and vi) whether the author wishes to self-archive a pre-print, postprint or both.",
+      "cited_by_count": 3,
+      "pdf_url": "https://figshare.com/articles/Journal_copyright_transfer_agreements_their_effect_on_author_self_archiving/9416357",
+      "referenced_works": [
+        "W1624713482",
+        "W1637234639",
+        "W1688177731",
+        "W1998500112",
+        "W2002766214",
+        "W2006972602",
+        "W2026453212",
+        "W2057967514",
+        "W2079507141",
+        "W2126124080",
+        "W2321661200",
+        "W2336438304"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1724212071"
+      ]
+    },
+    {
+      "id": "W1540815740",
+      "openalex_id": "W1540815740",
+      "doi": "10.2307/145797",
+      "arxiv_id": null,
+      "title": "What is a Citation Worth?",
+      "authors": [
+        "Arthur M. Diamond"
+      ],
+      "year": 1986,
+      "venue": "The Journal of Human Resources",
+      "abstract": "A robust finding in all studies is that citations are a positive and significant determinant of earnings over almost all of the observed range of citation levels. The marginal value of a citation (when the level of citations is zero) varies between $50 and $1, 300. Some differences in marginal values may be due to differences in citation practices among disciplines while others may be due to differences among the studies in the control variables included in the salary regressions. Finally, no gain in explanatory power results from the inclusion in the salary regression of the costly nonfirst-author citation measure.",
+      "cited_by_count": 295,
+      "pdf_url": null,
+      "referenced_works": [
+        "W1149057914",
+        "W1502755178",
+        "W1508958356",
+        "W1555301799",
+        "W1568918780",
+        "W1583154274",
+        "W1584734975",
+        "W1589166698",
+        "W1971511272",
+        "W1983685662",
+        "W1986446982",
+        "W1989004417",
+        "W1998815450",
+        "W2001274847",
+        "W2010281604",
+        "W2015768663",
+        "W2028441795",
+        "W2043335237",
+        "W2043609668",
+        "W2044786133",
+        "W2054064338",
+        "W2057060986",
+        "W2058730894",
+        "W2059372980",
+        "W2071717756",
+        "W2078509203",
+        "W2078874174",
+        "W2083448533",
+        "W2084977988",
+        "W2090140727",
+        "W2095309598",
+        "W2095523409",
+        "W2105089534",
+        "W2110787586",
+        "W2162912940",
+        "W2167651468",
+        "W2325816765",
+        "W3124480223"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1931854307"
+      ]
+    },
+    {
+      "id": "W1546460521",
+      "openalex_id": "W1546460521",
+      "doi": "10.1007/1-4020-3714-7",
+      "arxiv_id": null,
+      "title": "Citation Analysis in Research Evaluation",
+      "authors": [
+        "Henk F. Moed"
+      ],
+      "year": 2005,
+      "venue": "Information science and knowledge management",
+      "abstract": null,
+      "cited_by_count": 1339,
+      "pdf_url": null,
+      "referenced_works": [],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1931854307"
+      ]
+    },
+    {
+      "id": "W1548037755",
+      "openalex_id": "W1548037755",
+      "doi": null,
+      "arxiv_id": null,
+      "title": "The correlation between RAE ratings and citation counts in psychology",
+      "authors": [
+        "Andy T Smith",
+        "Michael W. Eysenck"
+      ],
+      "year": 2002,
+      "venue": "CogPrints (University of Southampton)",
+      "abstract": "We counted the citations received in one year (1998) by each staff member in each of 38 university psychology departments in the United Kingdom. We then averaged these counts across individuals within each department and correlated the averages with the Research Assessment Exercise (RAE) grades awarded to the same departments in 1996 and 2001. The correlations were extremely high (up to +0.91). This suggests that whatever the merits and demerits of the RAE process and citation counting as methods of evaluating research quality, the two approaches measure broadly the same thing. Since citation counting is both more cost-effective and more transparent than the present system and gives similar results, there is a prima facie case for incorporating citation counts into the process, either alone or in conjunction with other measures. Some of the limitations of citation counting are discussed and some methods for minimising these are proposed. Many of the factors that dictate caution in judging individuals by their citations tend to average out when whole departments are compared.",
+      "cited_by_count": 72,
+      "pdf_url": "http://cogprints.org/2749/1/citations.pdf",
+      "referenced_works": [
+        "W2055124066"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1931854307"
+      ]
+    },
+    {
+      "id": "W1550189936",
+      "openalex_id": "W1550189936",
+      "doi": null,
+      "arxiv_id": null,
+      "title": "Economic implications of alternative scholarly publishing models : exploring the costs and benefits. JISC EI-ASPM Project. A report to the Joint Information Systems Committee (JISC)",
+      "authors": [
+        "John Houghton",
+        "Bruce Rasmussen",
+        "Peter Sheehan",
+        "Charles Oppenheim",
+        "Anne Morris",
+        "Claire Creaser",
+        "Helen Greenwood",
+        "Mark A. Summers",
+        "Adrian Gourlay"
+      ],
+      "year": 2009,
+      "venue": "Loughborough University Institutional Repository (Loughborough University)",
+      "abstract": "A knowledge economy has been defined as: “…one in which the generation and exploitation of\\nknowledge has come to play the predominant part in the creation of wealth. It is not simply\\nabout pushing back the frontiers of knowledge; it is also about the more effective use and\\nexploitation of all types of knowledge in all manner of economic activities” (DTI 1998). In a\\nknowledge economy, innovation and the capacity of the system to create and disseminate the\\nlatest scientific and technical information are important determinants of prosperity (David and\\nForay 1995; OECD 1997).\\nScholarly publishing plays a key role, as it is central to the efficiency of research and to the\\ndissemination of research findings and diffusion of scientific and technical knowledge. But,\\nadvances in information and communication technologies are disrupting traditional models of\\nscholarly publishing, radically changing our capacity to reproduce, distribute, control, and\\npublish information. The key question is whether there are new opportunities and new models\\nfor scholarly publishing that would better serve researchers and better communicate and\\ndisseminate research findings (OECD 2005, p14).",
+      "cited_by_count": 53,
+      "pdf_url": "https://dspace.lboro.ac.uk/2134/4137",
+      "referenced_works": [
+        "W33789165",
+        "W40910633",
+        "W199970868",
+        "W207760442",
+        "W1504287823",
+        "W1511351087",
+        "W1551019334",
+        "W1559000710",
+        "W1715687586",
+        "W1964821758",
+        "W1988405397",
+        "W1997047972",
+        "W1999847452",
+        "W2002034968",
+        "W2005250061",
+        "W2016826483",
+        "W2020388947",
+        "W2034097491",
+        "W2040390985",
+        "W2046116978",
+        "W2074410902",
+        "W2082298179",
+        "W2118179338",
+        "W2131092090",
+        "W2133329608",
+        "W2142628731",
+        "W2146411203",
+        "W2155036044",
+        "W2270024543",
+        "W2279490581",
+        "W2471826995",
+        "W2492269530",
+        "W3122818851",
+        "W3122946301"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1560783210"
+      ]
+    },
+    {
+      "id": "W1552729918",
+      "openalex_id": "W1552729918",
+      "doi": null,
+      "arxiv_id": null,
+      "title": "Open access self-archiving: An author study",
+      "authors": [
+        "Alma Swan",
+        "Sheridan Brown"
+      ],
+      "year": 2005,
+      "venue": "CogPrints (University of Southampton)",
+      "abstract": "This, our second author international, cross-disciplinary study on open access had 1296 respondents. Its focus was on self-archiving. Almost half (49%) of the respondent population have self-archived at least one article during the last three years. Use of institutional repositories for this purpose has doubled and usage has increased by almost 60% for subject-based repositories. Self-archiving activity is greatest amongst those who publish the largest number of papers. There is still a substantial proportion of authors unaware of the possibility of providing open access to their work by self-archiving. Of the authors who have not yet self-archived any articles, 71% remain unaware of the option. With 49% of the author population having self-archived in some way, this means that 36% of the total author population (71% of the remaining 51%), has not yet been appraised of this way of providing open access. Authors have frequently expressed reluctance to self-archive because of the perceived time required and possible technical difficulties in carrying out this activity, yet findings here show that only 20% of authors found some degree of difficulty with the first act of depositing an article in a repository, and that this dropped to 9% for subsequent deposits. Another author worry is about infringing agreed copyright agreements with publishers, yet only 10% of authors currently know of the SHERPA/RoMEO list of publisher permissions policies with respect to self-archiving, where clear guidance as to what a publisher permits is provided. Where it is not known if permission is required, however, authors are not seeking it and are self-archiving without it. Communicating their results to peers remains the primary reason for scholars publishing their work; in other words,\\nresearchers publish to have an impact on their field. The vast majority of authors (81%) would willingly comply with a mandate from their employer or research funder to deposit copies of their articles in an institutional or subject-based repository. A further 13% would comply reluctantly; 5% would not comply with such a mandate.",
+      "cited_by_count": 286,
+      "pdf_url": "http://cogprints.org/4385/1/jisc2.pdf",
+      "referenced_works": [
+        "W1569371346",
+        "W1715687586",
+        "W1724341304",
+        "W1969232170",
+        "W1973110114",
+        "W2015134878",
+        "W2084538731",
+        "W2086496065"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1560783210",
+        "W1931854307"
+      ]
+    },
+    {
+      "id": "W1560783210",
+      "openalex_id": "W1560783210",
+      "doi": "10.1002/asi.22963",
+      "arxiv_id": null,
+      "title": "Anatomy of green open access",
+      "authors": [
+        "Bo‐Christer Björk",
+        "Mikael Laakso",
+        "Patrik Welling",
+        "Patrik Paetau"
+      ],
+      "year": 2013,
+      "venue": "Journal of the Association for Information Science and Technology",
+      "abstract": "Open access (OA) is free, unrestricted access to electronic versions of scholarly publications. For peer‐reviewed journal articles, there are two main routes to OA: publishing in OA journals (gold OA) or archiving of article copies or manuscripts at other web locations (green OA). This study focuses on summarizing and extending current knowledge about green OA. A synthesis of previous studies indicates that green OA coverage of all published journal articles is approximately 12%, with substantial disciplinary variation. Typically, green OA copies become available after considerable time delays, partly caused by publisher‐imposed embargo periods, and partly by author tendencies to archive manuscripts only periodically. Although green OA copies should ideally be archived in proper repositories, a large share is stored on home pages and similar locations, with no assurance of long‐term preservation. Often such locations contain exact copies of published articles, which may infringe on the publisher's exclusive rights. The technical foundation for green OA uploading is becoming increasingly solid largely due to the rapid increase in the number of institutional repositories. The number of articles within the scope of OA mandates, which strongly influence the self‐archival rate of articles, is nevertheless still low.",
+      "cited_by_count": 238,
+      "pdf_url": null,
+      "referenced_works": [
+        "W98388436",
+        "W153854902",
+        "W1503178185",
+        "W1522052181",
+        "W1550189936",
+        "W1552729918",
+        "W1842065797",
+        "W1901890401",
+        "W1931854307",
+        "W1944943415",
+        "W1952168694",
+        "W1976396629",
+        "W1982149803",
+        "W1985814542",
+        "W1987360189",
+        "W1997125517",
+        "W2006972602",
+        "W2011443643",
+        "W2018353135",
+        "W2020123068",
+        "W2020874028",
+        "W2027663019",
+        "W2029057325",
+        "W2031754690",
+        "W2039146085",
+        "W2040069617",
+        "W2040220320",
+        "W2048185449",
+        "W2054299130",
+        "W2058954808",
+        "W2061451796",
+        "W2063332351",
+        "W2089745446",
+        "W2095725524",
+        "W2100379340",
+        "W2109346842",
+        "W2115339903",
+        "W2124116191",
+        "W2134049161",
+        "W2140880926",
+        "W2153722135",
+        "W2164948267",
+        "W2408763948",
+        "W3022216379",
+        "W3139973253",
+        "W4230129368",
+        "W4232875366",
+        "W4240507605",
+        "W4252798611",
+        "W4285719527",
+        "W4291732787",
+        "W4385682418",
+        "W6904249458",
+        "W6923334568"
+      ],
+      "hop": 1,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W2741809807"
+      ]
+    },
+    {
+      "id": "W1655306493",
+      "openalex_id": "W1655306493",
+      "doi": "10.1371/journal.pone.0127502",
+      "arxiv_id": null,
+      "title": "The Oligopoly of Academic Publishers in the Digital Era",
+      "authors": [
+        "Vincent Larivière",
+        "Stefanie Haustein",
+        "Philippe Mongeon"
+      ],
+      "year": 2015,
+      "venue": "PLoS ONE",
+      "abstract": "The consolidation of the scientific publishing industry has been the topic of much debate within and outside the scientific community, especially in relation to major publishers' high profit margins. However, the share of scientific output published in the journals of these major publishers, as well as its evolution over time and across various disciplines, has not yet been analyzed. This paper provides such analysis, based on 45 million documents indexed in the Web of Science over the period 1973-2013. It shows that in both natural and medical sciences (NMS) and social sciences and humanities (SSH), Reed-Elsevier, Wiley-Blackwell, Springer, and Taylor & Francis increased their share of the published output, especially since the advent of the digital era (mid-1990s). Combined, the top five most prolific publishers account for more than 50% of all papers published in 2013. Disciplines of the social sciences have the highest level of concentration (70% of papers from the top five publishers), while the humanities have remained relatively independent (20% from top five publishers). NMS disciplines are in between, mainly because of the strength of their scientific societies, such as the ACS in chemistry or APS in physics. The paper also examines the migration of journals between small and big publishing houses and explores the effect of publisher change on citation impact. It concludes with a discussion on the economics of scholarly publishing.",
+      "cited_by_count": 1258,
+      "pdf_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0127502&type=printable",
+      "referenced_works": [
+        "W322576416",
+        "W583061598",
+        "W593534837",
+        "W620065558",
+        "W640008068",
+        "W643175545",
+        "W649219009",
+        "W1494361089",
+        "W1504287823",
+        "W1546171873",
+        "W1591703882",
+        "W1958356960",
+        "W1977658425",
+        "W1978315294",
+        "W1984707801",
+        "W2007350606",
+        "W2008923658",
+        "W2015934453",
+        "W2016322304",
+        "W2021638366",
+        "W2023994219",
+        "W2030552375",
+        "W2033106155",
+        "W2042069012",
+        "W2044361056",
+        "W2064299709",
+        "W2064374004",
+        "W2073371948",
+        "W2078478894",
+        "W2099037429",
+        "W2132615533",
+        "W2165122403",
+        "W2169092974",
+        "W2170607430",
+        "W2301623411",
+        "W2525187097",
+        "W2531098728",
+        "W2554751804",
+        "W2746664104",
+        "W2792974390",
+        "W2892345243",
+        "W3022024904",
+        "W3030836792",
+        "W4244881406",
+        "W4247838263",
+        "W4285719527",
+        "W6619394663",
+        "W6620720585",
+        "W6621419412",
+        "W6629553014",
+        "W6646548332",
+        "W6652471325",
+        "W6654224174",
+        "W7015270918"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1767272795"
+      ]
+    },
+    {
+      "id": "W1724212071",
+      "openalex_id": "W1724212071",
+      "doi": null,
+      "arxiv_id": null,
+      "title": "The nine flavours of open access scholarly publishing.",
+      "authors": [
+        "John Willinsky"
+      ],
+      "year": 2004,
+      "venue": "PubMed",
+      "abstract": null,
+      "cited_by_count": 101,
+      "pdf_url": null,
+      "referenced_works": [
+        "W1519946736",
+        "W1536424108",
+        "W1538876820",
+        "W2064374004",
+        "W2138389223"
+      ],
+      "hop": 1,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W2741809807"
+      ]
+    },
+    {
+      "id": "W1767272795",
+      "openalex_id": "W1767272795",
+      "doi": "10.1007/s11192-015-1765-5",
+      "arxiv_id": null,
+      "title": "The journal coverage of Web of Science and Scopus: a comparative analysis",
+      "authors": [
+        "Philippe Mongeon",
+        "Adèle Paul‐Hus"
+      ],
+      "year": 2015,
+      "venue": "Scientometrics",
+      "abstract": null,
+      "cited_by_count": 5094,
+      "pdf_url": "https://arxiv.org/pdf/1511.08096",
+      "referenced_works": [
+        "W261036034",
+        "W1207649277",
+        "W1491139408",
+        "W1655306493",
+        "W1964117853",
+        "W1970211697",
+        "W1975437573",
+        "W1982149803",
+        "W1990476851",
+        "W1991526941",
+        "W2034085520",
+        "W2061922306",
+        "W2065157469",
+        "W2070593969",
+        "W2071257110",
+        "W2071707531",
+        "W2080222100",
+        "W2088079527",
+        "W2108440411",
+        "W2113847349",
+        "W2132615533",
+        "W2147002372",
+        "W2150455238",
+        "W2164534115",
+        "W2165122403",
+        "W2190024092",
+        "W2563336680",
+        "W2952984634",
+        "W3134853862",
+        "W4210611826",
+        "W4255356361",
+        "W6892130286"
+      ],
+      "hop": 1,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W2741809807"
+      ]
+    },
+    {
+      "id": "W1917633107",
+      "openalex_id": "W1917633107",
+      "doi": "10.7551/mitpress/8479.003.0013",
+      "arxiv_id": null,
+      "title": "Gratis and Libre Open Access",
+      "authors": [],
+      "year": 2016,
+      "venue": "The MIT Press eBooks",
+      "abstract": null,
+      "cited_by_count": 75,
+      "pdf_url": null,
+      "referenced_works": [],
+      "hop": 1,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W2741809807"
+      ]
+    },
+    {
+      "id": "W1931854307",
+      "openalex_id": "W1931854307",
+      "doi": "10.48550/arxiv.cs/0606079",
+      "arxiv_id": "cs/0606079",
+      "title": "Ten-Year Cross-Disciplinary Comparison of the Growth of Open Access and How it Increases Research Citation Impact",
+      "authors": [
+        "Chawki Hajjem",
+        "Stevan Harnad",
+        "Yves Gingras"
+      ],
+      "year": 2006,
+      "venue": "arXiv (Cornell University)",
+      "abstract": "Lawrence (2001)found computer science articles that were openly accessible (OA) on the Web were cited more. We replicated this in physics. We tested 1,307,038 articles published across 12 years (1992-2003) in 10 disciplines (Biology, Psychology, Sociology, Health, Political Science, Economics, Education, Law, Business, Management). A robot trawls the Web for full-texts using reference metadata ISI citation data (signal detectability d'=2.45; bias = 0.52). Percentage OA (relative to total OA + NOA) articles varies from 5%-16% (depending on discipline, year and country) and is slowly climbing annually (correlation r=.76, sample size N=12, probability p < 0.005). Comparing OA and NOA articles in the same journal/year, OA articles have consistently more citations, the advantage varying from 36%-172% by discipline and year. Comparing articles within six citation ranges (0, 1, 2-3, 4-7, 8-15, 16+ citations), the annual percentage of OA articles is growing significantly faster than NOA within every citation range (r > .90, N=12, p < .0005) and the effect is greater with the more highly cited articles (r = .98, N=6, p < .005). Causality cannot be determined from these data, but our prior finding of a similar pattern in physics, where percent OA is much higher (and even approaches 100% in some subfields), makes it unlikely that the OA citation advantage is merely or mostly a self-selection bias (for making only one's better articles OA). Further research will analyze the effect's timing, causal components and relation to other variables.",
+      "cited_by_count": 358,
+      "pdf_url": "https://arxiv.org/pdf/cs/0606079",
+      "referenced_works": [
+        "W1507416986",
+        "W1536719366",
+        "W1540815740",
+        "W1546460521",
+        "W1548037755",
+        "W1552729918",
+        "W1570479039",
+        "W1715687586",
+        "W2002034968",
+        "W2089745446",
+        "W2137725064",
+        "W2153183607",
+        "W2158997610",
+        "W2162763177",
+        "W2292787617"
+      ],
+      "hop": 1,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W2741809807"
+      ]
+    },
+    {
+      "id": "W1964117853",
+      "openalex_id": "W1964117853",
+      "doi": "10.1007/s11192-009-0021-2",
+      "arxiv_id": null,
+      "title": "A comparison of bibliometric indicators for computer science scholars and journals on Web of Science and Google Scholar",
+      "authors": [
+        "Massimo Franceschet"
+      ],
+      "year": 2009,
+      "venue": "Scientometrics",
+      "abstract": null,
+      "cited_by_count": 235,
+      "pdf_url": null,
+      "referenced_works": [
+        "W49686737",
+        "W55575608",
+        "W148945946",
+        "W1590271040",
+        "W1713342896",
+        "W1890493318",
+        "W1966498024",
+        "W1978071138",
+        "W1982149803",
+        "W1987341880",
+        "W1996746014",
+        "W2000432130",
+        "W2003729936",
+        "W2005706022",
+        "W2023979716",
+        "W2025600322",
+        "W2037933327",
+        "W2038745769",
+        "W2042852414",
+        "W2044326206",
+        "W2061312249",
+        "W2066636486",
+        "W2071707531",
+        "W2073204981",
+        "W2090386458",
+        "W2097027133",
+        "W2106780706",
+        "W2108229940",
+        "W2128438887",
+        "W2129513604",
+        "W2132218857",
+        "W2150340219",
+        "W2168621403",
+        "W2582743722",
+        "W2949376408",
+        "W2999694692",
+        "W3038100267",
+        "W3101807887",
+        "W4233744313",
+        "W4236937599",
+        "W4243763775",
+        "W4254403236",
+        "W4255356361",
+        "W4285719527"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1767272795"
+      ]
+    },
+    {
+      "id": "W1970211697",
+      "openalex_id": "W1970211697",
+      "doi": "10.1007/s11192-009-0038-6",
+      "arxiv_id": null,
+      "title": "Comparing Google Scholar and ISI Web of Science for Earth Sciences",
+      "authors": [
+        "Susanne Mikki"
+      ],
+      "year": 2009,
+      "venue": "Scientometrics",
+      "abstract": null,
+      "cited_by_count": 79,
+      "pdf_url": null,
+      "referenced_works": [
+        "W55575608",
+        "W1554939242",
+        "W1982149803",
+        "W2042852414",
+        "W2048018123",
+        "W2062021443",
+        "W2063709399",
+        "W2090386458",
+        "W2128438887",
+        "W2129227940",
+        "W2130412786",
+        "W2132218857",
+        "W4255356361"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1767272795"
+      ]
+    },
+    {
+      "id": "W2064374004",
+      "openalex_id": "W2064374004",
+      "doi": "10.1257/000282802760015702",
+      "arxiv_id": null,
+      "title": "Journal Pricing and Mergers: A Portfolio Approach",
+      "authors": [
+        "Mark J. McCabe"
+      ],
+      "year": 2002,
+      "venue": "American Economic Review",
+      "abstract": "Despite their influence on the careers of economists, the production and pricing of scholarly journals have received scant attention from the profession. By contrast, the issue of journal quality and scholarly research productivity have been studied in far greater detail (a search in the EconLit database using the term “journal” generates several dozen papers on this topic). Although there may be a number of reasons for this “imbalance,” it is likely that the tenure process, combined with the low (if not zero) effective cost of journals on campuses have influenced our research agenda. In other words, while professors worry about their job security (publish well, or perish), others—their librarians—are charged with maintaining “free” access to all relevant journals. Of course, this pattern is observed not just in economics but across academic disciplines. In recent years, however, easy access to journals has been threatened. Beset by persistent journal price inflation (especially in the socalled STM fields, or science, technology, and medicine) and stagnant budgets, many university libraries have been forced to reallocate dollars from monographs to journals, to postpone the purchase of new journal titles, and in some cases, to cancel titles. As a consequence, libraries often relied on interlibrary loans to satisfy faculty demands. This situation and its possible causes has been studied at great length in the library science literature. With few exceptions, a consensus has evolved there which focuses on the growing importance of commercial publishers in the market for scholarly journals: Over the past decade or more, commercial firms have aggressively raised prices at a rate disproportionate to any increase in costs or quality. This appears to be especially true for the largest commercial firms. Although the analysis underlying these conclusions is generally not of the multivariate sort, it is suggestive enough to warrant further investigation. * School of Economics, Georgia Institute of Technology, 781 Marietta Street NW, Atlanta, GA 30318 (e-mail: mark.mccabe@econ.gatech.edu). I would like to thank many of my former colleagues at the Department of Justice, including Craig Conrath, Renata Hesse, Aaron Hoag, Russ Pittman, David Reitman, Dan Rubinfeld, and Greg Werden, as well as Jonathan Baker, Cory Capps, George Deltas, Luke Froeb, Jeffrey Mackie-Mason, Roger Noll, Dan O’Brien, Richard Quandt, Lars-Hendrik Roller, Steve Salop and Margaret Slade; seminar participants at the Federal Trade Commission, Georgia Tech, North Carolina State University, SUNY Stony Brook, and Wissenschaft Zentrum Berlin; and participants at the meetings of the American Economic Association, the European Association of Research in Industrial Economics, the Southern Economics Association, and Western Economics Association. The Association of Research Libraries and its members, the National Library of Medicine, the Georgia Tech Library, and the Georgia Tech Foundation have provided invaluable assistance. Expert data support was provided by a large group of individuals, including Deena Bernstein, Claude Briggs, Pat Finn, Doug Heslep, and Steve Stiglitz. Finally, I would like to thank the dozens of librarians and publishers who have provided me with important insights. 1 The exceptions are Janusz A. Ordover and Robert D. Willig (1978), Lisa Lieberman et al. (1992), George A. Chressanthis and June D. Chressanthis (1994), McCabe (2000), and Theodore C. Bergstrom (2001) . Ordover and Willig model the pricing of a single title to institutional and individual subscribers; Bergstrom’s paper discusses the differences between commercial and nonprofit economics journals. The other three papers are discussed below. 2 Increasingly, journals are available in both print and digital versions, and for some new titles only a digital format is available. See Carol Tenopir and Donald King (2000 Ch. 15). Starting in 1998, commercial publishers began placing their content online. Although major research libraries have generally responded by adding digital access, this shift is still in its early stages, especially in cases where library collections are more specialized, e.g., the typical biomedical library. For this reason, as well as the fact that more than two-thirds of the sample period occurred in a print-only environment, the emphasis of this paper is on the behavior of publishers and libraries in a print environment. The economic implications of digital access are considered briefly at the conclusion of the paper and are a subject of ongoing research. 3 See Martha Kyrillidou (1999). 4 See Tenopir and King (2000 Ch. 13), for a review of this literature. An alternative explanation for journal price inflation has been offered by Lieberman et al. (1992). They argue that entry by new titles over time has lowered circulation for existing journals, forcing the latter to raise prices to cover fixed costs.",
+      "cited_by_count": 167,
+      "pdf_url": null,
+      "referenced_works": [
+        "W1520809668",
+        "W1964115574",
+        "W2007843593",
+        "W2092916413",
+        "W2136074788",
+        "W3023275883",
+        "W3123919918",
+        "W4298304389"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1724212071"
+      ]
+    },
+    {
+      "id": "W2138389223",
+      "openalex_id": "W2138389223",
+      "doi": "10.1186/1471-8219-1-9",
+      "arxiv_id": null,
+      "title": "Creating a global knowledge network",
+      "authors": [
+        "Paul Ginsparg"
+      ],
+      "year": 2000,
+      "venue": "BMC Meeting Abstracts",
+      "abstract": null,
+      "cited_by_count": 72,
+      "pdf_url": null,
+      "referenced_works": [
+        "W1500269857",
+        "W1508599645",
+        "W1591781472",
+        "W1977658425",
+        "W2018544547",
+        "W4243179097"
+      ],
+      "hop": 2,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": [
+        "W1724212071"
+      ]
+    },
+    {
+      "id": "W2741809807",
+      "openalex_id": "W2741809807",
+      "doi": "10.7717/peerj.4375",
+      "arxiv_id": null,
+      "title": "The state of OA: a large-scale analysis of the prevalence and impact of Open Access articles",
+      "authors": [
+        "Heather Piwowar",
+        "Jason R Priem",
+        "Vincent Larivière",
+        "Juan Pablo Alperín",
+        "Lisa Matthias",
+        "Bree Norlander",
+        "Ashley Farley",
+        "Jevin D. West",
+        "Stefanie Haustein"
+      ],
+      "year": 2018,
+      "venue": "PeerJ",
+      "abstract": "Despite growing interest in Open Access (OA) to scholarly literature, there is an unmet need for large-scale, up-to-date, and reproducible studies assessing the prevalence and characteristics of OA. We address this need using oaDOI, an open online service that determines OA status for 67 million articles. We use three samples, each of 100,000 articles, to investigate OA in three populations: (1) all journal articles assigned a Crossref DOI, (2) recent journal articles indexed in Web of Science, and (3) articles viewed by users of Unpaywall, an open-source browser extension that lets users find OA articles using oaDOI. We estimate that at least 28% of the scholarly literature is OA (19M in total) and that this proportion is growing, driven particularly by growth in Gold and Hybrid. The most recent year analyzed (2015) also has the highest percentage of OA (45%). Because of this growth, and the fact that readers disproportionately access newer articles, we find that Unpaywall users encounter OA quite frequently: 47% of articles they view are OA. Notably, the most common mechanism for OA is not Gold, Green, or Hybrid OA, but rather an under-discussed category we dub Bronze: articles made free-to-read on the publisher website, without an explicit Open license. We also examine the citation impact of OA articles, corroborating the so-called open-access citation advantage: accounting for age and discipline, OA articles receive 18% more citations than average, an effect driven primarily by Green and Hybrid OA. We encourage further research using the free oaDOI service, as a way to inform OA policy and practice.",
+      "cited_by_count": 1258,
+      "pdf_url": null,
+      "referenced_works": [
+        "W1560783210",
+        "W1724212071",
+        "W1767272795",
+        "W1917633107",
+        "W1931854307",
+        "W1944943415",
+        "W1957687230",
+        "W1989318653",
+        "W2003844967",
+        "W2016860460",
+        "W2020807482",
+        "W2029057325",
+        "W2031754690",
+        "W2048185449",
+        "W2078310052",
+        "W2089123513",
+        "W2115339903",
+        "W2140880926",
+        "W2160597895",
+        "W2231201268",
+        "W2299516731",
+        "W2306268324",
+        "W2322381034",
+        "W2343014812",
+        "W2345375849",
+        "W2463568293",
+        "W2511661767",
+        "W2511663072",
+        "W2520991028",
+        "W2563251083",
+        "W2566143661",
+        "W2587705861",
+        "W2588027260",
+        "W2611818942",
+        "W2737712680",
+        "W2753353163",
+        "W2762597540",
+        "W2785823074",
+        "W2953072907",
+        "W2997143876",
+        "W3012252063",
+        "W3121567788",
+        "W4254015553",
+        "W4298108315",
+        "W4301734034",
+        "W6637734586",
+        "W6640061894",
+        "W6640335369",
+        "W6640848857",
+        "W6687877900",
+        "W6725637556",
+        "W6744027076",
+        "W6887727194",
+        "W6948399261"
+      ],
+      "hop": 0,
+      "seed_ids": [
+        "W2741809807"
+      ],
+      "parent_ids": []
+    }
+  ],
+  "edges": [
+    {
+      "source_id": "W1519946736",
+      "target_id": "W1507416986",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1519946736",
+      "target_id": "W2138389223",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W153854902",
+      "target_id": "W1519946736",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1560783210",
+      "target_id": "W1503178185",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1560783210",
+      "target_id": "W1522052181",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1560783210",
+      "target_id": "W153854902",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1560783210",
+      "target_id": "W1550189936",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1560783210",
+      "target_id": "W1552729918",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1560783210",
+      "target_id": "W1931854307",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1655306493",
+      "target_id": "W2064374004",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1724212071",
+      "target_id": "W1519946736",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1724212071",
+      "target_id": "W1536424108",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1724212071",
+      "target_id": "W1538876820",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1724212071",
+      "target_id": "W2064374004",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1724212071",
+      "target_id": "W2138389223",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1767272795",
+      "target_id": "W1207649277",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1767272795",
+      "target_id": "W1655306493",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1767272795",
+      "target_id": "W1964117853",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1767272795",
+      "target_id": "W1970211697",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1931854307",
+      "target_id": "W1507416986",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1931854307",
+      "target_id": "W1536719366",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1931854307",
+      "target_id": "W1540815740",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1931854307",
+      "target_id": "W1546460521",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1931854307",
+      "target_id": "W1548037755",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W1931854307",
+      "target_id": "W1552729918",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W2741809807",
+      "target_id": "W1560783210",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W2741809807",
+      "target_id": "W1724212071",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W2741809807",
+      "target_id": "W1767272795",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W2741809807",
+      "target_id": "W1917633107",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W2741809807",
+      "target_id": "W1931854307",
+      "relation": "cites",
+      "provider": "openalex"
+    }
+  ],
+  "paths": [
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W2741809807",
+      "path": [
+        "W2741809807"
+      ],
+      "hop": 0
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1560783210",
+      "path": [
+        "W2741809807",
+        "W1560783210"
+      ],
+      "hop": 1
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1724212071",
+      "path": [
+        "W2741809807",
+        "W1724212071"
+      ],
+      "hop": 1
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1767272795",
+      "path": [
+        "W2741809807",
+        "W1767272795"
+      ],
+      "hop": 1
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1917633107",
+      "path": [
+        "W2741809807",
+        "W1917633107"
+      ],
+      "hop": 1
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1931854307",
+      "path": [
+        "W2741809807",
+        "W1931854307"
+      ],
+      "hop": 1
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1207649277",
+      "path": [
+        "W2741809807",
+        "W1767272795",
+        "W1207649277"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1503178185",
+      "path": [
+        "W2741809807",
+        "W1560783210",
+        "W1503178185"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1507416986",
+      "path": [
+        "W2741809807",
+        "W1931854307",
+        "W1507416986"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1519946736",
+      "path": [
+        "W2741809807",
+        "W1724212071",
+        "W1519946736"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1522052181",
+      "path": [
+        "W2741809807",
+        "W1560783210",
+        "W1522052181"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1536424108",
+      "path": [
+        "W2741809807",
+        "W1724212071",
+        "W1536424108"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1536719366",
+      "path": [
+        "W2741809807",
+        "W1931854307",
+        "W1536719366"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W153854902",
+      "path": [
+        "W2741809807",
+        "W1560783210",
+        "W153854902"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1538876820",
+      "path": [
+        "W2741809807",
+        "W1724212071",
+        "W1538876820"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1540815740",
+      "path": [
+        "W2741809807",
+        "W1931854307",
+        "W1540815740"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1546460521",
+      "path": [
+        "W2741809807",
+        "W1931854307",
+        "W1546460521"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1548037755",
+      "path": [
+        "W2741809807",
+        "W1931854307",
+        "W1548037755"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1550189936",
+      "path": [
+        "W2741809807",
+        "W1560783210",
+        "W1550189936"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1552729918",
+      "path": [
+        "W2741809807",
+        "W1560783210",
+        "W1552729918"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1552729918",
+      "path": [
+        "W2741809807",
+        "W1931854307",
+        "W1552729918"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1655306493",
+      "path": [
+        "W2741809807",
+        "W1767272795",
+        "W1655306493"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1964117853",
+      "path": [
+        "W2741809807",
+        "W1767272795",
+        "W1964117853"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1970211697",
+      "path": [
+        "W2741809807",
+        "W1767272795",
+        "W1970211697"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W2064374004",
+      "path": [
+        "W2741809807",
+        "W1724212071",
+        "W2064374004"
+      ],
+      "hop": 2
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W2138389223",
+      "path": [
+        "W2741809807",
+        "W1724212071",
+        "W2138389223"
+      ],
+      "hop": 2
+    }
+  ],
+  "seed_relations": [
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W2741809807",
+      "min_hop": 0,
+      "parent_ids": [],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1560783210",
+      "min_hop": 1,
+      "parent_ids": [
+        "W2741809807"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1724212071",
+      "min_hop": 1,
+      "parent_ids": [
+        "W2741809807"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1767272795",
+      "min_hop": 1,
+      "parent_ids": [
+        "W2741809807"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1917633107",
+      "min_hop": 1,
+      "parent_ids": [
+        "W2741809807"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1931854307",
+      "min_hop": 1,
+      "parent_ids": [
+        "W2741809807"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1207649277",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1767272795"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1503178185",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1560783210"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1507416986",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1931854307"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1519946736",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1724212071"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1522052181",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1560783210"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1536424108",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1724212071"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1536719366",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1931854307"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W153854902",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1560783210"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1538876820",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1724212071"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1540815740",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1931854307"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1546460521",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1931854307"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1548037755",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1931854307"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1550189936",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1560783210"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1552729918",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1560783210",
+        "W1931854307"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1655306493",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1767272795"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1964117853",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1767272795"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W1970211697",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1767272795"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W2064374004",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1724212071"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W2741809807",
+      "paper_id": "W2138389223",
+      "min_hop": 2,
+      "parent_ids": [
+        "W1724212071"
+      ],
+      "paths_truncated": false
+    }
+  ],
+  "truncated": true,
+  "truncation_reasons": [
+    "max_neighbors:W1560783210:references",
+    "max_neighbors:W1767272795:references",
+    "max_neighbors:W1931854307:references",
+    "max_neighbors:W2741809807:references"
+  ],
+  "warnings": [
+    "Unresolved references of W1767272795: W1491139408"
+  ],
+  "openalex_requests": 15
+}

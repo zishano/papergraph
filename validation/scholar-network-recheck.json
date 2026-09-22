@@ -1,0 +1,15 @@
+{
+  "checked_at": "2026-09-21T17:13:59.349788+00:00",
+  "proxy": "http://127.0.0.1:7890",
+  "checks": [
+    {
+      "url": "https://www.google.com/generate_204",
+      "status": 204
+    },
+    {
+      "url": "https://scholar.google.com/scholar",
+      "status": 429,
+      "challenge_detected": true
+    }
+  ]
+}

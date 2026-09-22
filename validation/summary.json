@@ -1,0 +1,98 @@
+{
+  "verified_at_utc": "2026-09-21T12:14:54.863522+00:00",
+  "m1_requests": {
+    "openalex": 3,
+    "arxiv": 0
+  },
+  "m2": [
+    {
+      "case": "single-citing",
+      "nodes_by_hop": {
+        "0": 1,
+        "1": 5,
+        "2": 7
+      },
+      "edges": 12,
+      "paths": 13,
+      "network_requests": 6,
+      "truncated": true,
+      "warnings": [],
+      "example_path": [
+        {
+          "id": "W4386721862",
+          "title": "Efficient Memory Management for Large Language Model Serving with PagedAttention"
+        },
+        {
+          "id": "W4387302777",
+          "title": "PIT: Optimization of Dynamic Sparse Deep Learning Models via Permutation Invariant Transformation"
+        },
+        {
+          "id": "W4396884968",
+          "title": "Making machine learning on HPC systems cost-effective and carbon-friendly"
+        }
+      ]
+    },
+    {
+      "case": "single-references",
+      "nodes_by_hop": {
+        "0": 1,
+        "1": 5,
+        "2": 19
+      },
+      "edges": 30,
+      "paths": 26,
+      "network_requests": 5,
+      "truncated": true,
+      "warnings": [
+        "Unresolved references of W1767272795: W1491139408"
+      ],
+      "example_path": [
+        {
+          "id": "W2741809807",
+          "title": "The state of OA: a large-scale analysis of the prevalence and impact of Open Access articles"
+        },
+        {
+          "id": "W1767272795",
+          "title": "The journal coverage of Web of Science and Scopus: a comparative analysis"
+        },
+        {
+          "id": "W1207649277",
+          "title": "Les dérives de l'évaluation de la recherche : du bon usage de la bibliométrie"
+        }
+      ]
+    },
+    {
+      "case": "multi-both",
+      "nodes_by_hop": {
+        "0": 2,
+        "1": 10,
+        "2": 25
+      },
+      "edges": 59,
+      "paths": 47,
+      "network_requests": 16,
+      "truncated": true,
+      "warnings": [
+        "Unresolved references of W4387302777: W1990832096"
+      ],
+      "example_path": [
+        {
+          "id": "W4288680697",
+          "title": "OpenAlex: A fully-open index of scholarly works, authors, venues, institutions, and concepts"
+        },
+        {
+          "id": "W4323050355",
+          "title": "Which of the metadata with relevance for bibliometrics are the same and which are different when switching from Microsoft Academic Graph to OpenAlex?"
+        },
+        {
+          "id": "W1932742904",
+          "title": "An Overview of Microsoft Academic Service (MAS) and Applications"
+        }
+      ]
+    }
+  ],
+  "total_network_requests": 31,
+  "duplicate_requests": {},
+  "database_check": "N/A: M3 not implemented",
+  "scope": "M1 and M2 only; bounded live sample, not exhaustive citation neighborhoods"
+}

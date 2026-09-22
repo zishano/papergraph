@@ -1,0 +1,883 @@
+{
+  "tested_at": "2026-09-21T12:24:09.881119+00:00",
+  "seed": "W4414197293",
+  "keyword": "DSE",
+  "expansion": "Design Space Exploration",
+  "scope": "M1/M2; post-hoc lexical test only, no filtering during BFS or LLM relevance judgement",
+  "total_requests": 40,
+  "duplicate_requests": {},
+  "cases": [
+    {
+      "direction": "citing",
+      "config": {
+        "depth": 2,
+        "direction": "citing",
+        "max_papers": 200,
+        "max_papers_per_hop": 150,
+        "max_neighbors": 25,
+        "max_paths_per_pair": 20
+      },
+      "nodes_by_hop": {
+        "0": 1,
+        "1": 2,
+        "2": 2
+      },
+      "nodes": 5,
+      "edges": 5,
+      "paths": 5,
+      "new_requests": 3,
+      "truncated": false,
+      "truncation_reasons": [],
+      "warnings": [],
+      "missing_abstracts": 1,
+      "keyword_matches_including_seed": 1,
+      "keyword_matches_excluding_seed": 0,
+      "matches": [
+        {
+          "id": "W4414197293",
+          "title": "LLMShare: Optimizing LLM Inference Serving with Hardware Architecture Exploration",
+          "hop": 0,
+          "doi": "10.1109/dac63849.2025.11132534",
+          "hits": [
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "s the performance and cost across different hardware solutions and introduce a customized design space exploration framework to identify optimal setups efficiently. By aligning hardware capabilities with the specific demands of the prefill and decoding phases, we "
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "direction": "both",
+      "config": {
+        "depth": 2,
+        "direction": "both",
+        "max_papers": 200,
+        "max_papers_per_hop": 150,
+        "max_neighbors": 25,
+        "max_paths_per_pair": 20
+      },
+      "nodes_by_hop": {
+        "0": 1,
+        "1": 19,
+        "2": 150
+      },
+      "nodes": 170,
+      "edges": 510,
+      "paths": 185,
+      "new_requests": 36,
+      "truncated": true,
+      "truncation_reasons": [
+        "max_neighbors:W2098907614:citing",
+        "max_neighbors:W2098907614:references",
+        "max_neighbors:W2114188922:citing",
+        "max_neighbors:W2138209363:citing",
+        "max_neighbors:W2154327203:citing",
+        "max_neighbors:W2154327203:references",
+        "max_neighbors:W2270330859:citing",
+        "max_neighbors:W2403021642:citing",
+        "max_neighbors:W3013899498:citing",
+        "max_neighbors:W3127736057:citing",
+        "max_neighbors:W4200520905:citing",
+        "max_neighbors:W4200520905:references",
+        "max_neighbors:W4221000689:citing",
+        "max_neighbors:W4221000689:references",
+        "max_neighbors:W4226441354:citing",
+        "max_neighbors:W4385245566:citing",
+        "max_neighbors:W4387321091:citing",
+        "max_neighbors:W4401211642:citing",
+        "max_neighbors:W4401211642:references",
+        "max_neighbors:W4401211704:citing",
+        "max_neighbors:W4401211704:references",
+        "max_neighbors:W4407217670:citing",
+        "max_neighbors:W4416429485:references",
+        "max_papers_per_hop:2"
+      ],
+      "warnings": [
+        "Unresolved references of W2114188922: W2570764145",
+        "Unresolved references of W2138209363: W2076592191,W6685634405,W7029321148,W7058071925",
+        "Unresolved references of W2270330859: W6661649765,W6675526105",
+        "Unresolved references of W3013899498: W2076592191,W3102476541,W6675603290,W6680485443,W6681338486",
+        "Unresolved references of W3127736057: W6684191040,W6745245109,W6781310873",
+        "Unresolved references of W4226441354: W4211049957,W6677658955,W6680597784,W6755800398,W6758809064,W6786974643",
+        "Unresolved references of W4387321091: W6862640317",
+        "Unresolved references of W4409306177: W6641436917,W6987020231"
+      ],
+      "missing_abstracts": 34,
+      "keyword_matches_including_seed": 30,
+      "keyword_matches_excluding_seed": 29,
+      "matches": [
+        {
+          "id": "W1044727952",
+          "title": "Simultaneous exploration of optimal datapath and loop based high level transformation during area-delay tradeoff in architectural synthesis using swarm intelligence",
+          "hop": 2,
+          "doi": "10.3233/kes-150308",
+          "hits": [
+            {
+              "field": "abstract",
+              "term": "DSE",
+              "excerpt": "ansformation methodology of a swarm intelligence algorithm into design space exploration (DSE) of optimal datapath and unrolling factor during area-performance tradeoff in high level synthesis (HLS). To the best of the authors' belief, in the "
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "aper presents the first transformation methodology of a swarm intelligence algorithm into design space exploration (DSE) of optimal datapath and unrolling factor during area-performance tradeoff in high level synthesis (HLS). To the best of the authors' belief, in"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W1044727952"
+            ]
+          ]
+        },
+        {
+          "id": "W1490783972",
+          "title": "Machine learning predictive modelling high-level synthesis design space exploration",
+          "hop": 2,
+          "doi": "10.1049/iet-cdt.2011.0115",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Machine learning predictive modelling high-level synthesis design space exploration"
+            },
+            {
+              "field": "abstract",
+              "term": "DSE",
+              "excerpt": "A machine learning-based predictive model design space exploration (DSE) method for high-level synthesis (HLS) is presented. The method creates a predictive model for a training set until a given error threshold is reache"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "A machine learning-based predictive model design space exploration (DSE) method for high-level synthesis (HLS) is presented. The method creates a predictive model for a training set until a given error threshold is r"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2098907614",
+              "W1490783972"
+            ],
+            [
+              "W4414197293",
+              "W2138209363",
+              "W1490783972"
+            ]
+          ]
+        },
+        {
+          "id": "W1973484886",
+          "title": "DeSpErate++: An Enhanced Design Space Exploration Framework Using Predictive Simulation Scheduling",
+          "hop": 2,
+          "doi": "10.1109/tcad.2014.2379634",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "DeSpErate++: An Enhanced Design Space Exploration Framework Using Predictive Simulation Scheduling"
+            },
+            {
+              "field": "abstract",
+              "term": "DSE",
+              "excerpt": "ing simulation techniques. The final goal of the multiobjective design space exploration (DSE) process is the identification of architectural configurations optimal for a set of target objective functions, typically power consumption, and perf"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "ations are evaluated by using simulation techniques. The final goal of the multiobjective design space exploration (DSE) process is the identification of architectural configurations optimal for a set of target objective functions, typically power consumption, and"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W1973484886"
+            ]
+          ]
+        },
+        {
+          "id": "W1974286320",
+          "title": "Hierarchical High-Level Synthesis Design Space Exploration with Incremental Exploration Support",
+          "hop": 2,
+          "doi": "10.1109/les.2015.2417216",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Hierarchical High-Level Synthesis Design Space Exploration with Incremental Exploration Support"
+            },
+            {
+              "field": "abstract",
+              "term": "DSE",
+              "excerpt": ", while the results of the previous exploration are reused, thus enabling for incremental DSE. Results show that our method is very efficient."
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2098907614",
+              "W1974286320"
+            ],
+            [
+              "W4414197293",
+              "W2138209363",
+              "W1974286320"
+            ]
+          ]
+        },
+        {
+          "id": "W1996405247",
+          "title": "Integrated particle swarm optimization (i-PSO): An adaptive design space exploration framework for power-performance tradeoff in architectural synthesis",
+          "hop": 2,
+          "doi": "10.1109/isqed.2014.6783307",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Integrated particle swarm optimization (i-PSO): An adaptive design space exploration framework for power-performance tradeoff in architectural synthesis"
+            },
+            {
+              "field": "abstract",
+              "term": "DSE",
+              "excerpt": "This paper presents a novel adaptive design space exploration (DSE) framework called `integrated particle swarm optimization (i-PSO)' for power-execution time tradeoff during architectural synthesis of data (and cont"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "This paper presents a novel adaptive design space exploration (DSE) framework called `integrated particle swarm optimization (i-PSO)' for power-execution time tradeoff during architectural synthesis of data (and"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W1996405247"
+            ]
+          ]
+        },
+        {
+          "id": "W2001146563",
+          "title": "Swarm intelligence driven design space exploration of optimal k-cycle transient fault secured datapath during high level synthesis based on user power–delay budget",
+          "hop": 2,
+          "doi": "10.1016/j.microrel.2015.03.010",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Swarm intelligence driven design space exploration of optimal k-cycle transient fault secured datapath during high level synthesis based on user power–delay budget"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2001146563"
+            ]
+          ]
+        },
+        {
+          "id": "W2009437701",
+          "title": "Automated design space exploration of multi-cycle transient fault detectable datapath based on multi-objective user constraints for application specific computing",
+          "hop": 2,
+          "doi": "10.1016/j.advengsoft.2014.12.008",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Automated design space exploration of multi-cycle transient fault detectable datapath based on multi-objective user constraints for application specific computing"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2009437701"
+            ]
+          ]
+        },
+        {
+          "id": "W2041183895",
+          "title": "Exploiting loop-array dependencies to accelerate the design space exploration with high level synthesis",
+          "hop": 2,
+          "doi": "10.5555/2755753.2755788",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Exploiting loop-array dependencies to accelerate the design space exploration with high level synthesis"
+            },
+            {
+              "field": "abstract",
+              "term": "DSE",
+              "excerpt": " entire design space. The conventional approaches to reduce the design space exploration (DSE) complexity do not analyze the structure of the design space to limit the number of design points. To fill such a gap, we explore the structure of th"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": " impossible to explore the entire design space. The conventional approaches to reduce the design space exploration (DSE) complexity do not analyze the structure of the design space to limit the number of design points. To fill such a gap, we explore the structure "
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2041183895"
+            ]
+          ]
+        },
+        {
+          "id": "W2054069797",
+          "title": "Design space exploration of multiple loops on FPGAs using high level synthesis",
+          "hop": 2,
+          "doi": "10.1109/iccd.2014.6974719",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Design space exploration of multiple loops on FPGAs using high level synthesis"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "rs to evaluate design choices with different trade-offs through pragmas/directives. Prior design space exploration techniques for HLS primarily focus on either single nested loop or multiple loops without consideration to the data dependencies among them. In this "
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2054069797"
+            ]
+          ]
+        },
+        {
+          "id": "W2109255166",
+          "title": "OSCAR: An Optimization Methodology Exploiting Spatial Correlation in Multicore Design Spaces",
+          "hop": 2,
+          "doi": "10.1109/tcad.2011.2177457",
+          "hits": [
+            {
+              "field": "abstract",
+              "term": "DSE",
+              "excerpt": " of nonsimulated design points. This model is useful during the design space exploration (DSE) phase to quickly converge to the Pareto set of the multiobjective problem without executing lengthy simulations. To this end, we introduce a multiob"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "for predicting the quality of nonsimulated design points. This model is useful during the design space exploration (DSE) phase to quickly converge to the Pareto set of the multiobjective problem without executing lengthy simulations. To this end, we introduce a mu"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2109255166"
+            ],
+            [
+              "W4414197293",
+              "W3013899498",
+              "W2109255166"
+            ]
+          ]
+        },
+        {
+          "id": "W2113234488",
+          "title": "Adaptive Simulated Annealer for high level synthesis design space exploration",
+          "hop": 2,
+          "doi": "10.1109/vdat.2009.5158106",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Adaptive Simulated Annealer for high level synthesis design space exploration"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "This paper presents a microarchitectural design space exploration tool called cwbexplorer based on an Adpative Simulated Annealer Exploration Algorithm (ASA-ExpA) for behavioral descriptions written in untimed C or "
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2113234488"
+            ]
+          ]
+        },
+        {
+          "id": "W2132219981",
+          "title": "Accurate and efficient regression modeling for microarchitectural performance and power prediction",
+          "hop": 2,
+          "doi": "10.1145/1168857.1168881",
+          "hits": [
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "nificant potential in accurate and efficient statistical inference for microarchitectural design space exploration via regression models."
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2154327203",
+              "W2132219981"
+            ],
+            [
+              "W4414197293",
+              "W2403021642",
+              "W2132219981"
+            ]
+          ]
+        },
+        {
+          "id": "W2138209363",
+          "title": "On learning-based methods for design-space exploration with high-level synthesis",
+          "hop": 1,
+          "doi": "10.1145/2463209.2488795",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "On learning-based methods for design-space exploration with high-level synthesis"
+            },
+            {
+              "field": "abstract",
+              "term": "DSE",
+              "excerpt": "ributions to address the challenge of supervising HLS tools for design space exploration (DSE). We present a study on the application of learning-based methods for the DSE problem, and propose a learning model for HLS that is superior to the b"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "s paper makes several contributions to address the challenge of supervising HLS tools for design space exploration (DSE). We present a study on the application of learning-based methods for the DSE problem, and propose a learning model for HLS that is superior to "
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363"
+            ]
+          ]
+        },
+        {
+          "id": "W2145180784",
+          "title": "ReSPIR: A Response Surface-Based Pareto Iterative Refinement for Application-Specific Design Space Exploration",
+          "hop": 2,
+          "doi": "10.1109/tcad.2009.2028681",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "ReSPIR: A Response Surface-Based Pareto Iterative Refinement for Application-Specific Design Space Exploration"
+            },
+            {
+              "field": "abstract",
+              "term": "DSE",
+              "excerpt": "ch as energy, delay, and area). This optimization phase is calleddesign space exploration(DSE), and it usually consists of amultiobjective optimizationproblem with multiple constraints. So far, several heuristic techniques have been proposed t"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2145180784"
+            ]
+          ]
+        },
+        {
+          "id": "W2151338124",
+          "title": "Efficient system design space exploration using machine learning techniques",
+          "hop": 2,
+          "doi": "10.1145/1391469.1391712",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Efficient system design space exploration using machine learning techniques"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": " the data of systems from a previous year. We believe that these tools can accelerate the design space exploration significantly and aid in reducing the corresponding research/development cost and time-to-market."
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2151338124"
+            ]
+          ]
+        },
+        {
+          "id": "W2154327203",
+          "title": "Illustrative Design Space Studies with Microarchitectural Regression Models",
+          "hop": 1,
+          "doi": "10.1109/hpca.2007.346211",
+          "hits": [
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "space. The computational efficiency of sampling and inference enables new capabilities in design space exploration. We illustrate these capabilities using performance and power models for three studies of a 260,000 point design space: (1) Pareto frontier analysis,"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2154327203"
+            ]
+          ]
+        },
+        {
+          "id": "W2161381500",
+          "title": "Informed Microarchitecture Design Space Exploration Using Workload Dynamics",
+          "hop": 2,
+          "doi": "10.1109/micro.2007.26",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Informed Microarchitecture Design Space Exploration Using Workload Dynamics"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2154327203",
+              "W2161381500"
+            ],
+            [
+              "W4414197293",
+              "W2403021642",
+              "W2161381500"
+            ]
+          ]
+        },
+        {
+          "id": "W2162385899",
+          "title": "Aladdin",
+          "hop": 2,
+          "doi": "10.1145/2678373.2665689",
+          "hits": [
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "quire significant effort and expertise but are also slow and tedious to use, making large design space exploration infeasible. To overcome this problem, we present Aladdin, a pre-RTL, power-performance accelerator modeling framework and demonstrate its application"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2162385899"
+            ]
+          ]
+        },
+        {
+          "id": "W2163479900",
+          "title": "Decision-Theoretic Design Space Exploration of Multiprocessor Platforms",
+          "hop": 2,
+          "doi": "10.1109/tcad.2010.2049053",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Decision-Theoretic Design Space Exploration of Multiprocessor Platforms"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "This paper presents an efficient technique to perform design space exploration of a multiprocessor platform that minimizes the number of simulations needed to identify a Pareto curve with metrics like energy and delay. Instead o"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2098907614",
+              "W2163479900"
+            ],
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2163479900"
+            ]
+          ]
+        },
+        {
+          "id": "W2169880332",
+          "title": "Microarchitectural Design Space Exploration Using an Architecture-Centric Approach",
+          "hop": 2,
+          "doi": "10.1109/micro.2007.12",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Microarchitectural Design Space Exploration Using an Architecture-Centric Approach"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2154327203",
+              "W2169880332"
+            ]
+          ]
+        },
+        {
+          "id": "W2199902391",
+          "title": "Adaptive combined macro and micro-exploration of concurrent applications mapped on shared bus Reconfigurable SoC",
+          "hop": 2,
+          "doi": null,
+          "hits": [
+            {
+              "field": "abstract",
+              "term": "DSE",
+              "excerpt": "W partition is in turn explored using a High-Level Synthesis (HLS) design space explorer (DSE) (micro exploration) in order to obtain the smallest micro-architecture for each latency within a given latency range. These exploration results are "
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2199902391"
+            ]
+          ]
+        },
+        {
+          "id": "W2214116896",
+          "title": "Physical design aware system level synthesis of hardware",
+          "hop": 2,
+          "doi": "10.1109/samos.2015.7363669",
+          "hits": [
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "main. Results show two orders of magnitude improvements in efficiency of the system-level design space exploration and synthesis time, with average loss in design quality of 18% for energy and 54% for area compared to the commercial SOC flow."
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2214116896"
+            ]
+          ]
+        },
+        {
+          "id": "W2242109705",
+          "title": "Accurate, scalable, and informative modeling and analysis of complex workloads and large-scale microprocessor architectures",
+          "hop": 2,
+          "doi": null,
+          "hits": [
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": " be used to forecast workload dynamics during performance, power, reliability and thermal design space exploration."
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2154327203",
+              "W2242109705"
+            ]
+          ]
+        },
+        {
+          "id": "W2249579962",
+          "title": "Supervised Design-Space Exploration",
+          "hop": 2,
+          "doi": "10.7916/d86q1wgj",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Supervised Design-Space Exploration"
+            },
+            {
+              "field": "abstract",
+              "term": "DSE",
+              "excerpt": "pposed to holistic system-wide synthesis. These challenges make Design Space Exploration (DSE) with synthesis tools a daunting task for both novice and experienced VLSI designers, thus stagnating the development of more powerful (i.e. more com"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "mponent-level designs as opposed to holistic system-wide synthesis. These challenges make Design Space Exploration (DSE) with synthesis tools a daunting task for both novice and experienced VLSI designers, thus stagnating the development of more powerful (i.e. mor"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2114188922",
+              "W2249579962"
+            ],
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2249579962"
+            ],
+            [
+              "W4414197293",
+              "W3013899498",
+              "W2249579962"
+            ]
+          ]
+        },
+        {
+          "id": "W2285972666",
+          "title": "Statistical inference for efficient microarchitectural analysis",
+          "hop": 2,
+          "doi": null,
+          "hits": [
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "res sophisticated optimization over multiple design metrics. However, microarchi-tectural design space exploration is often inefficient and ad hoc due to the significant computational costs of hardware simulators. Long simulation times cause designers to subjectiv"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2154327203",
+              "W2285972666"
+            ]
+          ]
+        },
+        {
+          "id": "W2291098396",
+          "title": "Probabilistic Multiknob High-Level Synthesis Design Space Exploration Acceleration",
+          "hop": 2,
+          "doi": "10.1109/tcad.2015.2472007",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Probabilistic Multiknob High-Level Synthesis Design Space Exploration Acceleration"
+            },
+            {
+              "field": "abstract",
+              "term": "DSE",
+              "excerpt": "nobs. This paper presents the first method that accelerates the design space exploration (DSE) by first classifying these knobs and exploring them sequentially, thus reducing the design space to be explored considerably. In particular: 1) loca"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "cations of each of these knobs. This paper presents the first method that accelerates the design space exploration (DSE) by first classifying these knobs and exploring them sequentially, thus reducing the design space to be explored considerably. In particular: 1)"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2098907614",
+              "W2291098396"
+            ],
+            [
+              "W4414197293",
+              "W2138209363",
+              "W2291098396"
+            ]
+          ]
+        },
+        {
+          "id": "W2403021642",
+          "title": "Efficient design space exploration via statistical sampling and AdaBoost learning",
+          "hop": 1,
+          "doi": "10.1145/2897937.2898012",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Efficient design space exploration via statistical sampling and AdaBoost learning"
+            },
+            {
+              "field": "abstract",
+              "term": "DSE",
+              "excerpt": "Design space exploration (DSE) has become a notoriously difficult problem due to the exponentially increasing size of design space of microprocessors and time-consuming simulation"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "Design space exploration (DSE) has become a notoriously difficult problem due to the exponentially increasing size of design space of microprocessors and time-consuming simul"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2403021642"
+            ]
+          ]
+        },
+        {
+          "id": "W4200520905",
+          "title": "BOOM-Explorer: RISC-V BOOM Microarchitecture Design Space Exploration Framework",
+          "hop": 1,
+          "doi": "10.1109/iccad51958.2021.9643455",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "BOOM-Explorer: RISC-V BOOM Microarchitecture Design Space Exploration Framework"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W4200520905"
+            ]
+          ]
+        },
+        {
+          "id": "W4231250608",
+          "title": "Aladdin: A pre-RTL, power-performance accelerator simulator enabling large design space exploration of customized architectures",
+          "hop": 2,
+          "doi": "10.1109/isca.2014.6853196",
+          "hits": [
+            {
+              "field": "title",
+              "term": "Design Space Exploration",
+              "excerpt": "Aladdin: A pre-RTL, power-performance accelerator simulator enabling large design space exploration of customized architectures"
+            },
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "quire significant effort and expertise but are also slow and tedious to use, making large design space exploration infeasible. To overcome this problem, we present Aladdin, a pre-RTL, power-performance accelerator modeling framework and demonstrate its application"
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293",
+              "W2138209363",
+              "W4231250608"
+            ]
+          ]
+        },
+        {
+          "id": "W4414197293",
+          "title": "LLMShare: Optimizing LLM Inference Serving with Hardware Architecture Exploration",
+          "hop": 0,
+          "doi": "10.1109/dac63849.2025.11132534",
+          "hits": [
+            {
+              "field": "abstract",
+              "term": "Design Space Exploration",
+              "excerpt": "s the performance and cost across different hardware solutions and introduce a customized design space exploration framework to identify optimal setups efficiently. By aligning hardware capabilities with the specific demands of the prefill and decoding phases, we "
+            }
+          ],
+          "paths": [
+            [
+              "W4414197293"
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

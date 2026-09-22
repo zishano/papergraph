@@ -1,0 +1,42 @@
+{
+  "id": "W4414197293",
+  "openalex_id": "W4414197293",
+  "doi": "10.1109/dac63849.2025.11132534",
+  "arxiv_id": null,
+  "title": "LLMShare: Optimizing LLM Inference Serving with Hardware Architecture Exploration",
+  "authors": [
+    "Hongduo Liu",
+    "Chen Bai",
+    "Peng Xu",
+    "Lihao Yin",
+    "X. D. Yu",
+    "Hui‐Ling Zhen",
+    "Mingxuan Yuan",
+    "Tsung-Yi Ho",
+    "Yu Bei"
+  ],
+  "year": 2025,
+  "venue": null,
+  "abstract": "Large Language Models (LLMs) have revolutionized language tasks but pose significant deployment challenges due to their substantial computational demands during inference. The hardware configurations of existing LLM serving systems do not optimize for the different computational and bandwidth needs of the prefill and decoding phases in LLM inference, leading to inefficient resource use and increased costs. In this paper, we systematically investigate promising hardware configurations for LLM inference serving. We develop a simulator that models the performance and cost across different hardware solutions and introduce a customized design space exploration framework to identify optimal setups efficiently. By aligning hardware capabilities with the specific demands of the prefill and decoding phases, we achieve $13 \\%$ cost savings and over $4 \\times$ throughput improvements compared to conventional serving system setups.",
+  "cited_by_count": 2,
+  "pdf_url": null,
+  "referenced_works": [
+    "W2098907614",
+    "W2114188922",
+    "W2138209363",
+    "W2154327203",
+    "W2270330859",
+    "W2403021642",
+    "W3013899498",
+    "W3127736057",
+    "W4200520905",
+    "W4221000689",
+    "W4226441354",
+    "W4385245566",
+    "W4387321091",
+    "W4401211642",
+    "W4401211704",
+    "W4407217670",
+    "W4409306177"
+  ]
+}

@@ -1,0 +1,486 @@
+{
+  "config": {
+    "depth": 1,
+    "direction": "citing",
+    "max_papers": 1000,
+    "max_papers_per_hop": 1000,
+    "max_neighbors": 1000,
+    "max_paths_per_pair": 100
+  },
+  "seed_ids": [
+    "W4414197293"
+  ],
+  "nodes": [
+    {
+      "id": "W4414197293",
+      "openalex_id": "W4414197293",
+      "doi": "10.1109/dac63849.2025.11132534",
+      "arxiv_id": null,
+      "title": "LLMShare: Optimizing LLM Inference Serving with Hardware Architecture Exploration",
+      "authors": [
+        "Hongduo Liu",
+        "Chen Bai",
+        "Peng Xu",
+        "Lihao Yin",
+        "X. D. Yu",
+        "Hui‐Ling Zhen",
+        "Mingxuan Yuan",
+        "Tsung-Yi Ho",
+        "Yu Bei"
+      ],
+      "year": 2025,
+      "venue": null,
+      "abstract": "Large Language Models (LLMs) have revolutionized language tasks but pose significant deployment challenges due to their substantial computational demands during inference. The hardware configurations of existing LLM serving systems do not optimize for the different computational and bandwidth needs of the prefill and decoding phases in LLM inference, leading to inefficient resource use and increased costs. In this paper, we systematically investigate promising hardware configurations for LLM inference serving. We develop a simulator that models the performance and cost across different hardware solutions and introduce a customized design space exploration framework to identify optimal setups efficiently. By aligning hardware capabilities with the specific demands of the prefill and decoding phases, we achieve $13 \\%$ cost savings and over $4 \\times$ throughput improvements compared to conventional serving system setups.",
+      "cited_by_count": 2,
+      "pdf_url": null,
+      "referenced_works": [
+        "W2098907614",
+        "W2114188922",
+        "W2138209363",
+        "W2154327203",
+        "W2270330859",
+        "W2403021642",
+        "W3013899498",
+        "W3127736057",
+        "W4200520905",
+        "W4221000689",
+        "W4226441354",
+        "W4385245566",
+        "W4387321091",
+        "W4401211642",
+        "W4401211704",
+        "W4407217670",
+        "W4409306177"
+      ],
+      "hop": 0,
+      "seed_ids": [
+        "W4414197293"
+      ],
+      "parent_ids": []
+    },
+    {
+      "id": "W4416429485",
+      "openalex_id": "W4416429485",
+      "doi": "10.1109/iccad66269.2025.11240867",
+      "arxiv_id": null,
+      "title": "AccelStack: A Cost-Driven Analysis of 3D-Stacked LLM Accelerators",
+      "authors": [
+        "Chen Bai",
+        "Xin Fan",
+        "Zhenhua Zhu",
+        "Wei Zhang",
+        "Yuan Xie"
+      ],
+      "year": 2025,
+      "venue": null,
+      "abstract": "Large language models (LLMs) show viability for artificial general intelligence (AGI) with high computing power and memory bandwidth demands. While existing LLM accelerators leverage high-bandwidth memory (HBM) and 2.5D packaging to address the challenge, emerging hybrid bonding techniques unlock new opportunities for 3D-stacked LLM accelerators. This paper proposes AccelStack, a cost-driven analysis for the new architecture via two innovations. First, a performance model capturing memory-on-logic is presented. Second, a cost model for die-on-die (DoD), die-on-wafer (DoW), and wafer-on-wafer (WoW) is proposed. Evaluations show 3D-stacked accelerators achieve up to 7.17× and 2.09× faster inference than NVIDIA A100 (FP16) and H100 (FP8) simulation results across various LLM workloads, with chiplet-based designs reducing recurring engineering costs by 38.09% versus monolithic implementations.",
+      "cited_by_count": 3,
+      "pdf_url": null,
+      "referenced_works": [
+        "W2042120213",
+        "W2162009815",
+        "W2518432791",
+        "W2532719504",
+        "W2970073801",
+        "W3130554079",
+        "W3157657667",
+        "W3166510811",
+        "W3188178661",
+        "W3192636176",
+        "W4206364646",
+        "W4220769636",
+        "W4220972538",
+        "W4283076324",
+        "W4285047926",
+        "W4293023438",
+        "W4324292875",
+        "W4376130831",
+        "W4380874786",
+        "W4385192563",
+        "W4388031315",
+        "W4388979610",
+        "W4394693961",
+        "W4401211711",
+        "W4407692602",
+        "W4407695247",
+        "W4411689103",
+        "W4414197293",
+        "W4414281281"
+      ],
+      "hop": 1,
+      "seed_ids": [
+        "W4414197293"
+      ],
+      "parent_ids": [
+        "W4414197293"
+      ]
+    },
+    {
+      "id": "W7163575291",
+      "openalex_id": "W7163575291",
+      "doi": "10.23919/date69613.2026.11539481",
+      "arxiv_id": null,
+      "title": "FlashGEMM: Mesh-Aware Efficient GEMM for 3D-Stacked LLM Accelerators",
+      "authors": [
+        "Xin Fan",
+        "Chen Bai",
+        "Xin Yang",
+        "Zhenhua Zhu",
+        "Yue Wang",
+        "Zhaode Zhang",
+        "Yuan Xie"
+      ],
+      "year": 2026,
+      "venue": null,
+      "abstract": "Large language models (LLMs) are foundational to artificial general intelligence (AGI), while imposing stringent hardware demands in computational power and memory bandwidth. To meet these demands, recent advances in hybrid bonding offer new opportunities through high-bandwidth, low-latency logic-memory 3D integration. Due to the spatial distribution of bandwidth in 3D-stacked DRAM, accesses to remote DRAM banks need to traverse the network-on-chip (NoC). Since GEMM is the dominant operator in LLM workloads, we analyze existing distributed GEMM algorithms and show that they suffer from communication inefficiency on mesh topologies. To address these challenges, we present FlashGEMM, a mesh-aware distributed GEMM algorithm that achieves efficient communication-computation overlap and optimized execution flow for 3D-stacked LLM accelerators. Evaluations show that FlashGEMM delivers up to 1.50× improvement in time-to-first-token (TTFT) and 7.11× improvement in throughput over prior methods.",
+      "cited_by_count": 0,
+      "pdf_url": null,
+      "referenced_works": [
+        "W2056999868",
+        "W2118231264",
+        "W2565436413",
+        "W2970073801",
+        "W3005962614",
+        "W3130554079",
+        "W3136346557",
+        "W3157657667",
+        "W3192636176",
+        "W4324292875",
+        "W4352977393",
+        "W4362566357",
+        "W4362714630",
+        "W4376130831",
+        "W4380874786",
+        "W4388031315",
+        "W4389518760",
+        "W4392746501",
+        "W4396712969",
+        "W4401211711",
+        "W4407692602",
+        "W4410583555",
+        "W4411471720",
+        "W4414197293",
+        "W4416429485"
+      ],
+      "hop": 1,
+      "seed_ids": [
+        "W4414197293"
+      ],
+      "parent_ids": [
+        "W4414197293"
+      ]
+    },
+    {
+      "id": "W7167828524",
+      "openalex_id": "W7167828524",
+      "doi": "10.48550/arxiv.2607.07096",
+      "arxiv_id": "2607.07096",
+      "title": "ThermoDSE: A Thermal-Aware and Comprehensive Design Space Exploration for Chiplet-Based DNN Accelerators",
+      "authors": [
+        "Jie Peng",
+        "Hanwei Fan",
+        "J Jiang",
+        "Lu Jiang",
+        "Wei Zhang"
+      ],
+      "year": 2026,
+      "venue": "arXiv (Cornell University)",
+      "abstract": "Chiplet-based DNN accelerators provide a scalable path to balance performance and yield for modern AI workloads. However, such systems face critical challenges in area and thermal constraints. Design space optimization should jointly consider fine-grained task modeling, chiplet granularity, core granularity, and critical physical constraints. To the best of our knowledge, this is the first framework that involves all these factors. In this work, we propose ThermoDSE, a thermal-aware and comprehensive design space exploration framework for chiplet-based DNN accelerators. ThermoDSE integrates existing fine-grained modeling techniques into a unified simulation and optimization framework that jointly considers architecture design, task orchestration, and inter-chiplet communication under strict thermal and area constraints. Experimental results show that ThermoDSE achieves up to 3.5x improvement in Energy-Delay-Inverse-Yield, defined as E times D times inverse Y, compared with state-of-the-art Simba and other baselines. Furthermore, relative to simulated annealing and reinforcement learning-based methods, ThermoDSE converges to better design points with 3.7x and 29.4x runtime speedups, respectively.",
+      "cited_by_count": 0,
+      "pdf_url": null,
+      "referenced_works": [],
+      "hop": 1,
+      "seed_ids": [
+        "W4414197293"
+      ],
+      "parent_ids": [
+        "W4414197293"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source_id": "W4416429485",
+      "target_id": "W4414197293",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W7163575291",
+      "target_id": "W4414197293",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W7163575291",
+      "target_id": "W4416429485",
+      "relation": "cites",
+      "provider": "openalex"
+    },
+    {
+      "source_id": "W7167828524",
+      "target_id": "W4414197293",
+      "relation": "cites",
+      "provider": "arxiv_html"
+    }
+  ],
+  "paths": [
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W4414197293",
+      "path": [
+        "W4414197293"
+      ],
+      "hop": 0
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W4416429485",
+      "path": [
+        "W4414197293",
+        "W4416429485"
+      ],
+      "hop": 1
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W7163575291",
+      "path": [
+        "W4414197293",
+        "W7163575291"
+      ],
+      "hop": 1
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W7167828524",
+      "path": [
+        "W4414197293",
+        "W7167828524"
+      ],
+      "hop": 1
+    }
+  ],
+  "seed_relations": [
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W4414197293",
+      "min_hop": 0,
+      "parent_ids": [],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W4416429485",
+      "min_hop": 1,
+      "parent_ids": [
+        "W4414197293"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W7163575291",
+      "min_hop": 1,
+      "parent_ids": [
+        "W4414197293"
+      ],
+      "paths_truncated": false
+    },
+    {
+      "seed_id": "W4414197293",
+      "paper_id": "W7167828524",
+      "min_hop": 1,
+      "parent_ids": [
+        "W4414197293"
+      ],
+      "paths_truncated": false
+    }
+  ],
+  "truncated": false,
+  "truncation_reasons": [],
+  "warnings": [
+    "Citation graph source: OpenAlex. In citing mode, nodes are papers that cite the seed or the preceding hop. Missing OpenAlex citation edges may be supplemented with the arXiv verify command.",
+    "arXiv verification covers discovered or supplied candidates only; new nodes were not expanded further.",
+    "Automatic arXiv candidate verification checked 20 keyword matches."
+  ],
+  "openalex_requests": 2,
+  "requests": {
+    "openalex": 3,
+    "arxiv": 0,
+    "arxiv_discovery": 2
+  },
+  "verification": [
+    {
+      "arxiv_id": "2609.21537",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:57:35.914800+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "Design Space Exploration of In-Memory Computing Implementations for Discrete Fourier Transform"
+    },
+    {
+      "arxiv_id": "2609.13546",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:57:36.177962+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "WISER: Systematic Design - Space Exploration of Fault-Tolerant Global Control Trapped-Ions"
+    },
+    {
+      "arxiv_id": "2609.02988",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:57:37.965609+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "Mesh-Native Physics-Informed Graph Surrogates for TCAD-in-the-Loop Design Space Exploration"
+    },
+    {
+      "arxiv_id": "2609.00812",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:57:40.523420+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "Aerodynamic Shape Design Space Exploration with Deep Latent Diffusion Model"
+    },
+    {
+      "arxiv_id": "2608.30932",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:57:43.711423+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "Beacon: LLM Multi-Agent Driven Hardware Design Space Exploration for Heterogeneous Multi-Chiplet Deep Learning Accelerators"
+    },
+    {
+      "arxiv_id": "2608.23440",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:57:46.449458+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "Temporal Property-driven Design Space Exploration with Reinforcement Learning for Cyber-Physical Systems"
+    },
+    {
+      "arxiv_id": "2608.23404",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:57:49.939134+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "VIPER: Architecture-Aware Performance Modeling for Processing-in-Memory Design - Space Exploration"
+    },
+    {
+      "arxiv_id": "2608.20677",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:57:52.860872+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "A Design Space Exploration of Async/Await"
+    },
+    {
+      "arxiv_id": "2608.06183",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:57:56.244840+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "MicroEvo: Knowledge-Guided LLM Sampling for Efficient Microarchitecture Design Space Exploration"
+    },
+    {
+      "arxiv_id": "2607.22269",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:57:59.035993+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "Kalyna Block Cipher: From Design Space Exploration to ASIC Design"
+    },
+    {
+      "arxiv_id": "2607.15068",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:58:02.651702+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "Pattern-Guided Design Space Exploration for FPGA Accelerator Design"
+    },
+    {
+      "arxiv_id": "2607.07096",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:58:04.705457+00:00",
+      "status": "verified",
+      "evidence": [
+        {
+          "target_id": "W4414197293",
+          "provider": "arxiv_html",
+          "url": "https://arxiv.org/html/2607.07096#bib.bib41",
+          "reference_text": "[41] H. Liu, C. Bai, P. Xu, L. Yin, X. Yu, H.-L. Zhen, M. Yuan, T.-Y. Ho, and B. Yu, “LLMShare: Optimizing LLM inference serving with hardware architecture exploration,” in 2025 62nd ACM/IEEE Design Automation Conference (DAC) . IEEE, 2025, pp. 1–7.",
+          "match": "normalized_full_title"
+        }
+      ],
+      "title": "ThermoDSE: A Thermal-Aware and Comprehensive Design Space Exploration for Chiplet-Based DNN Accelerators",
+      "paper_id": "W7167828524"
+    },
+    {
+      "arxiv_id": "2607.06456",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:58:06.773471+00:00",
+      "status": "unverified",
+      "evidence": [],
+      "title": "A Hardware-Aware Open-Source Framework for Design Space Exploration of Mixed-Signal Spiking Neural Networks",
+      "error": "arXiv HTML identity could not be confirmed"
+    },
+    {
+      "arxiv_id": "2606.21836",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:58:09.051823+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "AgentDSE: Reasoning-Augmented Architectural Design Space Exploration"
+    },
+    {
+      "arxiv_id": "2606.13371",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:58:12.248152+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "Experimental Design Space Exploration of Ultra-Low Threshold Hybrid III-V/Si Quantum Dot Microring Lasers"
+    },
+    {
+      "arxiv_id": "2606.11716",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:58:15.394966+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "A Fast Locality Simulator for GEMM Design - Space Exploration on Multi-Chiplet GPUs"
+    },
+    {
+      "arxiv_id": "2606.07463",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:58:18.332030+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "Amortized Neural Optimization for Pre-Layout Signal Integrity Design Space Exploration using Differentiable Surrogates"
+    },
+    {
+      "arxiv_id": "2606.06765",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:58:21.252627+00:00",
+      "status": "unverified",
+      "evidence": [],
+      "title": "Reactivity-Informed Machine Learning for Performance Prediction and Design Space Exploration of Alkali-Activated Slag",
+      "error": "arXiv HTML unavailable; citation remains unverified"
+    },
+    {
+      "arxiv_id": "2606.06515",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:58:23.926809+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "DxPTA: An Architecture Design Space Exploration with Optical Dataflow-guided Strategy for HW/SW Co-Design of Photonic Transformer Accelerators"
+    },
+    {
+      "arxiv_id": "2606.05362",
+      "discovery_source": "arxiv_keyword_search",
+      "checked_at": "2026-09-21T17:58:27.740261+00:00",
+      "status": "not_found_in_available_bibliography",
+      "evidence": [],
+      "title": "MOSAIC: A Workload-Driven Simulation and Design - Space Exploration Framework for Heterogeneous NPUs"
+    }
+  ]
+}
