@@ -63,6 +63,7 @@ async def test_transient_503_retries_same_model():
 
 async def test_analyze_batches_multiple_papers_in_one_request():
     calls = 0
+    progress_messages = []
     def handler(request):
         nonlocal calls
         calls += 1
@@ -76,11 +77,14 @@ async def test_analyze_batches_multiple_papers_in_one_request():
             "parts": [{"text": json.dumps(rows, ensure_ascii=False)}]}}]})
     async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
         records = await GeminiScorer(http, api_key="test", model="batch-model",
-                                     interval=0, batch_size=10).analyze(graph(), "DSE")
+                                     interval=0, batch_size=10).analyze(
+                                         graph(), "DSE", progress=progress_messages.append)
     assert calls == 1
     assert len(records) == 4
     assert sum(record["status"] == "completed" for record in records) == 3
     assert sum(record["status"] == "skipped_missing_abstract" for record in records) == 1
+    assert "结果论文共 4 篇：3 篇有摘要进入 Gemini，1 篇缺少摘要并跳过" in progress_messages
+    assert any(message.startswith("  跳过（缺少摘要）：") for message in progress_messages)
 
 
 async def test_failed_batch_is_split_and_retried():
