@@ -11,7 +11,7 @@ Excel 输出还可使用 Google AI Studio 免费额度中的 Gemini Flash 模型
 项目内的 `.venv` 已经安装好。在终端运行：
 
 ```bash
-cd /mnt/e/Project/LMK/papergraph
+cd papergraph
 source .venv/bin/activate
 # 首次使用时编辑项目根目录的 .env，填入需要的 API Key
 papergraph --help
@@ -19,26 +19,13 @@ papergraph --help
 
 以后每次打开新终端，只需执行前两行。若不想激活环境，也可以直接运行 `.venv/bin/papergraph`。
 
-以 LLMShare 为种子，查找“引用它的论文”，同时输出 JSON 和 Excel：
-
-```bash
-mkdir -p outputs
-papergraph search \
-  --seed 'LLMShare: Optimizing LLM Inference Serving with Hardware Architecture Exploration' \
-  --direction citing \
-  --depth 2 \
-  --keywords DSE \
-  --excel outputs/LLMShare.xlsx \
-  > outputs/LLMShare.json
-```
-
 推荐使用 JSON 配置运行，命令只保留配置文件路径：
 
 ```bash
 papergraph search --config configs/llmshare.json > outputs/LLMShare.json
 ```
 
-示例配置见 [configs/config.example.json](configs/config.example.json)、[configs/llmshare.json](configs/llmshare.json) 和 [configs/verify-example.json](configs/verify-example.json)。`config.example.json` 是完整参数示例；运行配置保持纯 JSON，不混入说明字段。JSON 中的 `proxy: null` 表示使用 `.env` 或系统代理；API Key 仍只放在 `.env`，不放进 JSON。
+示例配置见 [configs/config.example.json](configs/config.example.json)、[configs/llmshare.json](configs/llmshare.json)、[configs/resolve-example.json](configs/resolve-example.json) 和 [configs/verify-example.json](configs/verify-example.json)。字段说明见 [configs/config.example.md](configs/config.example.md)。运行配置保持纯 JSON，不混入说明字段。JSON 中的 `proxy: null` 表示使用 `.env` 或系统代理；API Key 仍只放在 `.env`，不放进 JSON。
 
 `citing` 的含义是：
 
@@ -55,7 +42,7 @@ papergraph search --config configs/llmshare.json > outputs/LLMShare.json
 需要 Python 3.11+ 和 [uv](https://docs.astral.sh/uv/)。运行一键脚本：
 
 ```bash
-cd /mnt/e/Project/LMK/papergraph
+cd papergraph
 ./setup.sh
 source .venv/bin/activate
 ```
@@ -89,7 +76,7 @@ PAPERGRAPH_GEMINI_MODEL=auto
 配置步骤：
 
 ```bash
-cd /mnt/e/Project/LMK/papergraph
+cd papergraph
 cp -n .env.example .env
 nano .env                 # 也可以直接用 VS Code 编辑
 ```
@@ -150,8 +137,7 @@ nano .env                 # 也可以直接用 VS Code 编辑
 
 ```bash
 papergraph resolve \
-  --seed '10.1109/DAC63849.2025.11132534' \
-  --seed '2607.07096'
+  --config configs/resolve-example.json
 ```
 
 ### `papergraph search`
@@ -195,23 +181,9 @@ papergraph resolve \
 完整参数示例：
 
 ```bash
-papergraph search \
-  --seed '完整标题' \
-  --source openalex \
-  --proxy http://127.0.0.1:7890 \
-  --depth 2 \
-  --direction citing \
-  --max-papers 1000 \
-  --max-papers-per-hop 1000 \
-  --max-neighbors 1000 \
-  --max-paths-per-pair 100 \
-  --keywords 'DSE,chiplet' \
-  --arxiv-auto-verify \
-  --arxiv-max-candidates 20 \
-  --gemini \
-  --gemini-model auto \
-  --excel outputs/result.xlsx \
-  > outputs/result.json
+cp configs/config.example.json configs/my-search.json
+# 编辑 configs/my-search.json 后运行：
+papergraph search --config configs/my-search.json > outputs/result.json
 ```
 
 ### `papergraph verify`
@@ -244,16 +216,7 @@ papergraph verify --config configs/verify-example.json
 ### 解析论文与选择搜索方向
 
 ```bash
-papergraph resolve --seed '完整标题或论文 ID'
-
-# 引用种子论文的论文（默认，也是当前需求）
-papergraph search --seed '完整标题' --direction citing
-
-# 种子论文引用的参考文献
-papergraph search --seed '完整标题' --direction references
-
-# 两个方向
-papergraph search --seed '完整标题' --direction both
+复制 `configs/llmshare.json` 后，将 JSON 中的 `direction` 改为 `citing`、`references` 或 `both`，再运行 `papergraph search --config <配置文件>`。
 ```
 
 运行 `papergraph search --help` 可查看深度、节点数和每节点分支数等限制参数。
@@ -270,14 +233,7 @@ OpenAlex 可能已经收录论文，却尚未记录其引用边。`search` 在 `
 开头的 LLMShare 命令无需提供 ThermoDSE 的 arXiv ID，即可自动补入这篇论文。默认最多检查 20 个候选，可调整：
 
 ```bash
-papergraph search \
-  --seed '完整标题' \
-  --direction citing \
-  --depth 1 \
-  --keywords DSE \
-  --arxiv-max-candidates 50 \
-  --excel outputs/result.xlsx \
-  > outputs/result.json
+复制搜索配置，将 `arxiv_max_candidates` 改为 `50`，然后运行 `papergraph search --config <配置文件>`。
 ```
 
 如需关闭该步骤，使用 `--no-arxiv-auto-verify`。
@@ -285,12 +241,7 @@ papergraph search \
 如果已经知道候选论文的 arXiv ID，也可以单独使用 `verify`：
 
 ```bash
-papergraph verify \
-  --graph outputs/LLMShare.json \
-  --candidate-arxiv 2607.07096 \
-  --keywords DSE \
-  --output outputs/LLMShare-verified.json \
-  --excel outputs/LLMShare-verified.xlsx
+编辑 `configs/verify-example.json` 中的候选和输出路径，然后运行 `papergraph verify --config configs/verify-example.json`。
 ```
 
 也可以传入 UTF-8 CSV：
@@ -301,11 +252,7 @@ arxiv_id,source
 ```
 
 ```bash
-papergraph verify \
-  --graph outputs/LLMShare.json \
-  --candidates-csv candidates.csv \
-  --output outputs/LLMShare-verified.json \
-  --excel outputs/LLMShare-verified.xlsx
+将 `candidates_csv` 写入验证配置后运行 `papergraph verify --config configs/verify-example.json`。
 ```
 
 核验器先确认 arXiv 页面身份，再在结构化 bibliography 中匹配种子完整标题。正文中只提及标题不算引用。HTML 缺失、网络失败或没有结构化参考文献都会产生明确状态，不会被解释成“没有引用”。补充边的 `provider` 为 `arxiv_html`，OpenAlex 原始边保持 `openalex`。
@@ -327,7 +274,7 @@ GOOGLE_AI_API_KEY=你的_key
 如本次不需要模型分析：
 
 ```bash
-papergraph search --seed '完整标题' --no-gemini
+在搜索配置中将 `gemini` 改为 `false`，然后运行 `papergraph search --config <配置文件>`。
 ```
 
 API Key 只从环境变量读取，不写入 JSON、Excel 或日志。免费额度、可用模型及调用限制由 Google 账号和地区决定。
@@ -343,9 +290,7 @@ OPENALEX_API_KEY=你的_key
 访问失败时，可指定本地代理：
 
 ```bash
-papergraph search \
-  --proxy http://127.0.0.1:7890 \
-  --seed '完整标题'
+在搜索配置中填写 `proxy`，例如 `"proxy": "http://127.0.0.1:7890"`。
 ```
 
 代理优先级为 `--proxy`、`.env` 中的 `PAPERGRAPH_PROXY`、`HTTPS_PROXY` / `HTTP_PROXY` / `ALL_PROXY`：
@@ -358,13 +303,7 @@ PAPERGRAPH_PROXY=http://127.0.0.1:7890
 
 Google Scholar 只是显式选择的备用来源：
 
-```bash
-# 直接网页访问，可能被 Google 限流
-papergraph search --source scholar --scholar-backend web --seed '完整标题'
-
-# 使用 SerpApi（先在 .env 中填写 SERPAPI_API_KEY）
-papergraph search --source scholar --scholar-backend serpapi --seed '完整标题'
-```
+将搜索配置中的 `source` 设为 `scholar`，并按需将 `scholar_backend` 设为 `web` 或 `serpapi`；随后仍使用 `papergraph search --config <配置文件>` 启动。
 
 Scholar 网页返回 CAPTCHA/429 时，程序会明确报错，不绕过访问限制。默认 OpenAlex 流程不需要 `SERPAPI_API_KEY`。
 
@@ -420,7 +359,7 @@ LLMShare 案例已验证 OpenAlex 自动图和 arXiv 候选核验流程。验证
 第一次使用：
 
 ```bash
-cd /mnt/e/Project/LMK/papergraph
+cd papergraph
 ./setup.sh
 cp -n .env.example .env
 # 编辑 .env，至少填写 GOOGLE_AI_API_KEY（需要 Gemini 时）
@@ -436,7 +375,7 @@ papergraph search --config configs/llmshare.json > outputs/LLMShare.json
 只解析论文身份：
 
 ```bash
-papergraph resolve --seed '10.1109/DAC63849.2025.11132534'
+papergraph resolve --config configs/resolve-example.json
 ```
 
 查找种子引用的参考文献：复制 `configs/llmshare.json` 为新文件，将 `direction` 改为 `references`。
@@ -485,4 +424,4 @@ papergraph verify --config configs/verify-example.json
 python -m pytest -q
 ```
 
-配置字段的完整用途和可选值见 [configs/config.example.json](configs/config.example.json)；CLI 的逐参数参考见上面的“完整命令参数”章节。LLMShare 的实际结果和证据见 [validation/llmshare-dse/REPORT.md](validation/llmshare-dse/REPORT.md)。
+配置字段的完整用途和可选值见 [configs/config.example.md](configs/config.example.md) 及 [configs/config.example.json](configs/config.example.json)；CLI 的逐参数参考见上面的“完整命令参数”章节。LLMShare 的实际结果和证据见 [validation/llmshare-dse/REPORT.md](validation/llmshare-dse/REPORT.md)。
