@@ -10,10 +10,12 @@ from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from openpyxl.utils import get_column_letter
 
 from papergraph.models import CitationGraph
+from papergraph.translator import GoogleAITranslator
 
 
-def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "",
-                verification: list | None = None, analysis: list | None = None) -> Path:
+async def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "",
+                      verification: list | None = None, analysis: list | None = None,
+                      translator: GoogleAITranslator | None = None) -> Path:
     destination = Path(destination)
     if destination.suffix.lower() != ".xlsx":
         raise ValueError("Excel output path must end in .xlsx")
@@ -76,16 +78,38 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
 
     nodes = {n.id: n for n in graph.nodes}
     analysis_by_id = {item["paper_id"]: item for item in (analysis or [])}
+
+    # Translate abstracts if translator is provided
+    abstracts_to_translate = []
+    node_list = []
+    for n in sorted(graph.nodes, key=lambda n: (n.hop, n.id)):
+        if n.id not in graph.seed_ids:
+            node_list.append(n)
+            abstracts_to_translate.append(n.abstract or "")
+
+    translated_abstracts = []
+    if translator:
+        try:
+            translated_abstracts = await translator.translate_batch(abstracts_to_translate)
+        except Exception:
+            translated_abstracts = ["翻译服务不可用"] * len(abstracts_to_translate)
+    else:
+        translated_abstracts = [""] * len(abstracts_to_translate)
+
     rows = []
     add_rows = []
-    for n in sorted(graph.nodes, key=lambda n: (n.hop, n.id)):
-        if n.id in graph.seed_ids:
-            continue
+    for idx, n in enumerate(node_list):
         hits = [term for term, pattern in patterns if pattern.search(n.title + "\n" + (n.abstract or ""))]
         relation = ("直接引用种子" if n.hop == 1 else "二跳及以上间接关联") if graph.config.direction == "citing" else "见路径与引用边"
         hit_text = ", ".join(hits) if hits else ("未命中（不排除）" if terms else "未指定关键词")
         ai = analysis_by_id.get(n.id, {})
-        rows.append([n.title, n.year, f"{relation}（Hop {n.hop}）", n.abstract,
+
+        # Combine English and Chinese abstracts
+        abstract_en = n.abstract or ""
+        abstract_zh = translated_abstracts[idx] if idx < len(translated_abstracts) else ""
+        combined_abstract = f"{abstract_en}\n\n【中文翻译】\n{abstract_zh}" if abstract_zh else abstract_en
+
+        rows.append([n.title, n.year, f"{relation}（Hop {n.hop}）", combined_abstract,
                      hit_text, "; ".join(n.authors), ai.get("summary", ""),
                      ai.get("score"), ai.get("reason", "")])
         add_rows.append([

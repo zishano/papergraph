@@ -2,7 +2,7 @@
 
 PaperGraph 是一个终端工具，用于解析论文身份并构建有限深度的引用图。当前默认用 **OpenAlex 自动查找引用目标论文的后续论文**；指定关键词后，还会 **自动搜索 arXiv 候选并核验原文参考文献**。关键词同时用于 Excel 辅助标注，但不会筛掉 OpenAlex 结果。
 
-Excel 输出还可使用 Google AI Studio 免费额度中的 Gemini Flash 模型生成中文摘要总结和 0–100 分评分。调用方式和四维评分规则参考本地 `daily-papers` 项目。
+Excel 输出还可使用 Google AI Studio 免费额度中的 Gemini Flash 模型生成中文摘要总结和 0–100 分评分。调用方式和四维评分规则参考本地 `daily-papers` 项目。论文摘要会自动翻译为中英文双语显示。
 
 项目当前严格限定在设计文档的 M1 和 M2 范围内。详细边界见 [DESIGN.md](DESIGN.md)。
 
@@ -88,7 +88,7 @@ nano .env                 # 也可以直接用 VS Code 编辑
 
 | 配置项                      |         是否必需 | 用途                                                                        |
 | --------------------------- | ---------------: | --------------------------------------------------------------------------- |
-| `GOOGLE_AI_API_KEY`       |  Gemini 功能必需 | Google AI Studio 免费额度的摘要总结和评分；兼容备用变量名`GEMINI_API_KEY` |
+| `GOOGLE_AI_API_KEY`       |  Gemini 功能必需 | Google AI Studio 免费额度的摘要总结、评分和摘要翻译；兼容备用变量名`GEMINI_API_KEY` |
 | `OPENALEX_API_KEY`        |               否 | 提高 OpenAlex 调用额度；小规模查询通常可匿名运行                            |
 | `SERPAPI_API_KEY`         | SerpApi 后端必需 | 仅用于`--source scholar --scholar-backend serpapi`                        |
 | `PAPERGRAPH_PROXY`        |               否 | 本地 VPN 的 HTTP/mixed 代理，例如`http://127.0.0.1:7890`                  |
@@ -111,6 +111,8 @@ nano .env                 # 也可以直接用 VS Code 编辑
 | 有界广度优先搜索      | 已支持 | 深度 0–3、单个或多个种子、节点/分支数量限制                           |
 | 路径和来源记录        | 已支持 | 去重、父节点、发现路径、引用边以及 provider                            |
 | JSON 与 Excel 输出    | 已支持 | JSON 写到标准输出；Excel 包含论文、路径、边和说明                      |
+| 论文去重与元数据补全  | 已支持 | 基于标题规范化去重；使用 OpenAlex 和 arXiv 补充缺失的年份、作者信息   |
+| 摘要双语翻译          | 已支持 | Excel 中摘要列自动显示中英文；使用 Gemini Flash 翻译                   |
 | Gemini 摘要与评分     | 已支持 | 免费 Gemini/Gemma 模型自动轮换；创新性、实用性、严谨性、清晰度四维评分 |
 | 关键词辅助标注        | 已支持 | `DSE` 同时匹配 `Design Space Exploration`；不删除未命中论文        |
 | arXiv 候选自动发现    | 已支持 | 根据关键词搜索近期 arXiv 标题，默认最多检查 20 篇                      |

@@ -7,6 +7,7 @@ import httpx
 
 from papergraph.graph.crawler import CitationCrawler
 from papergraph.gemini import GeminiScorer
+from papergraph.translator import GoogleAITranslator
 from papergraph.config import load_project_env
 from papergraph.models import CrawlConfig
 from papergraph.excel import write_excel
@@ -90,7 +91,8 @@ async def run(args: argparse.Namespace) -> dict:
         output = Path(args.output)
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
-        write_excel(graph, args.excel, args.keywords, result['verification'], analysis)
+        translator = GoogleAITranslator(http)
+        await write_excel(graph, args.excel, args.keywords, result['verification'], analysis, translator)
         return result
     config = None
     if args.command == "search":
@@ -129,7 +131,8 @@ async def run(args: argparse.Namespace) -> dict:
             analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto")).analyze(
                 graph, args.keywords) if getattr(args, "gemini", True) else [])
             if getattr(args, 'excel', None):
-                write_excel(graph, args.excel, args.keywords, analysis=analysis)
+                translator = GoogleAITranslator(http)
+                await write_excel(graph, args.excel, args.keywords, analysis=analysis, translator=translator)
             return graph.model_dump() | {'source': scholar.source, 'analysis': analysis,
                 'requests': {'scholar': scholar.requests, 'openalex': provider.requests}}
         if getattr(args, 'scholar_list', None):
@@ -159,8 +162,9 @@ async def run(args: argparse.Namespace) -> dict:
             analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto")).analyze(
                 graph, getattr(args, "keywords", "")) if getattr(args, "gemini", True) else [])
             if getattr(args, "excel", None):
-                write_excel(graph, args.excel, getattr(args, "keywords", ""),
-                            verification if auto_verify else None, analysis)
+                translator = GoogleAITranslator(http)
+                await write_excel(graph, args.excel, getattr(args, "keywords", ""),
+                            verification if auto_verify else None, analysis, translator)
             result = graph.model_dump() | {"requests": {
                 "openalex": provider.requests, "arxiv": resolver.arxiv_requests,
                 "arxiv_discovery": discovery_requests,

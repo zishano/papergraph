@@ -78,28 +78,91 @@ class ScholarProvider:
         title = entry.get('title', '').strip()
         if not title:
             raise ValueError('Scholar record requires a title')
+
+        # Normalize title for deduplication
+        norm_title = normalize_title(title)
+
+        # Check if we've already processed this paper by normalized title
+        for existing_id, existing_entry in self.entries.items():
+            if normalize_title(existing_entry.get('title', '')) == norm_title:
+                # Return existing paper, update aliases
+                self.aliases['scholar:' + str(entry.get('result_id', ''))] = existing_id
+                # Return cached paper
+                return await self._get_cached_paper(existing_id)
+
         cited = (entry.get('inline_links') or {}).get('cited_by') or {}
         sid = str(cited.get('cites_id') or entry.get('result_id') or
                   hashlib.sha256((title + entry.get('link', '')).encode()).hexdigest()[:20])
         identifier = 'scholar:' + sid
         self.entries[identifier] = entry
-        paper = Paper(id=identifier, openalex_id=None, title=title)
+
+        # Extract snippet from Scholar/SerpAPI as fallback abstract
+        snippet = entry.get('snippet', '').strip() or None
+
+        # Try to extract basic metadata from Scholar entry
+        pub_info = entry.get('publication_info', {})
+        authors = [a.get('name', '') for a in pub_info.get('authors', [])]
+
+        # Extract year from publication_info summary (e.g., "Author et al., 2023")
+        year = None
+        summary = pub_info.get('summary', '')
+        if summary:
+            import re
+            year_match = re.search(r'\b(19|20)\d{2}\b', summary)
+            if year_match:
+                year = int(year_match.group())
+
+        paper = Paper(
+            id=identifier,
+            openalex_id=None,
+            title=title,
+            abstract=snippet,
+            authors=authors if authors else [],
+            year=year
+        )
+
         # Metadata lookup failure cannot remove a Scholar member.
         try:
             if entry.get('paper_id'):
                 candidate = await self.openalex.get_work(entry['paper_id'])
-                matches = [candidate] if normalize_title(candidate.title) == normalize_title(title) else []
+                matches = [candidate] if normalize_title(candidate.title) == norm_title else []
             else:
                 matches = [p for p in await self.openalex.search_title(title)
-                           if normalize_title(p.title) == normalize_title(title)]
+                           if normalize_title(p.title) == norm_title]
+
             if len(matches) == 1:
-                paper = matches[0].model_copy(update={'id': identifier, 'referenced_works': []})
+                enriched = matches[0]
+                # Merge: prefer OpenAlex metadata, but keep Scholar snippet if OpenAlex has no abstract
+                paper = enriched.model_copy(update={
+                    'id': identifier,
+                    'referenced_works': [],
+                    'abstract': enriched.abstract or snippet,
+                    # Keep Scholar's basic metadata as fallback
+                    'authors': enriched.authors if enriched.authors else authors,
+                    'year': enriched.year if enriched.year else year,
+                })
+            elif len(matches) > 1:
+                self.warnings.append(f'Metadata ambiguous: {identifier} ({len(matches)} OpenAlex matches); Scholar member retained with basic metadata')
             else:
-                self.warnings.append(f'Metadata unresolved/ambiguous: {identifier}; Scholar member retained')
-        except (ValueError, RetrievalError):
-            self.warnings.append(f'OpenAlex enrichment failed: {identifier}; Scholar member retained')
+                self.warnings.append(f'Metadata unresolved: {identifier}; Scholar member retained with basic metadata')
+        except (ValueError, RetrievalError) as e:
+            self.warnings.append(f'OpenAlex enrichment failed: {identifier} ({str(e)}); Scholar member retained with basic metadata')
+
         self.aliases[identifier] = identifier
+        # Cache the paper for deduplication
+        self.cache[identifier] = paper
         return paper
+
+    async def _get_cached_paper(self, identifier):
+        """Retrieve cached paper by identifier."""
+        if identifier in self.cache:
+            return self.cache[identifier]
+        # Reconstruct from entries if not cached
+        entry = self.entries.get(identifier)
+        if entry:
+            snippet = entry.get('snippet', '').strip() or None
+            return Paper(id=identifier, openalex_id=None, title=entry.get('title', ''), abstract=snippet)
+        raise ValueError(f"Paper {identifier} not found in cache or entries")
 
     async def resolve(self, title):
         if self.csv_path:
