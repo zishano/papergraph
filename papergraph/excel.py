@@ -98,7 +98,8 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
         ai = analysis_by_id.get(n.id, {})
 
         abstract_en = n.abstract or ""
-        abstract_zh = translated_abstracts[idx] if idx < len(translated_abstracts) else ""
+        abstract_zh = ai.get("translation", "") or (
+            translated_abstracts[idx] if idx < len(translated_abstracts) else "")
 
         rows.append([n.title, n.year, f"{relation}（Hop {n.hop}）", abstract_en,
                      abstract_zh, hit_text, "; ".join(n.authors), ai.get("summary", ""),

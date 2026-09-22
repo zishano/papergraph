@@ -8,13 +8,16 @@ import httpx
 
 
 class GoogleAITranslator:
-    def __init__(self, http: httpx.AsyncClient, api_key: str | None = None, interval: float = 1.0):
+    def __init__(self, http: httpx.AsyncClient, api_key: str | None = None,
+                 interval: float = 1.0, progress=None):
         self.http = http
         self.api_key = api_key or os.getenv("GOOGLE_AI_API_KEY") or os.getenv("GEMINI_API_KEY")
         self.interval = interval
+        self.progress = progress
         self.last_request = 0.0
         configured_model = os.getenv("PAPERGRAPH_GEMINI_MODEL", "auto")
         self.models = ([configured_model] if configured_model != "auto" else [
+            "gemini-3-flash-preview",
             "gemini-3.6-flash", "gemini-3.7-flash", "gemini-3.8-flash",
             "gemini-3.5-flash-lite", "gemini-flash-lite-latest",
         ])
@@ -25,7 +28,11 @@ class GoogleAITranslator:
             return ["未提供翻译API密钥"] * len(texts)
 
         results = []
-        for text in texts:
+        if self.progress:
+            self.progress(f"摘要翻译开始：{len(texts)} 篇论文")
+        for index, text in enumerate(texts, 1):
+            if self.progress:
+                self.progress(f"摘要翻译 {index}/{len(texts)}")
             if not text or not text.strip():
                 results.append("")
                 continue

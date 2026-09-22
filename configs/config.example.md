@@ -24,4 +24,4 @@ JSON 文件不能写注释，因此可直接复制 [`config.example.json`](confi
 
 `resolve` 只需要 `seed`；`verify` 使用 [`verify-example.json`](verify-example.json) 中的 `graph`、`candidate_arxiv`/`candidates_csv`、`output`、`excel`、`keywords`、`gemini` 和 `gemini_model` 字段。
 
-当前支持的 Gemini 模型包括：`gemini-3.6-flash`、`gemini-3.7-flash`、`gemini-3.8-flash`、`gemini-3.5-flash-lite`、`gemini-flash-lite-latest`。模型可用性受 Google AI Studio 账号、地区和配额影响。
+当前自动候选模型包括：`gemini-3-flash-preview`、`gemini-3.1-flash-lite`、`gemini-3.5-flash-lite`、`gemini-3.6-flash`、`gemini-3.7-flash`、`gemini-3.8-flash`。模型可用性受 Google AI Studio 账号、地区和配额影响。

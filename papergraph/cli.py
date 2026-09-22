@@ -10,7 +10,6 @@ import httpx
 
 from papergraph.graph.crawler import CitationCrawler
 from papergraph.gemini import GeminiScorer
-from papergraph.translator import GoogleAITranslator
 from papergraph.config import load_project_env
 from papergraph.models import CrawlConfig
 from papergraph.excel import write_excel_async
@@ -141,12 +140,9 @@ async def run(args: argparse.Namespace) -> dict:
         output = Path(args.output)
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
-        # The HTTP client must remain open while translation requests run.
-        progress("正在生成 Excel（含摘要翻译）")
-        async with httpx.AsyncClient(timeout=45) as translation_http:
-            translator = GoogleAITranslator(translation_http)
-            await write_excel_async(graph, args.excel, args.keywords,
-                                    result['verification'], analysis, translator)
+        progress("正在生成 Excel")
+        await write_excel_async(graph, args.excel, args.keywords,
+                                result['verification'], analysis, None)
         return result
     if args.command == "resolve" and not args.seed:
         raise ValueError("resolve requires seed in --config or command line")
@@ -190,6 +186,7 @@ async def run(args: argparse.Namespace) -> dict:
             papers = [await scholar.resolve(seed) for seed in args.seed]
             progress("正在构建 Scholar 引用图")
             graph = await CitationCrawler(scholar).crawl(papers, config)
+            progress(f"Scholar 引用图完成：{len(graph.nodes)} 个节点，{len(graph.edges)} 条引用边")
             for edge in graph.edges:
                 edge.provider = scholar.source
             graph.openalex_requests = provider.requests
@@ -198,9 +195,8 @@ async def run(args: argparse.Namespace) -> dict:
             analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto")).analyze(
                 graph, args.keywords, progress=progress) if getattr(args, "gemini", True) else [])
             if getattr(args, 'excel', None):
-                progress("正在生成 Excel（含摘要翻译）")
-                translator = GoogleAITranslator(http)
-                await write_excel_async(graph, args.excel, args.keywords, analysis=analysis, translator=translator)
+                progress("正在生成 Excel")
+                await write_excel_async(graph, args.excel, args.keywords, analysis=analysis)
             return graph.model_dump() | {'source': scholar.source, 'analysis': analysis,
                 'requests': {'scholar': scholar.requests, 'openalex': provider.requests}}
         if getattr(args, 'scholar_list', None):
@@ -210,6 +206,7 @@ async def run(args: argparse.Namespace) -> dict:
         if config is not None:
             progress(f"正在构建 OpenAlex 引用图（depth={config.depth}）")
             graph = await CitationCrawler(provider).crawl(papers, config)
+            progress(f"OpenAlex 引用图完成：{len(graph.nodes)} 个节点，{len(graph.edges)} 条引用边")
             graph.warnings.append(
                 "Citation graph source: OpenAlex. In citing mode, nodes are papers "
                 "that cite the seed or the preceding hop. Missing OpenAlex citation "
@@ -227,16 +224,18 @@ async def run(args: argparse.Namespace) -> dict:
                     args.keywords, getattr(args, "arxiv_max_candidates", 20))
                 discovery_requests = discovery.requests
                 verification = await ArxivVerifier(http).verify(graph, candidates, provider)
+                confirmed = sum(item.get("status") == "confirmed_citation" for item in verification)
+                progress(f"arXiv 核验完成：检查 {len(candidates)} 篇，确认 {confirmed} 篇")
                 graph.warnings.append(
                     f"Automatic arXiv candidate verification checked {len(candidates)} keyword matches."
                 )
             analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto")).analyze(
                 graph, getattr(args, "keywords", ""), progress=progress) if getattr(args, "gemini", True) else [])
             if getattr(args, "excel", None):
-                progress("正在生成 Excel（含摘要翻译）")
-                translator = GoogleAITranslator(http)
+                progress("正在生成 Excel")
                 await write_excel_async(graph, args.excel, getattr(args, "keywords", ""),
-                            verification if auto_verify else None, analysis, translator)
+                            verification if auto_verify else None, analysis, None)
+                progress(f"Excel 已写入：{args.excel}")
             result = graph.model_dump() | {"requests": {
                 "openalex": provider.requests, "arxiv": resolver.arxiv_requests,
                 "arxiv_discovery": discovery_requests,

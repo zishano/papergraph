@@ -13,14 +13,12 @@ from papergraph.models import CitationGraph
 
 
 DEFAULT_MODELS = [
+    "gemini-3-flash-preview",
+    "gemini-3.1-flash-lite",
+    "gemini-3.5-flash-lite",
     "gemini-3.6-flash",
     "gemini-3.7-flash",
     "gemini-3.8-flash",
-    "gemini-3.5-flash-lite",
-    "gemini-3.1-flash-lite",
-    "gemini-3-flash",
-    "gemini-2.5-flash-lite",
-    "gemini-2.5-flash",
 ]
 
 
@@ -32,24 +30,26 @@ class GeminiScorer:
         self.models = ([model] if model != "auto" else DEFAULT_MODELS.copy())
         self.interval = interval
         self.last_request = 0.0
+        self.unavailable_models: set[str] = set()
 
     async def analyze(self, graph: CitationGraph, keywords: str, progress=None) -> list[dict]:
         papers = [n for n in sorted(graph.nodes, key=lambda n: (n.hop, n.id))
                   if n.id not in graph.seed_ids]
         if not self.api_key:
             return [{"paper_id": p.id, "status": "skipped_missing_api_key",
-                     "model": None, "summary": "", "score": None, "reason": ""}
+                     "model": None, "summary": "", "score": None, "reason": "",
+                     "translation": ""}
                     for p in papers]
         records = []
         if progress:
-            progress(f"Gemini 分析开始：{len(papers)} 篇论文")
+            progress(f"Gemini 摘要、翻译和评分开始：{len(papers)} 篇论文")
         for index, paper in enumerate(papers, 1):
             if progress:
-                progress(f"Gemini 分析 {index}/{len(papers)}：{paper.title[:60]}")
+                progress(f"Gemini 处理 {index}/{len(papers)}：{paper.title[:60]}")
             if not paper.abstract:
                 records.append({"paper_id": paper.id, "status": "skipped_missing_abstract",
                                 "model": None, "summary": "", "score": None,
-                                "reason": "缺少摘要，未调用 Gemini"})
+                                "reason": "缺少摘要，未调用 Gemini", "translation": ""})
                 continue
             records.append(await self._score(paper.id, paper.title, paper.abstract, keywords))
         return records
@@ -57,35 +57,49 @@ class GeminiScorer:
     async def _score(self, paper_id: str, title: str, abstract: str, keywords: str) -> dict:
         prompt = self._prompt(title, abstract, keywords)
         errors = []
-        for model in self.models:
-            wait = self.interval - (time.monotonic() - self.last_request)
-            if wait > 0:
-                await asyncio.sleep(wait)
-            self.last_request = time.monotonic()
-            try:
-                response = await self.http.post(
-                    f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
-                    headers={"Content-Type": "application/json", "X-goog-api-key": self.api_key},
-                    json={
-                        "contents": [{"parts": [{"text": prompt}]}],
-                        "generationConfig": {"temperature": 0.3, "maxOutputTokens": 1024,
-                                             "responseMimeType": "application/json"},
-                    }, timeout=60,
-                )
-                if response.status_code in {400, 404, 429, 502, 503}:
-                    errors.append(f"{model}:HTTP {response.status_code}")
-                    continue
-                response.raise_for_status()
-                data = response.json()
-                text = data["candidates"][0]["content"]["parts"][0]["text"]
-                parsed = self._parse(text)
-                return {"paper_id": paper_id, "status": "completed", "model": model,
-                        "summary": parsed["summary"], "score": parsed["score"],
-                        "reason": parsed["reason"]}
-            except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError, json.JSONDecodeError) as exc:
-                errors.append(f"{model}:{type(exc).__name__}")
+        for model in list(self.models):
+            if model in self.unavailable_models:
+                continue
+            for attempt in range(2):
+                wait = self.interval - (time.monotonic() - self.last_request)
+                if wait > 0:
+                    await asyncio.sleep(wait)
+                self.last_request = time.monotonic()
+                try:
+                    response = await self.http.post(
+                        f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+                        headers={"Content-Type": "application/json", "X-goog-api-key": self.api_key},
+                        json={
+                            "contents": [{"parts": [{"text": prompt}]}],
+                            "generationConfig": {"temperature": 0.3, "maxOutputTokens": 4096,
+                                                 "responseMimeType": "application/json"},
+                        }, timeout=60,
+                    )
+                    if response.status_code in {400, 404, 429}:
+                        errors.append(f"{model}:HTTP {response.status_code}")
+                        self.unavailable_models.add(model)
+                        break
+                    if response.status_code in {502, 503}:
+                        errors.append(f"{model}:HTTP {response.status_code}")
+                        if attempt == 0:
+                            await asyncio.sleep(3)
+                            continue
+                        break
+                    response.raise_for_status()
+                    data = response.json()
+                    text = data["candidates"][0]["content"]["parts"][0]["text"]
+                    parsed = self._parse(text)
+                    self.models.remove(model)
+                    self.models.insert(0, model)
+                    return {"paper_id": paper_id, "status": "completed", "model": model,
+                            "summary": parsed["summary"], "score": parsed["score"],
+                            "reason": parsed["reason"], "translation": parsed["translation"]}
+                except (httpx.HTTPError, KeyError, IndexError, TypeError, ValueError, json.JSONDecodeError) as exc:
+                    errors.append(f"{model}:{type(exc).__name__}")
+                    break
         return {"paper_id": paper_id, "status": "failed", "model": None,
-                "summary": "", "score": None, "reason": "; ".join(errors)}
+                "summary": "", "score": None, "reason": "; ".join(errors),
+                "translation": ""}
 
     @staticmethod
     def _parse(value: str) -> dict:
@@ -99,9 +113,11 @@ class GeminiScorer:
             raise ValueError("Gemini score must be between 0 and 100")
         summary = str(data.get("summary", "")).strip()
         reason = str(data.get("reason", "")).strip()
+        translation = str(data.get("translation", "")).strip()
         if not summary:
             raise ValueError("Gemini summary is empty")
-        return {"score": score, "summary": summary, "reason": reason}
+        return {"score": score, "summary": summary, "reason": reason,
+                "translation": translation}
 
     @staticmethod
     def _prompt(title: str, abstract: str, keywords: str) -> str:
@@ -115,4 +131,4 @@ class GeminiScorer:
 严格评分，多数普通论文应在 60–80 分，通常不超过 85 分。
 
 必须返回：
-{{"score": 72, "summary": "中文一句话概括核心贡献，不超过60字", "reason": "中文简述评分理由，不超过80字"}}"""
+{{"score": 72, "summary": "中文一句话概括核心贡献，不超过60字", "reason": "中文简述评分理由，不超过80字", "translation": "摘要的完整中文翻译"}}"""

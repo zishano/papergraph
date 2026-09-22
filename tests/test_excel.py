@@ -44,6 +44,15 @@ def test_metadata_is_literal_and_dse_expands(tmp_path):
     book.close()
 
 
+def test_excel_uses_translation_from_gemini_analysis(tmp_path):
+    graph = sample()
+    paper = next(n for n in graph.nodes if n.hop == 1)
+    analysis = [{"paper_id": paper.id, "translation": "由同一次 Gemini 请求生成的翻译"}]
+    book = load_workbook(write_excel(graph, tmp_path / 'translated.xlsx', analysis=analysis))
+    assert book['论文列表']['E2'].value == "由同一次 Gemini 请求生成的翻译"
+    book.close()
+
+
 async def test_search_cli_writes_excel(tmp_path, monkeypatch):
     graph = sample()
     async def resolve(*args):

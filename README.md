@@ -89,7 +89,7 @@ nano .env                 # 也可以直接用 VS Code 编辑
 | `PAPERGRAPH_PROXY`        |               否 | 本地 VPN 的 HTTP/mixed 代理，例如`http://127.0.0.1:7890`                  |
 | `PAPERGRAPH_GEMINI_MODEL` |               否 | 默认`auto`；也可填写明确的 Gemini 模型名                                  |
 
-`auto` 当前按以下顺序尝试模型：`gemini-3.6-flash`、`gemini-3.7-flash`、`gemini-3.8-flash`、`gemini-3.5-flash-lite`、`gemini-flash-lite-latest`。也可以填写 Google AI Studio 返回的其他 `generateContent` 模型名。
+`auto` 当前优先尝试实测可用的 `gemini-3-flash-preview`，再轮换 `gemini-3.1-flash-lite`、`gemini-3.5-flash-lite`、`gemini-3.6-flash`、`gemini-3.7-flash` 和 `gemini-3.8-flash`。也可以填写 Google AI Studio 返回的其他 `generateContent` 模型名。
 
 安全与优先级：
 
@@ -269,13 +269,11 @@ arxiv_id,source
 GOOGLE_AI_API_KEY=你的_key
 ```
 
-`search` 和 `verify` 默认启用 Gemini。`--gemini-model auto` 会按 `daily-papers` 的方式优先尝试免费 Flash 模型，遇到模型不可用或免费额度限流时自动切换。评分总分为 100：创新性、实用性、严谨性和清晰度各 25 分。
+`search` 和 `verify` 默认启用 Gemini。每篇论文用一次请求同时完成中文摘要总结、完整摘要翻译和评分，避免重复调用。`--gemini-model auto` 会优先使用实测可用模型；遇到短暂的 502/503 会重试一次，遇到不可用或限流模型会在本次运行中跳过并自动轮换。评分总分为 100：创新性、实用性、严谨性和清晰度各 25 分。终端会显示当前处理篇数，进度写入 stderr，不会污染重定向的 JSON。
 
 如本次不需要模型分析：
 
-```bash
-在搜索配置中将 `gemini` 改为 `false`，然后运行 `papergraph search --config <配置文件>`。
-```
+在搜索配置中将 `gemini` 改为 `false`，然后运行 `papergraph search --config <配置文件>`。此时总结、评分和中文翻译都会跳过，适合先快速验证引用图。
 
 API Key 只从环境变量读取，不写入 JSON、Excel 或日志。免费额度、可用模型及调用限制由 Google 账号和地区决定。
 
@@ -323,7 +321,7 @@ Scholar 网页返回 CAPTCHA/429 时，程序会明确报错，不绕过访问�
 
 - SQLite 持久化、跨运行缓存、运行历史、断点续跑与增量更新。
 - 按年份、关键词或语义相关度自动筛选和排序；当前关键词只是 Excel 标记。
-- Gemini 或其他 LLM 接入、模型轮换、批量相关性判断和深入论文分析。
+- 更深入的 LLM 全文分析、批量相关性重排和跨论文综合；当前已支持基于摘要的 Gemini 总结、翻译与评分。
 - PDF 自动下载与解析，以及贡献、方法、实验和结论的结构化抽取。
 - 自动主题分类、多标签归一化和研究脉络总结。
 - CSV、Markdown、GraphML 等正式导出格式；当前正式输出为 JSON 和 Excel。
