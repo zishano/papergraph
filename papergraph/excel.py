@@ -73,7 +73,7 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
                 wrapped = sum(max(1, math.ceil(display_width(part) / max(width - 2, 1)))
                               for part in str(value).splitlines() or [""])
                 lines = max(lines, wrapped)
-            ws.row_dimensions[row_index].height = min(max(22, lines * 16), 160)
+            ws.row_dimensions[row_index].height = min(max(22, lines * 16), 600)
         return ws
 
     nodes = {n.id: n for n in graph.nodes}
@@ -101,24 +101,26 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
         abstract_zh = ai.get("translation", "") or (
             translated_abstracts[idx] if idx < len(translated_abstracts) else "")
 
+        display_reason = (ai.get("reason", "") if ai.get("status") != "failed"
+                          else "Gemini 请求失败，详细错误见 add 工作表")
         rows.append([n.title, n.year, f"{relation}（Hop {n.hop}）", abstract_en,
                      abstract_zh, hit_text, "; ".join(n.authors), ai.get("summary", ""),
-                     ai.get("score"), ai.get("reason", "")])
+                     ai.get("score"), display_reason])
         add_rows.append([
             n.id, n.openalex_id, n.arxiv_id, n.doi,
             f"https://doi.org/{n.doi}" if n.doi else (f"https://openalex.org/{n.openalex_id}" if n.openalex_id else ""),
             n.venue, n.cited_by_count, n.pdf_url, "有摘要" if n.abstract else "缺摘要",
             n.hop, "; ".join(n.seed_ids), "; ".join(n.parent_ids),
-            ai.get("status", "未启用"), ai.get("model"),
+            ai.get("status", "未启用"), ai.get("model"), ai.get("reason", ""),
         ])
     sheet("论文列表", ["论文标题", "年份", "与种子关系（最小Hop）", "摘要", "摘要中文翻译",
                         "辅助关键词命中", "作者", "Gemini 摘要总结", "Gemini 评分", "Gemini 评分理由"],
-          rows, [68, 12, 25, 480, 480, 22, 38, 60, 16, 55],
-          [28, 10, 20, 80, 80, 16, 22, 28, 14, 25])
+          rows, [68, 12, 25, 255, 255, 22, 38, 60, 16, 55],
+          [28, 10, 20, 255, 255, 16, 22, 28, 14, 25])
     sheet("add", ["论文ID", "OpenAlex ID", "arXiv ID", "DOI", "论文链接", "期刊/会议",
                   "被引次数", "PDF链接", "摘要状态", "最小Hop", "来源种子", "父节点",
-                  "Gemini 状态", "Gemini 模型"],
-          add_rows, [30, 24, 20, 42, 55, 36, 14, 55, 16, 14, 32, 40, 28, 34])
+                  "Gemini 状态", "Gemini 模型", "Gemini 详细错误"],
+          add_rows, [30, 24, 20, 42, 55, 36, 14, 55, 16, 14, 32, 40, 28, 34, 100])
     sheet("种子论文", ["ID", "标题", "DOI", "摘要"],
           [[s, nodes[s].title, nodes[s].doi, nodes[s].abstract] for s in graph.seed_ids], [22, 70, 45, 100])
     sheet("发现路径", ["种子ID", "论文ID", "Hop", "路径ID（从种子发现）", "路径标题"],

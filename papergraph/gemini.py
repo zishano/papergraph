@@ -64,9 +64,24 @@ class GeminiScorer:
                 records.append(await self._score(batch[0].id, batch[0].title,
                                                  batch[0].abstract, keywords))
             else:
-                records.extend(await self._score_batch(batch, keywords))
+                records.extend(await self._score_batch_adaptive(batch, keywords, progress))
         order = {paper.id: index for index, paper in enumerate(papers)}
         return sorted(records, key=lambda item: order[item["paper_id"]])
+
+    async def _score_batch_adaptive(self, papers: list, keywords: str, progress=None) -> list[dict]:
+        if len(papers) == 1:
+            paper = papers[0]
+            return [await self._score(paper.id, paper.title, paper.abstract, keywords)]
+        records = await self._score_batch(papers, keywords)
+        if len(papers) > 1 and all(item["status"] == "failed" for item in records):
+            midpoint = len(papers) // 2
+            if progress:
+                progress(f"Gemini 批次失败，自动拆分为 {midpoint} + {len(papers) - midpoint} 篇重试")
+            await asyncio.sleep(3)
+            left = await self._score_batch_adaptive(papers[:midpoint], keywords, progress)
+            right = await self._score_batch_adaptive(papers[midpoint:], keywords, progress)
+            return left + right
+        return records
 
     async def _score_batch(self, papers: list, keywords: str) -> list[dict]:
         prompt = self._batch_prompt(papers, keywords)
@@ -85,9 +100,10 @@ class GeminiScorer:
                         headers={"Content-Type": "application/json", "X-goog-api-key": self.api_key},
                         json={
                             "contents": [{"parts": [{"text": prompt}]}],
-                            "generationConfig": {"temperature": 0.3, "maxOutputTokens": 16384,
+                            "generationConfig": {"temperature": 0.3,
+                                                 "maxOutputTokens": min(8192, 2048 * len(papers)),
                                                  "responseMimeType": "application/json"},
-                        }, timeout=120,
+                        }, timeout=60,
                     )
                     if response.status_code in {400, 404, 429}:
                         errors.append(f"{model}:HTTP {response.status_code}")

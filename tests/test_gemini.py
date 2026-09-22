@@ -81,3 +81,25 @@ async def test_analyze_batches_multiple_papers_in_one_request():
     assert len(records) == 4
     assert sum(record["status"] == "completed" for record in records) == 3
     assert sum(record["status"] == "skipped_missing_abstract" for record in records) == 1
+
+
+async def test_failed_batch_is_split_and_retried():
+    calls = 0
+    def handler(request):
+        nonlocal calls
+        calls += 1
+        payload = json.loads(request.content)
+        prompt = payload["contents"][0]["parts"][0]["text"]
+        if "论文：" in prompt:
+            papers = json.loads(prompt.split("论文：", 1)[1].split("\n\n", 1)[0])
+            return httpx.Response(503)
+        row = {"score": 70, "summary": "总结", "reason": "理由", "translation": "翻译"}
+        return httpx.Response(200, json={"candidates": [{"content": {
+            "parts": [{"text": json.dumps(row, ensure_ascii=False)}]}}]})
+    papers = [paper for paper in graph().nodes if paper.abstract and paper.id not in graph().seed_ids][:2]
+    async with httpx.AsyncClient(transport=httpx.MockTransport(handler)) as http:
+        scorer = GeminiScorer(http, api_key="test", model="batch-model", interval=0, batch_size=5)
+        records = await scorer._score_batch_adaptive(papers, "DSE")
+    assert calls == 4
+    assert len(records) == 2
+    assert {record["status"] for record in records} == {"completed"}
