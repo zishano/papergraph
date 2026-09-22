@@ -21,6 +21,10 @@ from papergraph.retrieval.openalex import OpenAlexClient, RetrievalError
 from papergraph.retrieval.resolver import SeedResolver
 
 
+def progress(message: str) -> None:
+    print(f"[papergraph] {message}", file=sys.stderr, flush=True)
+
+
 def parser() -> argparse.ArgumentParser:
     root = argparse.ArgumentParser(description="PaperGraph M1/M2 metadata discovery")
     commands = root.add_subparsers(dest="command", required=True)
@@ -127,16 +131,18 @@ async def run(args: argparse.Namespace) -> dict:
             raise ValueError("Supply --candidate-arxiv or --candidates-csv")
         if not args.excel.lower().endswith(".xlsx"):
             raise ValueError("Excel output path must end in .xlsx")
+        progress("开始解析验证图和 arXiv 候选")
         async with httpx.AsyncClient(timeout=45) as http:
             records = await ArxivVerifier(http).verify(graph, candidates, OpenAlexClient(http))
             analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto")).analyze(
-                graph, args.keywords) if getattr(args, "gemini", True) else [])
+                graph, args.keywords, progress=progress) if getattr(args, "gemini", True) else [])
         result = graph.model_dump() | {"verification": data.get("verification", []) + records,
                                        "analysis": analysis}
         output = Path(args.output)
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n")
         # The HTTP client must remain open while translation requests run.
+        progress("正在生成 Excel（含摘要翻译）")
         async with httpx.AsyncClient(timeout=45) as translation_http:
             translator = GoogleAITranslator(translation_http)
             await write_excel_async(graph, args.excel, args.keywords,
@@ -145,6 +151,7 @@ async def run(args: argparse.Namespace) -> dict:
     if args.command == "resolve" and not args.seed:
         raise ValueError("resolve requires seed in --config or command line")
     if args.command == "resolve":
+        progress(f"正在解析 {len(args.seed)} 个种子")
         async with httpx.AsyncClient(timeout=30) as http:
             provider = OpenAlexClient(http)
             papers = await SeedResolver(provider).resolve_many(args.seed)
@@ -179,7 +186,9 @@ async def run(args: argparse.Namespace) -> dict:
             if csv_path and (len(args.seed) != 1 or config.depth != 1):
                 raise ValueError('--scholar-list requires a single seed and --depth 1; no inferred second-hop list')
             scholar = ScholarProvider(http, provider, csv_path, backend=getattr(args, "scholar_backend", "web"))
+            progress("正在解析 Scholar 种子")
             papers = [await scholar.resolve(seed) for seed in args.seed]
+            progress("正在构建 Scholar 引用图")
             graph = await CitationCrawler(scholar).crawl(papers, config)
             for edge in graph.edges:
                 edge.provider = scholar.source
@@ -187,16 +196,19 @@ async def run(args: argparse.Namespace) -> dict:
             graph.warnings.extend(scholar.warnings)
             graph.warnings.append('Membership authority: Google Scholar. Imported lists are user-supplied snapshots, not live retrieval.' if csv_path else f'Membership authority: Google Scholar via {scholar.backend}; provider coverage is not exhaustive.')
             analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto")).analyze(
-                graph, args.keywords) if getattr(args, "gemini", True) else [])
+                graph, args.keywords, progress=progress) if getattr(args, "gemini", True) else [])
             if getattr(args, 'excel', None):
+                progress("正在生成 Excel（含摘要翻译）")
                 translator = GoogleAITranslator(http)
                 await write_excel_async(graph, args.excel, args.keywords, analysis=analysis, translator=translator)
             return graph.model_dump() | {'source': scholar.source, 'analysis': analysis,
                 'requests': {'scholar': scholar.requests, 'openalex': provider.requests}}
         if getattr(args, 'scholar_list', None):
             raise ValueError('--scholar-list cannot be used with --source openalex')
+        progress(f"正在解析 {len(args.seed)} 个种子")
         papers = await resolver.resolve_many(args.seed)
         if config is not None:
+            progress(f"正在构建 OpenAlex 引用图（depth={config.depth}）")
             graph = await CitationCrawler(provider).crawl(papers, config)
             graph.warnings.append(
                 "Citation graph source: OpenAlex. In citing mode, nodes are papers "
@@ -209,6 +221,7 @@ async def run(args: argparse.Namespace) -> dict:
                            and config.direction == "citing"
                            and bool(getattr(args, "keywords", "").strip()))
             if auto_verify:
+                progress(f"正在搜索并核验 arXiv 候选（最多 {getattr(args, 'arxiv_max_candidates', 20)} 篇）")
                 discovery = ArxivCandidateDiscovery(http)
                 candidates = await discovery.search(
                     args.keywords, getattr(args, "arxiv_max_candidates", 20))
@@ -218,8 +231,9 @@ async def run(args: argparse.Namespace) -> dict:
                     f"Automatic arXiv candidate verification checked {len(candidates)} keyword matches."
                 )
             analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto")).analyze(
-                graph, getattr(args, "keywords", "")) if getattr(args, "gemini", True) else [])
+                graph, getattr(args, "keywords", ""), progress=progress) if getattr(args, "gemini", True) else [])
             if getattr(args, "excel", None):
+                progress("正在生成 Excel（含摘要翻译）")
                 translator = GoogleAITranslator(http)
                 await write_excel_async(graph, args.excel, getattr(args, "keywords", ""),
                             verification if auto_verify else None, analysis, translator)

@@ -33,7 +33,7 @@ class GeminiScorer:
         self.interval = interval
         self.last_request = 0.0
 
-    async def analyze(self, graph: CitationGraph, keywords: str) -> list[dict]:
+    async def analyze(self, graph: CitationGraph, keywords: str, progress=None) -> list[dict]:
         papers = [n for n in sorted(graph.nodes, key=lambda n: (n.hop, n.id))
                   if n.id not in graph.seed_ids]
         if not self.api_key:
@@ -41,7 +41,11 @@ class GeminiScorer:
                      "model": None, "summary": "", "score": None, "reason": ""}
                     for p in papers]
         records = []
-        for paper in papers:
+        if progress:
+            progress(f"Gemini 分析开始：{len(papers)} 篇论文")
+        for index, paper in enumerate(papers, 1):
+            if progress:
+                progress(f"Gemini 分析 {index}/{len(papers)}：{paper.title[:60]}")
             if not paper.abstract:
                 records.append({"paper_id": paper.id, "status": "skipped_missing_abstract",
                                 "model": None, "summary": "", "score": None,
