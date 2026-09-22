@@ -1,7 +1,5 @@
 {
-  "seed": [
-    "LLMShare: Optimizing LLM Inference Serving with Hardware Architecture Exploration"
-  ],
+  "seed": ["论文 DOI、arXiv ID、OpenAlex ID 或完整标题"],
   "source": "openalex",
   "proxy": null,
   "scholar_backend": "web",
@@ -12,7 +10,7 @@
   "max_papers_per_hop": 1000,
   "max_neighbors": 1000,
   "max_paths_per_pair": 100,
-  "excel": "outputs/LLMShare.xlsx",
+  "excel": "outputs/result.xlsx",
   "keywords": "DSE",
   "arxiv_auto_verify": true,
   "arxiv_max_candidates": 20,

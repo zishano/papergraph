@@ -38,9 +38,7 @@ papergraph search \
 papergraph search --config configs/llmshare.json > outputs/LLMShare.json
 ```
 
-示例配置见 [configs/llmshare.json](configs/llmshare.json) 和 [configs/verify-example.json](configs/verify-example.json)。JSON 中的 `proxy: null` 表示使用 `.env` 或系统代理；API Key 仍只放在 `.env`，不放进 JSON。
-
-配置文件中的 `_help` 区域是内嵌说明，列出了每个参数的用途、默认值和可选值。所有下划线开头的字段都会被程序忽略，因此可以直接保留在 JSON 中作为配置说明。JSON 本身不支持 `//` 注释，所以统一使用 `_help` 记录说明。
+示例配置见 [configs/config.example.json](configs/config.example.json)、[configs/llmshare.json](configs/llmshare.json) 和 [configs/verify-example.json](configs/verify-example.json)。`config.example.json` 是完整参数示例；运行配置保持纯 JSON，不混入说明字段。JSON 中的 `proxy: null` 表示使用 `.env` 或系统代理；API Key 仍只放在 `.env`，不放进 JSON。
 
 `citing` 的含义是：
 
@@ -416,3 +414,75 @@ OpenAlex 与 Scholar 的覆盖范围和更新速度不同。指定有代表性�
 - [设计文档](DESIGN.md)
 
 LLMShare 案例已验证 OpenAlex 自动图和 arXiv 候选核验流程。验证文件保存在 `validation/llmshare-dse/`，可用于复查 JSON、Excel 和数据来源。
+
+## 快速启动清单
+
+第一次使用：
+
+```bash
+cd /mnt/e/Project/LMK/papergraph
+./setup.sh
+cp -n .env.example .env
+# 编辑 .env，至少填写 GOOGLE_AI_API_KEY（需要 Gemini 时）
+source .venv/bin/activate
+```
+
+最常用的完整流程：
+
+```bash
+papergraph search --config configs/llmshare.json > outputs/LLMShare.json
+```
+
+只解析论文身份：
+
+```bash
+papergraph resolve --seed '10.1109/DAC63849.2025.11132534'
+```
+
+查找种子引用的参考文献：复制 `configs/llmshare.json` 为新文件，将 `direction` 改为 `references`。
+
+使用 Google Scholar 的人工 CSV：将 `source` 改为 `scholar`，设置 `scholar_list`，并保持 `depth: 1`。使用 SerpApi 时将 `scholar_backend` 改为 `serpapi`，并在 `.env` 中填写 `SERPAPI_API_KEY`。
+
+单独核验已知 arXiv 候选：
+
+```bash
+papergraph verify --config configs/verify-example.json
+```
+
+## 已完成的范围
+
+当前版本提供 M1/M2 的可追溯论文发现流程：
+
+- DOI、arXiv ID、OpenAlex ID 和完整标题解析。
+- OpenAlex `citing`、`references`、`both` 三种方向的有界引用图搜索。
+- 多种子、Hop 0–3、节点/邻居/路径数量限制、去重和路径记录。
+- OpenAlex 元数据和引用边来源记录。
+- arXiv 关键词候选自动发现，以及原文结构化参考文献核验补边。
+- Google Scholar 网页、SerpApi 和人工 Scholar CSV 入口。
+- JSON 图数据和 Excel 工作簿输出。
+- Excel 自适应列宽、摘要/中文翻译双列、Gemini 摘要总结与四维评分。
+- Google AI Studio Gemini/Gemma 模型轮换、`.env` 密钥管理和 HTTP 代理配置。
+- 配置文件驱动运行：`resolve`、`search`、`verify` 均支持 `--config FILE.json`。
+
+## TODO 与当前边界
+
+以下功能尚未实现或不保证：
+
+- SQLite 持久化、跨运行缓存、运行历史、断点续跑和增量更新。
+- 不依赖关键词的完整全球反向引用索引；arXiv 自动核验范围受关键词和候选上限限制。
+- 基于年份、关键词语义或引用质量的自动筛选排序。
+- PDF 全文下载、解析及方法/实验/结论结构化抽取。
+- 多标签主题分类、研究脉络总结和 LLM 批量深度分析。
+- Web UI、交互式图可视化、向量数据库、图数据库和云端部署。
+- Scholar 网页访问稳定性；Google 的 CAPTCHA、429 和地区限制无法由程序保证消除。
+- 引用集合绝对完整性；OpenAlex、Scholar 和 arXiv 的覆盖范围及更新时间不同。
+
+## 验证和开发
+
+运行测试：
+
+```bash
+python -m pytest -q
+```
+
+配置字段的完整用途和可选值见 [configs/config.example.json](configs/config.example.json)；CLI 的逐参数参考见上面的“完整命令参数”章节。LLMShare 的实际结果和证据见 [validation/llmshare-dse/REPORT.md](validation/llmshare-dse/REPORT.md)。
