@@ -34,7 +34,8 @@ class CitationCrawler:
                         papers[parent_id], direction, config.max_neighbors,
                     )
                     if limited:
-                        reasons.add(f"max_neighbors:{parent_id}:{direction}")
+                        label = ('unverified_neighborhood' if parent_id in getattr(self.provider, 'unverified_neighborhoods', set()) else 'max_neighbors')
+                        reasons.add(f"{label}:{parent_id}:{direction}")
                     if missing:
                         warnings.add(f"Unresolved references of {parent_id}: {','.join(missing)}")
                     for neighbor in neighbors:

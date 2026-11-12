@@ -16,6 +16,9 @@ class Paper(BaseModel):
     year: int | None = None
     venue: str | None = None
     abstract: str | None = None
+    abstract_status: Literal["unknown", "complete", "snippet", "missing"] = "unknown"
+    abstract_source: str | None = None
+    landing_url: str | None = None
     cited_by_count: int = 0
     pdf_url: str | None = None
     referenced_works: list[str] = Field(default_factory=list)

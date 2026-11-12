@@ -83,8 +83,8 @@ async def test_analyze_batches_multiple_papers_in_one_request():
     assert len(records) == 4
     assert sum(record["status"] == "completed" for record in records) == 3
     assert sum(record["status"] == "skipped_missing_abstract" for record in records) == 1
-    assert "结果论文共 4 篇：3 篇有摘要进入 Gemini，1 篇缺少摘要并跳过" in progress_messages
-    assert any(message.startswith("  跳过（缺少摘要）：") for message in progress_messages)
+    assert "结果论文共 4 篇：3 篇有摘要进入 Gemini，1 篇缺少完整摘要并跳过" in progress_messages
+    assert any(message.startswith("  跳过（缺少完整摘要）：") for message in progress_messages)
 
 
 async def test_failed_batch_is_split_and_retried():

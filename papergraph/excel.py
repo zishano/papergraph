@@ -109,9 +109,11 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
         add_rows.append([
             n.id, n.openalex_id, n.arxiv_id, n.doi,
             f"https://doi.org/{n.doi}" if n.doi else (f"https://openalex.org/{n.openalex_id}" if n.openalex_id else ""),
-            n.venue, n.cited_by_count, n.pdf_url, "有摘要" if n.abstract else "缺摘要",
+            n.venue, n.cited_by_count, n.pdf_url,
+            {"complete": "完整摘要", "snippet": "搜索片段（不完整）", "missing": "缺摘要"}.get(n.abstract_status, "有摘要（完整性未核验）" if n.abstract else "缺摘要"),
             n.hop, "; ".join(n.seed_ids), "; ".join(n.parent_ids),
             ai.get("status", "未启用"), ai.get("model"), ai.get("reason", ""),
+            n.abstract_source, n.landing_url,
         ])
     sheet("论文列表", ["论文标题", "年份", "与种子关系（最小Hop）", "摘要", "摘要中文翻译",
                         "辅助关键词命中", "作者", "Gemini 摘要总结", "Gemini 评分", "Gemini 评分理由"],
@@ -119,8 +121,8 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
           [28, 10, 20, 255, 255, 16, 22, 28, 14, 25])
     sheet("add", ["论文ID", "OpenAlex ID", "arXiv ID", "DOI", "论文链接", "期刊/会议",
                   "被引次数", "PDF链接", "摘要状态", "最小Hop", "来源种子", "父节点",
-                  "Gemini 状态", "Gemini 模型", "Gemini 详细错误"],
-          add_rows, [30, 24, 20, 42, 55, 36, 14, 55, 16, 14, 32, 40, 28, 34, 100])
+                  "Gemini 状态", "Gemini 模型", "Gemini 详细错误", "摘要来源", "原始页面"],
+          add_rows, [30, 24, 20, 42, 55, 36, 14, 55, 16, 14, 32, 40, 28, 34, 100, 55, 55])
     sheet("种子论文", ["ID", "标题", "DOI", "摘要"],
           [[s, nodes[s].title, nodes[s].doi, nodes[s].abstract] for s in graph.seed_ids], [22, 70, 45, 100])
     sheet("发现路径", ["种子ID", "论文ID", "Hop", "路径ID（从种子发现）", "路径标题"],

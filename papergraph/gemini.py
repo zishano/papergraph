@@ -45,6 +45,12 @@ class GeminiScorer:
         pending = []
         skipped = []
         for paper in papers:
+            if paper.abstract_status in {'snippet', 'missing'}:
+                records.append({'paper_id': paper.id, 'status': 'skipped_incomplete_abstract',
+                                'model': None, 'summary': '', 'score': None,
+                                'reason': '摘要不完整，跳过分析与评分', 'translation': ''})
+                skipped.append(paper)
+                continue
             if not paper.abstract:
                 skipped.append(paper)
                 records.append({"paper_id": paper.id, "status": "skipped_missing_abstract",
@@ -54,9 +60,9 @@ class GeminiScorer:
             pending.append(paper)
         if progress:
             progress(f"结果论文共 {len(papers)} 篇：{len(pending)} 篇有摘要进入 Gemini，"
-                     f"{len(skipped)} 篇缺少摘要并跳过")
+                     f"{len(skipped)} 篇缺少完整摘要并跳过")
             for paper in skipped:
-                progress(f"  跳过（缺少摘要）：{paper.title}")
+                progress(f"  跳过（缺少完整摘要）：{paper.title}")
         total_batches = (len(pending) + self.batch_size - 1) // self.batch_size
         for start in range(0, len(pending), self.batch_size):
             batch = pending[start:start + self.batch_size]

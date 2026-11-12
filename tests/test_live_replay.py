@@ -6,7 +6,7 @@ from pathlib import Path
 import httpx
 
 from papergraph.graph.crawler import CitationCrawler
-from papergraph.models import CrawlConfig
+from papergraph.models import CrawlConfig, Paper, CitationGraph
 from papergraph.retrieval.openalex import OpenAlexClient
 from papergraph.retrieval.resolver import ResolutionError, SeedResolver
 
@@ -28,7 +28,7 @@ async def test_recorded_live_resolution_and_three_graphs():
         resolver = SeedResolver(provider)
         expected_m1 = json.loads((root / "m1-live.json").read_text())
         papers = await resolver.resolve_many(expected_m1["inputs"])
-        assert [p.model_dump() for p in papers] == expected_m1["papers"]
+        assert [p.model_dump() for p in papers] == [Paper.model_validate(p).model_dump() for p in expected_m1["papers"]]
         try:
             await resolver.resolve("The state of OA: a large-scale analysis of the prevalence and impact of Open Access articles")
         except ResolutionError:
@@ -41,5 +41,5 @@ async def test_recorded_live_resolution_and_three_graphs():
             expected = json.loads((root / f"m2-{name}.json").read_text())
             seeds = await resolver.resolve_many(inputs)
             graph = await CitationCrawler(provider).crawl(seeds, CrawlConfig(**expected["config"]))
-            assert graph.model_dump() == expected
+            assert graph.model_dump() == CitationGraph.model_validate(expected).model_dump()
         assert len(requested) == len(responses)
