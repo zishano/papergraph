@@ -18,15 +18,15 @@ def test_excel_preserves_nonmatching_papers_and_citation_direction(tmp_path):
     book = load_workbook(output)
     ws = book['论文列表']
     assert ws.max_row == 5  # four discovered papers; seed has its own sheet
-    assert [ws.cell(i, 3).value for i in range(2, 6)] == [
+    assert [ws.cell(i, 4).value for i in range(2, 6)] == [
         '直接引用种子（Hop 1）', '直接引用种子（Hop 1）',
         '二跳及以上间接关联（Hop 2）', '二跳及以上间接关联（Hop 2）']
-    assert all(ws.cell(i, 6).value == '未命中（不排除）' for i in range(2, 6))
+    assert all(ws.cell(i, 7).value == '未命中（不排除）' for i in range(2, 6))
     assert book['引用边'].max_row == 6
     assert book['发现路径'].max_row == 5
     assert book['add'].max_row == 5
     assert ws.freeze_panes == 'A2'
-    assert ws.auto_filter.ref == 'A1:J5'
+    assert ws.auto_filter.ref == 'A1:K5'
     assert book['引用边']['A2'].value == 'W4416429485'
     assert book['引用边']['C2'].value == 'W4414197293'
     book.close()
@@ -40,7 +40,7 @@ def test_metadata_is_literal_and_dse_expands(tmp_path):
     book = load_workbook(write_excel(graph, tmp_path / 'literal.xlsx', 'DSE'))
     assert book['论文列表']['A2'].value == '=1+1'
     assert book['论文列表']['A2'].data_type == 's'
-    assert book['论文列表']['F2'].value == 'DSE'
+    assert book['论文列表']['G2'].value == 'DSE'
     book.close()
 
 
@@ -49,7 +49,7 @@ def test_excel_uses_translation_from_gemini_analysis(tmp_path):
     paper = next(n for n in graph.nodes if n.hop == 1)
     analysis = [{"paper_id": paper.id, "translation": "由同一次 Gemini 请求生成的翻译"}]
     book = load_workbook(write_excel(graph, tmp_path / 'translated.xlsx', analysis=analysis))
-    assert book['论文列表']['E2'].value == "由同一次 Gemini 请求生成的翻译"
+    assert book['论文列表']['F2'].value == "由同一次 Gemini 请求生成的翻译"
     book.close()
 
 
@@ -68,3 +68,16 @@ async def test_search_cli_writes_excel(tmp_path, monkeypatch):
     result = await run(args)
     assert output.exists()
     assert len(result['nodes']) == 5
+
+
+def test_venue_column_and_arxiv_fallback(tmp_path):
+    graph = sample()
+    papers = sorted((n for n in graph.nodes if n.id not in graph.seed_ids), key=lambda n: (n.hop, n.id))
+    for paper, venue in zip(papers, ['Nature', None, 'arXiv (Cornell University)', 'CHASM @ MICRO 2026, November 1, 2026']):
+        paper.venue = venue
+    book = load_workbook(write_excel(graph, tmp_path / 'venues.xlsx'))
+    ws = book['论文列表']
+    assert [c.value for c in ws[1]][:4] == ['论文标题', '会议/期刊', '年份', '与种子关系（最小Hop）']
+    assert [ws.cell(i, 2).value for i in range(2, 6)] == ['Nature', 'arxiv', 'arxiv', 'CHASM @ MICRO 2026']
+    assert ws['C2'].value == papers[0].year
+    book.close()

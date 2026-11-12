@@ -103,7 +103,12 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
 
         display_reason = (ai.get("reason", "") if ai.get("status") != "failed"
                           else "Gemini 请求失败，详细错误见 add 工作表")
-        rows.append([n.title, n.year, f"{relation}（Hop {n.hop}）", abstract_en,
+        venue = (n.venue or '').strip()
+        if not venue or 'arxiv' in venue.casefold():
+            venue = 'arxiv'
+        elif '@' in venue:  # PDF conference header may include date/location/authors.
+            venue = venue.split(',', 1)[0].strip()
+        rows.append([n.title, venue, n.year, f"{relation}（Hop {n.hop}）", abstract_en,
                      abstract_zh, hit_text, "; ".join(n.authors), ai.get("summary", ""),
                      ai.get("score"), display_reason])
         add_rows.append([
@@ -115,10 +120,10 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
             ai.get("status", "未启用"), ai.get("model"), ai.get("reason", ""),
             n.abstract_source, n.landing_url,
         ])
-    sheet("论文列表", ["论文标题", "年份", "与种子关系（最小Hop）", "摘要", "摘要中文翻译",
+    sheet("论文列表", ["论文标题", "会议/期刊", "年份", "与种子关系（最小Hop）", "摘要", "摘要中文翻译",
                         "辅助关键词命中", "作者", "Gemini 摘要总结", "Gemini 评分", "Gemini 评分理由"],
-          rows, [68, 12, 25, 255, 255, 22, 38, 60, 16, 55],
-          [28, 10, 20, 255, 255, 16, 22, 28, 14, 25])
+          rows, [68, 36, 12, 25, 255, 255, 22, 38, 60, 16, 55],
+          [28, 20, 10, 20, 255, 255, 16, 22, 28, 14, 25])
     sheet("add", ["论文ID", "OpenAlex ID", "arXiv ID", "DOI", "论文链接", "期刊/会议",
                   "被引次数", "PDF链接", "摘要状态", "最小Hop", "来源种子", "父节点",
                   "Gemini 状态", "Gemini 模型", "Gemini 详细错误", "摘要来源", "原始页面"],
@@ -137,6 +142,7 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
                 '\n'.join(e['url'] + '\n' + e['reference_text'] for e in r['evidence']),
                 r['checked_at'], r.get('error')] for r in verification], [22, 65, 30, 35, 100, 30, 60])
     sheet("说明", ["项目", "内容"], [
+        ["会议/期刊", "使用已获取的发表信息；缺少会议/期刊信息或仅有 arXiv 来源时显示 arxiv。arxiv 回退不代表已核实论文未被接收。"],
         ["搜索方向", graph.config.direction], ["深度", graph.config.depth],
         ["辅助关键词", keywords], ["关键词规则", "仅匹配标题/摘要；DSE 包含 Design Space Exploration；不剔除未命中论文。"],
         ["路径方向", "发现路径从种子出发；citing 模式下与真实引用箭头相反。引用边表列明谁引用谁。"],
