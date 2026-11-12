@@ -1,41 +1,82 @@
 # PaperGraph
 
-PaperGraph 是一个终端工具，用于解析论文身份并构建有限深度的引用图。当前默认用 **OpenAlex 自动查找引用目标论文的后续论文**；指定关键词后，还会 **自动搜索 arXiv 候选并核验原文参考文献**。关键词同时用于 Excel 辅助标注，但不会筛掉 OpenAlex 结果。命令参数可以集中写入 JSON，终端只需指定配置文件路径。
+PaperGraph 是一个终端工具，用于解析论文身份并构建有限深度的引用图。推荐使用快捷脚本，通过 **SerpApi / Google Scholar 查找两层被引论文**，再用 OpenAlex、论文页面和 PDF 补全详情。底层 CLI 默认使用 OpenAlex；在 OpenAlex 模式指定关键词后，还会 **自动搜索 arXiv 候选并核验原文参考文献**。关键词同时用于 Excel 辅助标注，但不会筛掉 OpenAlex 结果。命令参数可以集中写入 JSON，终端只需指定配置文件路径。
 
 Excel 输出还可使用 Google AI Studio 免费额度中的 Gemini Flash 模型生成中文摘要总结和 0–100 分评分。调用方式和四维评分规则参考本地 `daily-papers` 项目。论文摘要会自动翻译为中英文双语显示。
 
 项目当前严格限定在设计文档的 M1 和 M2 范围内。详细边界见 [DESIGN.md](DESIGN.md)。
 
-## 30 秒开始使用
+## 快速使用：输入一篇论文，查询两层被引论文
 
-项目内的 `.venv` 已经安装好。在终端运行：
+需要 Python 3.11+ 和 [uv](https://docs.astral.sh/uv/)。首次在仓库目录安装：
 
 ```bash
 cd papergraph
-source .venv/bin/activate
-# 首次使用时编辑项目根目录的 .env，填入需要的 API Key
-papergraph --help
+bash setup.sh
 ```
 
-以后每次打开新终端，只需执行前两行。若不想激活环境，也可以直接运行 `.venv/bin/papergraph`。
+脚本会创建 `.venv`、`outputs/` 和空密钥模板 `.env`，不会覆盖已有 `.env`。
+PDF 摘要提取还需要 `pdftotext`（Ubuntu/Debian 系统包 `poppler-utils`）。
 
-推荐使用 JSON 配置运行，命令只保留配置文件路径：
+在项目根目录的 `.env` 中填写配置，或在云环境设置中安全添加同名环境变量：
+
+```dotenv
+SERPAPI_API_KEY=你的SerpApi密钥
+GOOGLE_AI_API_KEY=你的Gemini密钥
+PAPERGRAPH_GEMINI_MODEL=gemini-3-flash-preview
+```
+
+`SERPAPI_API_KEY` 用于默认的 Scholar 搜索；`GOOGLE_AI_API_KEY` 用于摘要翻译、总结和评分，未设置时跳过 Gemini。
+`OPENALEX_API_KEY` 可选。不要将真实密钥提交到 Git。云环境需允许 `serpapi.com`、`api.openalex.org`、
+`arxiv.org`、`export.arxiv.org`、`generativelanguage.googleapis.com`；PDF 作者网站及其他补全服务也需相应网络权限。
+
+以后只需替换论文标题、DOI、arXiv ID 或 arXiv 链接，无需激活虚拟环境：
 
 ```bash
-papergraph search --config configs/llmshare.json > outputs/LLMShare.json
+python3 scripts/run_paper.py "https://arxiv.org/pdf/2608.24650"
+# 也支持完整标题
+python3 scripts/run_paper.py "Simthesizer: An Agent-Driven Simulation Framework for LLM Serving Systems"
 ```
 
-示例配置见 [configs/config.example.json](configs/config.example.json)、[configs/llmshare.json](configs/llmshare.json)、[configs/resolve-example.json](configs/resolve-example.json) 和 [configs/verify-example.json](configs/verify-example.json)。字段说明见 [configs/config.example.md](configs/config.example.md)。运行配置保持纯 JSON，不混入说明字段。JSON 中的 `proxy: null` 表示使用 `.env` 或系统代理；API Key 仍只放在 `.env`，不放进 JSON。
+默认通过 **SerpApi / Google Scholar 查询两层被引论文**（`citing`、`depth=2`），最多 1000 个节点、每篇最多 1000 个邻居。
+OpenAlex 只负责身份解析和详情补全，不混入引用关系。详情缺失时继续尝试原始页面、PDF、arXiv 及 Scholar 重新搜索的其他来源。
+查询会消耗 SerpApi 额度；两层结果多时可先缩小规模：
 
-`citing` 的含义是：
+```bash
+python3 scripts/run_paper.py "2608.24650" --max-papers 30 --max-neighbors 10
+# 只做检索和摘要补全，不调用 Gemini
+python3 scripts/run_paper.py "2608.24650" --no-gemini
+# 查看脚本全部选项
+python3 scripts/run_paper.py --help
+```
 
-| 层级  | 内容                     |
-| ----- | ------------------------ |
-| Hop 0 | LLMShare 种子论文        |
-| Hop 1 | 直接引用 LLMShare 的论文 |
-| Hop 2 | 引用 Hop 1 论文的论文    |
+也可修改 [scripts/run_paper.py](scripts/run_paper.py) 顶部的 `DEFAULT_PAPER`，之后不带参数运行。
+更多参数和配置示例见 [脚本使用说明](scripts/run_paper.md)。
 
-引用边统一表示 `source cites target`。发现路径按 `Seed → Hop 1 → Hop 2` 展示，所以在 `citing` 模式下，路径顺序与引用箭头方向相反。
+结果自动保存在 `outputs/`，终端会打印实际文件路径：
+
+- `*.metadata.json`：种子论文信息。
+- `*.json`：论文详情、引用边、路径、摘要状态和 Gemini 分析。
+- `*.xlsx`：可阅读的 Excel；论文列表依次为 **论文标题、会议/期刊、年份**及摘要、翻译和评分等列。无会议/期刊信息时显示 `arxiv`，不代表已核实未接收。
+
+同一输入、方向和深度会更新同名结果。摘要不完整时保留片段并跳过 Gemini 评分；缺少 Scholar 被引入口时标记“未核验”，不当作零引用。
+并非所有论文都能取得完整摘要，也不保证 Scholar 收录完整。原论文单列在 Excel 的“种子论文”工作表，Gemini 默认分析发现的论文。
+
+| 层级 | 内容 |
+| --- | --- |
+| Hop 0 | 输入的种子论文 |
+| Hop 1 | 直接引用种子论文的论文 |
+| Hop 2 | 引用 Hop 1 论文的论文 |
+
+引用边统一表示 `source cites target`；发现路径为 `Seed → Hop 1 → Hop 2`，与引用箭头方向相反。
+
+底层 `papergraph` CLI 仍默认使用 OpenAlex，也支持原有 JSON 配置：
+
+```bash
+.venv/bin/papergraph search --config configs/llmshare.json > outputs/LLMShare.json
+```
+
+配置字段见 [configs/config.example.md](configs/config.example.md)。
 
 ## 从零安装或更新环境
 
@@ -367,10 +408,10 @@ cp -n .env.example .env
 source .venv/bin/activate
 ```
 
-最常用的完整流程：
+最常用的两层 Scholar 流程（配置好 `SERPAPI_API_KEY` 后）：
 
 ```bash
-papergraph search --config configs/llmshare.json > outputs/LLMShare.json
+python3 scripts/run_paper.py "https://arxiv.org/pdf/2608.24650"
 ```
 
 只解析论文身份：
