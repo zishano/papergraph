@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("paper", nargs="?", default=DEFAULT_PAPER)
+    parser.add_argument("--output-dir", type=Path, default=ROOT / 'outputs', help="结果保存目录")
     parser.add_argument("--direction", choices=["both", "citing", "references"], default="citing")
     parser.add_argument("--depth", type=int, choices=range(4), default=2)
     parser.add_argument("--max-papers", type=int, default=1000)
@@ -73,9 +74,11 @@ def main():
 
     cli = ROOT / ".venv/bin/papergraph"
     if not cli.is_file():
+        cli = ROOT / '.venv/Scripts/papergraph.exe'
+    if not cli.is_file():
         parser.error("未找到 .venv/bin/papergraph，请先在项目目录执行 bash setup.sh")
-    output = ROOT / "outputs"
-    output.mkdir(exist_ok=True)
+    output = args.output_dir.expanduser().resolve()
+    output.mkdir(parents=True, exist_ok=True)
     # 标题可能含路径分隔符；散列也避免不同标题产生相同文件名。
     label = re.sub(r"[^\w.-]+", "_", seed, flags=re.UNICODE).strip("._")[:70] or "paper"
     digest = hashlib.sha256(seed.encode()).hexdigest()[:8]

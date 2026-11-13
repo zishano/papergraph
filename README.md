@@ -6,6 +6,36 @@ Excel 输出还可使用 Google AI Studio 免费额度中的 Gemini Flash 模型
 
 项目当前严格限定在设计文档的 M1 和 M2 范围内。详细边界见 [DESIGN.md](DESIGN.md)。
 
+## 本地网站
+
+配置好下方的 `.env` 后，在仓库目录运行：
+
+```bash
+bash setup.sh
+.venv/bin/python -m papergraph.web
+```
+
+Windows PowerShell 首次安装和启动：
+
+```powershell
+uv venv --python 3.11 .venv
+uv pip install --python .venv\Scripts\python.exe -e '.[test]'
+if (!(Test-Path .env)) { Copy-Item .env.example .env }
+# 编辑 .env 填入密钥，然后启动
+.venv\Scripts\python.exe -m papergraph.web
+```
+
+PDF 提取需另外安装 Poppler 并将 `pdftotext` 加入 PATH。
+浏览器打开 **http://127.0.0.1:8000**。端口被占用时可加 `--port 8080`。
+
+页面支持输入论文链接/标题和关键词、设置引用深度与查询规模、开启 Gemini，查看运行记录、摘要、中文翻译和评分，并下载 Excel/JSON。
+默认查两层被引论文，最多 100 篇、每篇最多 20 个邻居，可在页面调整；关键词不筛掉未命中的引用论文。
+密钥仅从服务器环境变量或 `.env` 读取，不需要在页面填写。任务串行运行，最多同时保留 3 个待完成任务。
+结果与任务记录保存在 `outputs/web/`，重启后仍可查看已完成结果；运行中任务会标记失败，需重新提交。
+默认每个任务最多运行一小时；结果不会自动删除，可在停止服务后清理 `outputs/web/`。
+
+这是本机个人工作台，只监听 `127.0.0.1`，没有公网部署或多人账号功能。要在自己的电脑访问，需先将仓库和 `.env` 配置到自己的电脑上并启动；云环境中的进程不等同于你电脑上的本地服务。
+
 ## 快速使用：输入一篇论文，查询两层被引论文
 
 需要 Python 3.11+ 和 [uv](https://docs.astral.sh/uv/)。首次在仓库目录安装：

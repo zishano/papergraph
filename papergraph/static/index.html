@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PaperGraph · 论文探索工作台</title><link rel="stylesheet" href="/style.css"><script defer src="/app.js"></script></head>
+<body><header><a class="brand" href="/">◈ <span>PaperGraph</span></a><span class="local">● 本地工作空间</span></header>
+<main><section class="intro"><div class="eyebrow">FOLLOW THE IDEAS</div><h1>从一篇论文，<br>探索下一条研究线索。</h1><p>沿着引用关系发现相关工作，让摘要、翻译与研究脉络汇聚一处。</p></section>
+<div class="workspace"><aside><section class="panel"><div class="section-title"><span>01</span><h2>开始一次探索</h2></div><form id="search-form">
+<label for="paper">种子论文</label><textarea id="paper" required maxlength="1000" placeholder="粘贴 arXiv 链接、DOI 或完整论文标题">https://arxiv.org/pdf/2608.24650</textarea>
+<label for="keywords">关注的关键词 <small>可选</small></label><input id="keywords" maxlength="500" placeholder="例如 LLM serving, simulation, DSE"><p class="hint">用逗号分隔，用于辅助标注和 AI 分析，不过滤引用结果。</p>
+<div class="fields"><div><label for="depth">引用深度</label><select id="depth"><option value="1">1 层 · 直接引用</option><option value="2" selected>2 层 · 扩展关联</option><option value="3">3 层 · 深入探索</option></select></div><div><label for="max-papers">论文总上限</label><input id="max-papers" type="number" min="1" max="1000" value="100" required></div></div>
+<label for="max-neighbors">每篇论文的引用查询上限</label><input id="max-neighbors" type="number" min="1" max="1000" value="20" required>
+<label class="toggle"><input id="gemini" type="checkbox" checked><span><b>Gemini 智能分析</b><small>完整摘要翻译、总结与评分</small></span></label>
+<div id="config" class="config">正在检查服务配置…</div><button class="primary" id="submit" type="submit">开始探索 <span>↗</span></button><p class="hint">Scholar 发现引用 · OpenAlex / PDF 补全详情<br>查询与 AI 分析将使用已配置服务的额度。</p><p id="error" role="alert"></p></form></section>
+<section class="panel history"><div class="section-title"><span>↺</span><h2>最近探索</h2></div><div id="history">还没有查询记录</div></section></aside>
+<section class="results"><div class="results-head"><div><div class="eyebrow">RESEARCH EXPLORER</div><h2 id="result-title">你的研究线索，从这里展开</h2></div><span id="status" class="badge">等待开始</span></div>
+<div id="empty" class="empty"><div class="orbit">◈</div><h3>让相关工作自己浮现</h3><p>输入一篇论文，发现引用它的论文及下一层关联。<br>所有任务与导出文件都保存在本机。</p><div class="steps"><span>01 发现引用</span><i>→</i><span>02 补全摘要</span><i>→</i><span>03 整理洞察</span></div></div>
+<div id="activity" hidden><div class="stats" id="stats"></div><div class="downloads" id="downloads"></div><div id="warnings" class="warnings"></div><details id="provenance" hidden><summary>查看数据来源与补全记录</summary><pre id="provenance-logs"></pre></details><div class="toolbar"><h3>发现的论文</h3><input id="filter" placeholder="在结果中搜索标题、摘要…" aria-label="筛选查询结果"></div><div id="papers"></div><details id="logs-box"><summary>运行记录</summary><pre id="logs" aria-live="polite"></pre></details></div>
+</section></div><footer>PaperGraph <span>循着引用，连接想法。</span><span>摘要完整性与引用覆盖范围均可追溯</span></footer></main></body></html>
