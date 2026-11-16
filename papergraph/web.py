@@ -42,6 +42,7 @@ class Search(BaseModel):
     max_papers: int = Field(default=100, ge=1, le=1000)
     max_neighbors: int = Field(default=20, ge=1, le=1000)
     gemini: bool = True
+    refresh: bool = False
 
 
 class Jobs:
@@ -52,11 +53,14 @@ class Jobs:
         self.pool = ThreadPoolExecutor(max_workers=1)
         self.items = {}
         self.processes = {}
+        self.futures = {}
+        self.closing = False
         for path in self.root.glob('*/status.json'):
             try:
                 job = json.loads(path.read_text())
-                if job['status'] in {'queued', 'running'}:
-                    job.update(status='failed', error='服务已重启，请重新查询。')
+                if job['status'] in {'queued', 'running', 'cancelling'}:
+                    job.update(status='interrupted', error='服务已重启，可继续查询。')
+                    self.save(job)
                 self.items[job['id']] = job
             except (ValueError, KeyError, OSError):
                 continue
@@ -70,14 +74,45 @@ class Jobs:
 
     def create(self, query):
         with self.lock:
-            if sum(j['status'] in {'queued', 'running'} for j in self.items.values()) >= 3:
+            if self.closing or sum(j['status'] in {'queued', 'running', 'cancelling'} for j in self.items.values()) >= 3:
                 raise ValueError('已有 3 个待完成任务，请稍后再试。')
             job = dict(id=uuid.uuid4().hex, status='queued', query=query.model_dump(),
                        created=datetime.now(timezone.utc).isoformat(), logs=[], error=None)
             self.items[job['id']] = job
             self.save(job)
-        self.pool.submit(self.run, job['id'])
+        self.futures[job['id']] = self.pool.submit(self.run, job['id'])
         return job
+
+    def action(self, identifier, action):
+        with self.lock:
+            job = self.items.get(identifier)
+            if job is None:
+                raise ValueError('任务不存在。')
+            if action == 'cancel':
+                if job['status'] not in {'queued', 'running'}:
+                    raise ValueError('只有等待或运行中的任务可以取消。')
+                if job['status'] == 'queued':
+                    future = self.futures.get(identifier)
+                    if future:
+                        future.cancel()
+                    job['status'] = 'cancelled'
+                else:
+                    job['status'] = 'cancelling'
+                    process = self.processes.get(identifier)
+                    if process:
+                        stop_process(process)
+                self.save(job)
+            elif action == 'resume':
+                if job['status'] not in {'failed', 'cancelled', 'interrupted'}:
+                    raise ValueError('该任务无需恢复。')
+                if self.closing or sum(j['status'] in {'queued', 'running', 'cancelling'} for j in self.items.values()) >= 3:
+                    raise ValueError('队列已满，请稍后再试。')
+                job.update(status='queued', error=None, resume=True)
+                job['query']['refresh'] = False
+                job['logs'].append('继续上次任务，复用已完成阶段和有效缓存。')
+                self.save(job)
+                self.futures[identifier] = self.pool.submit(self.run, identifier)
+            return dict(job)
 
     def run(self, identifier):
         job = self.items[identifier]
@@ -89,7 +124,13 @@ class Jobs:
                    '--depth', str(query.depth), '--keywords', query.keywords,
                    '--max-papers', str(query.max_papers), '--max-neighbors', str(query.max_neighbors),
                    '--gemini' if query.gemini else '--no-gemini', '--no-arxiv-auto-verify']
+        if query.refresh:
+            command.append('--refresh')
+        if job.get('resume'):
+            command.append('--resume')
         with self.lock:
+            if self.closing or job['status'] != 'queued':
+                return
             job['status'] = 'running'
             self.save(job)
         try:
@@ -101,6 +142,8 @@ class Jobs:
                                   start_new_session=os.name != 'nt') as process:
                 with self.lock:
                     self.processes[identifier] = process
+                    if self.closing or job['status'] == 'cancelling':
+                        stop_process(process)
                 timer = threading.Timer(3600, stop_process, args=(process,))
                 timer.start()
                 try:
@@ -120,7 +163,11 @@ class Jobs:
             result = next((p for p in destination.glob('*.json')
                            if p.name != 'status.json' and not p.name.endswith('.metadata.json')), None)
             with self.lock:
-                if code or result is None:
+                if job['status'] == 'interrupted':
+                    pass
+                elif job['status'] == 'cancelling':
+                    job.update(status='cancelled', error='已取消，可使用检查点继续。')
+                elif code or result is None:
                     job.update(status='failed', error='查询未完成，请查看运行记录并检查密钥、网络或额度。')
                 else:
                     job.update(status='completed', result=result.name, excel=result.with_suffix('.xlsx').name)
@@ -128,10 +175,17 @@ class Jobs:
 
         except Exception:
             with self.lock:
-                job.update(status='failed', error='任务执行异常，请检查本地环境。')
+                if job['status'] != 'interrupted':
+                    job.update(status='cancelled' if job['status'] == 'cancelling' else 'failed', error='任务未完成，可继续查询。')
                 self.save(job)
 
     def close(self):
+        with self.lock:
+            self.closing = True
+            for job in self.items.values():
+                if job['status'] in {'queued', 'running', 'cancelling'}:
+                    job.update(status='interrupted', error='服务已停止，可继续查询。')
+                    self.save(job)
         self.pool.shutdown(wait=False, cancel_futures=True)
         with self.lock:
             for process in self.processes.values():
@@ -204,6 +258,12 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if not self.trusted():
             return
+        action = re.fullmatch(r'/api/jobs/([a-f0-9]{32})/(resume|cancel)', self.path)
+        if action:
+            try:
+                return self.send(202, self.server.jobs.action(*action.groups()))
+            except ValueError as error:
+                return self.send(409, {'error': str(error)})
         if self.path != '/api/jobs':
             return self.send(404, {'error': '页面不存在。'})
         try:

@@ -38,6 +38,29 @@ def paper_from_work(data: dict) -> Paper:
     location = data.get("primary_location") or {}
     source = location.get("source") or {}
     oa_location = data.get("best_oa_location") or {}
+    locations = [location, *(data.get('locations') or [])]
+    # A deposited manuscript may be the primary location despite a published edition.
+    # Select a venue only from journal/conference locations with explicit evidence.
+    ranked = []
+    for candidate in locations:
+        candidate_source = candidate.get('source') or {}
+        if candidate_source.get('type') not in {'journal', 'conference'} or not candidate_source.get('display_name'):
+            continue
+        status = ('published' if candidate.get('is_published') or candidate.get('version') == 'publishedVersion'
+                  else 'accepted' if candidate.get('is_accepted') or candidate.get('version') == 'acceptedVersion'
+                  else 'unknown')
+        if status != 'unknown':
+            ranked.append((2 if status == 'published' else 1, candidate, status))
+    publication_status = 'unknown'
+    publication_source = None
+    venue = source.get('display_name')
+    if ranked:
+        _, chosen, publication_status = max(ranked, key=lambda item: item[0])
+        venue = chosen['source']['display_name']
+        publication_source = chosen.get('landing_page_url') or data['id']
+    elif data.get('type') == 'preprint' or (venue and 'arxiv' in venue.casefold()):
+        publication_status = 'preprint'
+        publication_source = location.get('landing_page_url') or data['id']
     doi = normalize_doi(data["doi"]) if data.get("doi") else None
     arxiv_id = None
     if doi and doi.startswith("10.48550/arxiv."):
@@ -47,7 +70,8 @@ def paper_from_work(data: dict) -> Paper:
         arxiv_id=arxiv_id, title=data.get("title") or data.get("display_name") or "",
         authors=[a["author"]["display_name"] for a in data.get("authorships") or []
                  if (a.get("author") or {}).get("display_name")],
-        year=data.get("publication_year"), venue=source.get("display_name"),
+        year=data.get("publication_year"), venue=venue,
+        publication_status=publication_status, publication_source=publication_source,
         abstract=" ".join(word for _, word in positions) if positions else None,
         cited_by_count=data.get("cited_by_count") or 0,
         pdf_url=oa_location.get("pdf_url") or location.get("pdf_url"),

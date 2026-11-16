@@ -8,6 +8,7 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
 import subprocess
@@ -23,6 +24,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("paper", nargs="?", default=DEFAULT_PAPER)
     parser.add_argument("--output-dir", type=Path, default=ROOT / 'outputs', help="结果保存目录")
+    parser.add_argument("--refresh", action="store_true", help="重新获取数据，忽略持久缓存及阶段检查点")
+    parser.add_argument("--resume", action="store_true", help="复用此输出目录已完成的阶段")
     parser.add_argument("--direction", choices=["both", "citing", "references"], default="citing")
     parser.add_argument("--depth", type=int, choices=range(4), default=2)
     parser.add_argument("--max-papers", type=int, default=1000)
@@ -79,6 +82,19 @@ def main():
         parser.error("未找到 .venv/bin/papergraph，请先在项目目录执行 bash setup.sh")
     output = args.output_dir.expanduser().resolve()
     output.mkdir(parents=True, exist_ok=True)
+    os.environ.setdefault('PAPERGRAPH_CACHE_PATH', str(ROOT / 'outputs/cache.sqlite3'))
+    if args.refresh:
+        os.environ['PAPERGRAPH_REFRESH'] = '1'
+    checkpoint = output / '.checkpoint'
+    checkpoint.mkdir(exist_ok=True)
+    signature = hashlib.sha256(json.dumps({k: str(v) for k, v in vars(args).items()
+        if k not in {'resume', 'refresh'}}, sort_keys=True).encode()).hexdigest()
+    checkpoint = checkpoint / signature
+    checkpoint.mkdir(exist_ok=True)
+    os.environ['PAPERGRAPH_CHECKPOINT_DIR'] = str(checkpoint)
+    if args.refresh or not args.resume:
+        for path in checkpoint.glob('*.json'):
+            path.unlink()
     # 标题可能含路径分隔符；散列也避免不同标题产生相同文件名。
     label = re.sub(r"[^\w.-]+", "_", seed, flags=re.UNICODE).strip("._")[:70] or "paper"
     digest = hashlib.sha256(seed.encode()).hexdigest()[:8]
@@ -91,8 +107,22 @@ def main():
         graph = staging / "graph.json"
         excel = staging / "graph.xlsx"
         print(f"正在处理：{seed}", flush=True)
-        with resolved.open("w", encoding="utf-8") as stream:
-            subprocess.run([str(cli), "resolve", "--seed", seed], cwd=ROOT, stdout=stream, check=True)
+        saved_metadata = checkpoint / 'metadata.json'
+        valid_metadata = False
+        if saved_metadata.exists():
+            try:
+                valid_metadata = bool(json.loads(saved_metadata.read_text(encoding='utf-8'))['papers'])
+            except (ValueError, KeyError):
+                pass
+        if args.resume and not args.refresh and valid_metadata:
+            resolved.write_bytes(saved_metadata.read_bytes())
+            print('恢复已完成的论文解析', flush=True)
+        else:
+            with resolved.open("w", encoding="utf-8") as stream:
+                subprocess.run([str(cli), "resolve", "--seed", seed], cwd=ROOT, stdout=stream, check=True)
+            temporary_metadata = saved_metadata.with_suffix('.tmp')
+            temporary_metadata.write_bytes(resolved.read_bytes())
+            temporary_metadata.replace(saved_metadata)
         search_seed = seed
         if args.source == "scholar":
             # Scholar 的标题匹配不支持直接用 arXiv ID 查询种子。

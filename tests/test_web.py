@@ -48,11 +48,32 @@ def test_local_http_validation_and_downloads(tmp_path, monkeypatch):
         server.jobs.pool.shutdown(wait=True)
 
 
-def test_restart_marks_interrupted_task_failed(tmp_path):
+def test_restart_marks_task_resumable(tmp_path):
     identifier = 'a' * 32
     path = tmp_path / identifier
     path.mkdir()
     (path / 'status.json').write_text(json.dumps({'id': identifier, 'status': 'running'}))
     jobs = Jobs(tmp_path)
-    assert jobs.items[identifier]['status'] == 'failed'
+    assert jobs.items[identifier]['status'] == 'interrupted'
     jobs.pool.shutdown()
+
+
+def test_cancel_queued_task_and_resume_reuses_same_directory(tmp_path, monkeypatch):
+    from concurrent.futures import Future
+    jobs = Jobs(tmp_path)
+    queued = []
+    def submit(function, identifier):
+        queued.append(identifier)
+        return Future()
+    monkeypatch.setattr(jobs.pool, 'submit', submit)
+    job = jobs.create(Search(paper='Paper', gemini=False))
+    directory = tmp_path / job['id']
+    (directory / '.checkpoint').mkdir()
+    jobs.action(job['id'], 'cancel')
+    assert jobs.items[job['id']]['status'] == 'cancelled'
+    jobs.run(job['id'])  # cancelled queued runner must not start a process
+    result = jobs.action(job['id'], 'resume')
+    assert result['status'] == 'queued' and result['resume']
+    assert (directory / '.checkpoint').is_dir()
+    assert queued == [job['id'], job['id']]
+    jobs.close()

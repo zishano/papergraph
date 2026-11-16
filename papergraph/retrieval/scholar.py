@@ -17,6 +17,7 @@ import httpx
 from bs4 import BeautifulSoup
 
 from papergraph.models import Paper
+from papergraph.cache import configured_cache
 from papergraph.retrieval.scholar_web import parse_scholar_html
 from papergraph.retrieval.openalex import RetrievalError
 from papergraph.retrieval.resolver import normalize_title
@@ -91,7 +92,7 @@ class ScholarProvider:
 
         # Check if we've already processed this paper by normalized title
         for existing_id, existing_entry in self.entries.items():
-            if normalize_title(existing_entry.get('title', '')) == norm_title:
+            if normalize_title(existing_entry.get('title', '')) == norm_title and self._same_scholar_work(entry, existing_entry):
                 if self._cites_id(entry) and not self._cites_id(existing_entry):
                     existing_entry['inline_links'] = entry['inline_links']
                 # Return existing paper, update aliases
@@ -104,6 +105,30 @@ class ScholarProvider:
                   hashlib.sha256((title + entry.get('link', '')).encode()).hexdigest()[:20])
         identifier = 'scholar:' + sid
         self.entries[identifier] = entry
+        persistent = configured_cache()
+        identity_authors = sorted({normalize_title(author['name']) for author in
+                                   (entry.get('publication_info') or {}).get('authors', [])
+                                   if author.get('name')})
+        link = entry.get('link') or ''
+        parsed_link = urlparse(link)
+        # A title alone cannot identify a paper across providers or tasks. A root
+        # site URL is not a paper-specific identity either.
+        specific_link = bool(parsed_link.scheme in {'http', 'https'} and parsed_link.hostname
+                             and (parsed_link.path.strip('/') or parsed_link.query))
+        if not (specific_link or entry.get('doi') or entry.get('paper_id') or len(identity_authors) >= 2):
+            persistent = None
+        metadata_key = persistent.key('scholar-metadata-v3', [norm_title, link,
+                                        entry.get('doi'), entry.get('paper_id'), identity_authors]) if persistent else None
+        saved = persistent.get(metadata_key) if persistent and os.getenv('PAPERGRAPH_REFRESH') != '1' else None
+        if saved:
+            try:
+                cached = Paper.model_validate(saved).model_copy(update={'id': identifier, 'referenced_works': []})
+                if cached.abstract_status == 'complete':
+                    self.cache[identifier] = cached
+                    self.aliases[identifier] = identifier
+                    return cached
+            except ValueError:
+                pass
 
         # Extract snippet from Scholar/SerpAPI as fallback abstract
         snippet = entry.get('snippet', '').strip() or None
@@ -152,6 +177,7 @@ class ScholarProvider:
                     'year': enriched.year if enriched.year else year,
                 })
             elif len(matches) > 1:
+                paper.metadata_match = 'ambiguous'
                 self.warnings.append(f'Metadata ambiguous: {identifier} ({len(matches)} OpenAlex matches); Scholar member retained with basic metadata')
             else:
                 self.warnings.append(f'Metadata unresolved: {identifier}; Scholar member retained with basic metadata')
@@ -184,6 +210,8 @@ class ScholarProvider:
         self.aliases[identifier] = identifier
         # Cache the paper for deduplication
         self.cache[identifier] = paper
+        if persistent and paper.abstract_status == 'complete':
+            persistent.put(metadata_key, paper.model_dump(), 7 * 86400)
         return paper
 
     async def _scholar_abstract_fallback(self, paper, original):
@@ -211,6 +239,12 @@ class ScholarProvider:
                 for field in ('openalex_id', 'doi', 'arxiv_id', 'year', 'venue', 'pdf_url'):
                     if getattr(paper, field) is None:
                         setattr(paper, field, getattr(match, field))
+                if match.publication_status in {'accepted', 'published'}:
+                    paper.venue = match.venue
+                    paper.publication_status = match.publication_status
+                    paper.publication_source = match.publication_source
+                paper.version_ids = sorted(set(paper.version_ids + match.version_ids))
+                paper.metadata_match = match.metadata_match
                 if match.abstract and not self._abstract_incomplete(match.abstract):
                     return match.abstract, 'openalex_via_scholar_retry'
             urls = [row.get('link')] + [r.get('link') for r in row.get('resources', [])]
@@ -239,11 +273,63 @@ class ScholarProvider:
             try:
                 candidate = await self.openalex.get_work(identifier)
                 if normalize_title(candidate.title) == normalize_title(title):
+                    candidate = candidate.model_copy(update={'metadata_match': 'identifier'})
+                    if candidate.publication_status == 'preprint' and len(candidate.authors) >= 2:
+                        try:
+                            alternatives = [p for p in await self.openalex.search_title(title)
+                                            if normalize_title(p.title) == normalize_title(title)]
+                            selected = self._select_versions([candidate, *alternatives])
+                            if len(selected) == 1:
+                                return selected
+                        except (ValueError, RetrievalError):
+                            pass
                     return [candidate]
             except (ValueError, RetrievalError):
                 continue
-        return [p for p in await self.openalex.search_title(title)
-                if normalize_title(p.title) == normalize_title(title)]
+        candidates = [p for p in await self.openalex.search_title(title)
+                      if normalize_title(p.title) == normalize_title(title)]
+        return self._select_versions(candidates)
+
+    @staticmethod
+    def _author_match(left, right):
+        a = {normalize_title(name) for name in left if name}
+        b = {normalize_title(name) for name in right if name}
+        return len(a & b) >= 2 and len(a & b) / len(a | b) >= 0.8
+
+    @classmethod
+    def _select_versions(cls, candidates):
+        """Prefer the published edition only when all candidates share identity evidence."""
+        unique = {p.id: p for p in candidates}
+        candidates = list(unique.values())
+        if len(candidates) == 1:
+            return [candidates[0].model_copy(update={'metadata_match': candidates[0].metadata_match or 'exact_title'})]
+        if not candidates:
+            return []
+        for index, left in enumerate(candidates):
+            for right in candidates[index + 1:]:
+                identifier_match = bool((left.doi and right.doi and left.doi.casefold() == right.doi.casefold())
+                                        or (left.arxiv_id and left.arxiv_id == right.arxiv_id))
+                author_match = cls._author_match(left.authors, right.authors)
+                years_close = left.year is not None and right.year is not None and abs(left.year - right.year) <= 2
+                if not identifier_match and not (author_match and years_close):
+                    return candidates
+        rank = {'unknown': 0, 'preprint': 1, 'accepted': 2, 'published': 3}
+        selected = max(candidates, key=lambda p: (rank[p.publication_status], bool(p.abstract), p.id))
+        identifiers = sorted({value for p in candidates for value in
+                              [p.openalex_id, p.doi, ('arxiv:' + p.arxiv_id) if p.arxiv_id else None, *p.version_ids] if value})
+        return [selected.model_copy(update={'version_ids': identifiers, 'metadata_match': 'matched_versions'})]
+
+    @classmethod
+    def _same_scholar_work(cls, left, right):
+        if left.get('result_id') and left.get('result_id') == right.get('result_id'):
+            return True
+        if cls._cites_id(left) and cls._cites_id(left) == cls._cites_id(right):
+            return True
+        for field in ('doi', 'paper_id', 'link'):
+            if left.get(field) and left.get(field) == right.get(field):
+                return True
+        authors = lambda row: [a.get('name') for a in (row.get('publication_info') or {}).get('authors', [])]
+        return cls._author_match(authors(left), authors(right))
 
     @staticmethod
     def _cites_id(entry):
@@ -329,7 +415,12 @@ class ScholarProvider:
                     if match:
                         paper.year = int(match[0])
                 paper.pdf_url = paper.pdf_url or meta('citation_pdf_url')
-                paper.venue = paper.venue or meta('citation_journal_title', 'citation_conference_title')
+                published_venue = meta('citation_journal_title', 'citation_conference_title')
+                if published_venue and 'arxiv' not in published_venue.casefold():
+                    paper.venue = published_venue
+                    paper.publication_source = url
+                    if meta('citation_publication_date'):
+                        paper.publication_status = 'published'
                 if abstract and not self._abstract_incomplete(abstract):
                     return abstract, url
             except httpx.HTTPError:
@@ -358,13 +449,15 @@ class ScholarProvider:
             text = result.stdout.decode('utf-8', errors='replace')
             if normalize_title(title) not in normalize_title(text):
                 return None
-            if paper is not None and paper.year is None:
+            if paper is not None:
                 # Use publication headers, never arbitrary years in the abstract/body.
                 date = re.search(r'(?mi)^([^\n]{0,100}@[^\n]{0,80}\b((?:19|20)\d{2})\b[^\n]*|(?:©|Copyright)\s*((?:19|20)\d{2})\b[^\n]*)$', text)
                 if date:
-                    paper.year = int(date[2] or date[3])
-                    if not paper.venue and date[2]:
+                    paper.year = paper.year or int(date[2] or date[3])
+                    if (not paper.venue or 'arxiv' in paper.venue.casefold()) and date[2]:
                         paper.venue = date[1].strip()
+                        paper.publication_source = url
+                        paper.publication_status = 'unknown'  # Header names a venue, not a formal acceptance decision.
             match = re.search(r'\bAbstract\s*[:—–-]?\s*(.+?)\n\s*(?:(?:\d+[. ]*)?Introduction\b|(?:CCS Concepts|Keywords|Index Terms)\b)', text, re.S | re.I)
             if match:
                 abstract = re.sub(r'(?<=\w)-\s*\n\s*(?=\w)', '', match[1])

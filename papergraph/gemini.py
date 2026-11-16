@@ -10,6 +10,7 @@ import time
 import httpx
 
 from papergraph.models import CitationGraph
+from papergraph.cache import configured_cache
 
 
 DEFAULT_MODELS = [
@@ -28,6 +29,7 @@ class GeminiScorer:
         self.http = http
         self.api_key = api_key or os.getenv("GOOGLE_AI_API_KEY") or os.getenv("GEMINI_API_KEY")
         self.models = ([model] if model != "auto" else DEFAULT_MODELS.copy())
+        self.cache_models = self.models.copy()
         self.interval = interval
         self.batch_size = max(1, batch_size)
         self.last_request = 0.0
@@ -41,6 +43,9 @@ class GeminiScorer:
                      "model": None, "summary": "", "score": None, "reason": "",
                      "translation": ""}
                     for p in papers]
+        cache = configured_cache()
+        def cache_key(paper):
+            return cache.key('gemini-analysis-v1', [paper.title, paper.abstract, keywords, self.cache_models])
         records = []
         pending = []
         skipped = []
@@ -57,12 +62,20 @@ class GeminiScorer:
                                 "model": None, "summary": "", "score": None,
                                 "reason": "缺少摘要，未调用 Gemini", "translation": ""})
                 continue
-            pending.append(paper)
+            saved = cache.get(cache_key(paper)) if cache and os.getenv('PAPERGRAPH_REFRESH') != '1' else None
+            if saved and saved.get('status') == 'completed':
+                records.append({**saved, 'paper_id': paper.id, 'cached': True})
+            else:
+                pending.append(paper)
         if progress:
             progress(f"结果论文共 {len(papers)} 篇：{len(pending)} 篇有摘要进入 Gemini，"
                      f"{len(skipped)} 篇缺少完整摘要并跳过")
             for paper in skipped:
                 progress(f"  跳过（缺少完整摘要）：{paper.title}")
+        if progress:
+            cached_count = sum(record.get('cached', False) for record in records)
+            if cached_count:
+                progress(f"复用 Gemini 分析缓存：{cached_count} 篇")
         total_batches = (len(pending) + self.batch_size - 1) // self.batch_size
         for start in range(0, len(pending), self.batch_size):
             batch = pending[start:start + self.batch_size]
@@ -71,11 +84,17 @@ class GeminiScorer:
                 progress(f"Gemini 批次 {batch_number}/{total_batches}（论文 {start + 1}-{start + len(batch)}/{len(pending)}）")
                 for offset, paper in enumerate(batch, start + 1):
                     progress(f"  {offset}/{len(pending)}：{paper.title}")
+            keys = {p.id: cache_key(p) for p in batch} if cache else {}
+            before = len(records)
             if len(batch) == 1:
                 records.append(await self._score(batch[0].id, batch[0].title,
                                                  batch[0].abstract, keywords))
             else:
                 records.extend(await self._score_batch_adaptive(batch, keywords, progress))
+            if cache:
+                for record in records[before:]:
+                    if record.get('status') == 'completed':
+                        cache.put(keys[record['paper_id']], record, 30 * 86400)
         order = {paper.id: index for index, paper in enumerate(papers)}
         return sorted(records, key=lambda item: order[item["paper_id"]])
 

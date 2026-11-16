@@ -10,6 +10,7 @@ import httpx
 
 from papergraph.graph.crawler import CitationCrawler
 from papergraph.gemini import GeminiScorer
+from papergraph.cache import http_client
 from papergraph.config import load_project_env
 from papergraph.models import CrawlConfig
 from papergraph.excel import write_excel_async
@@ -115,7 +116,6 @@ async def run(args: argparse.Namespace) -> dict:
     if args.command == "verify":
         import csv
         import json
-        from pathlib import Path
         if not args.graph or not args.output or not args.excel:
             raise ValueError("verify requires graph, output and excel in --config or command line")
         if isinstance(getattr(args, "candidate_arxiv", None), str):
@@ -136,7 +136,7 @@ async def run(args: argparse.Namespace) -> dict:
         if getattr(args, "gemini_batch_size", 5) < 1:
             raise ValueError("gemini_batch_size must be at least 1")
         progress("开始解析验证图和 arXiv 候选")
-        async with httpx.AsyncClient(timeout=45) as http:
+        async with http_client(timeout=45) as http:
             records = await ArxivVerifier(http).verify(graph, candidates, OpenAlexClient(http))
             analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto"),
                 batch_size=getattr(args, "gemini_batch_size", 5)).analyze(
@@ -154,7 +154,7 @@ async def run(args: argparse.Namespace) -> dict:
         raise ValueError("resolve requires seed in --config or command line")
     if args.command == "resolve":
         progress(f"正在解析 {len(args.seed)} 个种子")
-        async with httpx.AsyncClient(timeout=30) as http:
+        async with http_client(timeout=30) as http:
             provider = OpenAlexClient(http)
             papers = await SeedResolver(provider).resolve_many(args.seed)
         return {"papers": [p.model_dump() for p in papers],
@@ -180,7 +180,7 @@ async def run(args: argparse.Namespace) -> dict:
         parsed = urlparse(proxy)
         if parsed.scheme not in {'http', 'https'} or not parsed.hostname:
             raise ValueError('Proxy must be an http:// or https:// URL (use the VPN HTTP/mixed port)')
-    async with httpx.AsyncClient(timeout=30, **({'proxy': proxy} if proxy else {})) as http:
+    async with http_client(timeout=30, **({'proxy': proxy} if proxy else {})) as http:
         provider = OpenAlexClient(http)
         resolver = SeedResolver(provider)
         if config is not None and getattr(args, 'source', 'openalex') == 'scholar':
@@ -190,16 +190,27 @@ async def run(args: argparse.Namespace) -> dict:
             if csv_path and (len(args.seed) != 1 or config.depth != 1):
                 raise ValueError('--scholar-list requires a single seed and --depth 1; no inferred second-hop list')
             scholar = ScholarProvider(http, provider, csv_path, backend=getattr(args, "scholar_backend", "web"))
-            progress("正在解析 Scholar 种子")
-            papers = [await scholar.resolve(seed) for seed in args.seed]
-            progress("正在构建 Scholar 引用图")
-            graph = await CitationCrawler(scholar).crawl(papers, config)
-            progress(f"Scholar 引用图完成：{len(graph.nodes)} 个节点，{len(graph.edges)} 条引用边")
-            for edge in graph.edges:
-                edge.provider = scholar.source
-            graph.openalex_requests = provider.requests
-            graph.warnings.extend(scholar.warnings)
-            graph.warnings.append('Membership authority: Google Scholar. Imported lists are user-supplied snapshots, not live retrieval.' if csv_path else f'Membership authority: Google Scholar via {scholar.backend}; provider coverage is not exhaustive.')
+            checkpoint_dir = os.getenv('PAPERGRAPH_CHECKPOINT_DIR')
+            checkpoint = Path(checkpoint_dir) / 'graph.json' if checkpoint_dir else None
+            if checkpoint and checkpoint.exists() and os.getenv('PAPERGRAPH_REFRESH') != '1':
+                progress("恢复已完成的引用图，继续摘要分析和导出")
+                graph = CitationGraph.model_validate_json(checkpoint.read_text(encoding='utf-8'))
+            else:
+                progress("正在解析 Scholar 种子")
+                papers = [await scholar.resolve(seed) for seed in args.seed]
+                progress("正在构建 Scholar 引用图")
+                graph = await CitationCrawler(scholar).crawl(papers, config)
+                progress(f"Scholar 引用图完成：{len(graph.nodes)} 个节点，{len(graph.edges)} 条引用边")
+                for edge in graph.edges:
+                    edge.provider = scholar.source
+                graph.openalex_requests = provider.requests
+                graph.warnings.extend(scholar.warnings)
+                graph.warnings.append('Membership authority: Google Scholar. Imported lists are user-supplied snapshots, not live retrieval.' if csv_path else f'Membership authority: Google Scholar via {scholar.backend}; provider coverage is not exhaustive.')
+                if checkpoint:
+                    checkpoint.parent.mkdir(parents=True, exist_ok=True)
+                    temporary = checkpoint.with_suffix('.tmp')
+                    temporary.write_text(graph.model_dump_json(), encoding='utf-8')
+                    temporary.replace(checkpoint)
             analysis = (await GeminiScorer(http, model=getattr(args, "gemini_model", "auto"),
                 batch_size=getattr(args, "gemini_batch_size", 5)).analyze(
                 graph, args.keywords, progress=progress) if getattr(args, "gemini", True) else [])

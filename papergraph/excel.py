@@ -119,6 +119,8 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
             n.hop, "; ".join(n.seed_ids), "; ".join(n.parent_ids),
             ai.get("status", "未启用"), ai.get("model"), ai.get("reason", ""),
             n.abstract_source, n.landing_url,
+            {'unknown': '未核实', 'preprint': '预印本', 'accepted': '已接收', 'published': '已发表'}[n.publication_status],
+            n.publication_source, '; '.join(n.version_ids), n.metadata_match,
         ])
     sheet("论文列表", ["论文标题", "会议/期刊", "年份", "与种子关系（最小Hop）", "摘要", "摘要中文翻译",
                         "辅助关键词命中", "作者", "Gemini 摘要总结", "Gemini 评分", "Gemini 评分理由"],
@@ -126,8 +128,9 @@ def write_excel(graph: CitationGraph, destination: str | Path, keywords: str = "
           [28, 20, 10, 20, 255, 255, 16, 22, 28, 14, 25])
     sheet("add", ["论文ID", "OpenAlex ID", "arXiv ID", "DOI", "论文链接", "期刊/会议",
                   "被引次数", "PDF链接", "摘要状态", "最小Hop", "来源种子", "父节点",
-                  "Gemini 状态", "Gemini 模型", "Gemini 详细错误", "摘要来源", "原始页面"],
-          add_rows, [30, 24, 20, 42, 55, 36, 14, 55, 16, 14, 32, 40, 28, 34, 100, 55, 55])
+                  "Gemini 状态", "Gemini 模型", "Gemini 详细错误", "摘要来源", "原始页面",
+                  "发表状态", "发表信息来源", "匹配版本标识", "元数据匹配方式"],
+          add_rows, [30, 24, 20, 42, 55, 36, 14, 55, 16, 14, 32, 40, 28, 34, 100, 55, 55, 16, 55, 55, 28])
     sheet("种子论文", ["ID", "标题", "DOI", "摘要"],
           [[s, nodes[s].title, nodes[s].doi, nodes[s].abstract] for s in graph.seed_ids], [22, 70, 45, 100])
     sheet("发现路径", ["种子ID", "论文ID", "Hop", "路径ID（从种子发现）", "路径标题"],

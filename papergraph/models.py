@@ -15,6 +15,10 @@ class Paper(BaseModel):
     authors: list[str] = Field(default_factory=list)
     year: int | None = None
     venue: str | None = None
+    publication_status: Literal["unknown", "preprint", "accepted", "published"] = "unknown"
+    publication_source: str | None = None
+    version_ids: list[str] = Field(default_factory=list)
+    metadata_match: str | None = None
     abstract: str | None = None
     abstract_status: Literal["unknown", "complete", "snippet", "missing"] = "unknown"
     abstract_source: str | None = None

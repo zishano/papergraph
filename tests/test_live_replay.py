@@ -11,6 +11,11 @@ from papergraph.retrieval.openalex import OpenAlexClient
 from papergraph.retrieval.resolver import ResolutionError, SeedResolver
 
 
+# Archived fixtures predate publication evidence. Retain exact coverage of every
+# original field; the added evidence and version selection have dedicated tests.
+PUBLICATION_FIELDS = {'publication_status', 'publication_source', 'version_ids', 'metadata_match'}
+
+
 async def test_recorded_live_resolution_and_three_graphs():
     root = Path(__file__).resolve().parents[1] / "validation"
     responses = {row["url"]: row for row in json.loads((root / "openalex-responses.json").read_text())}
@@ -28,7 +33,7 @@ async def test_recorded_live_resolution_and_three_graphs():
         resolver = SeedResolver(provider)
         expected_m1 = json.loads((root / "m1-live.json").read_text())
         papers = await resolver.resolve_many(expected_m1["inputs"])
-        assert [p.model_dump() for p in papers] == [Paper.model_validate(p).model_dump() for p in expected_m1["papers"]]
+        assert [p.model_dump(exclude=PUBLICATION_FIELDS) for p in papers] == [Paper.model_validate(p).model_dump(exclude=PUBLICATION_FIELDS) for p in expected_m1["papers"]]
         try:
             await resolver.resolve("The state of OA: a large-scale analysis of the prevalence and impact of Open Access articles")
         except ResolutionError:
@@ -41,5 +46,6 @@ async def test_recorded_live_resolution_and_three_graphs():
             expected = json.loads((root / f"m2-{name}.json").read_text())
             seeds = await resolver.resolve_many(inputs)
             graph = await CitationCrawler(provider).crawl(seeds, CrawlConfig(**expected["config"]))
-            assert graph.model_dump() == CitationGraph.model_validate(expected).model_dump()
+            exclude = {'nodes': {'__all__': PUBLICATION_FIELDS}}
+            assert graph.model_dump(exclude=exclude) == CitationGraph.model_validate(expected).model_dump(exclude=exclude)
         assert len(requested) == len(responses)
